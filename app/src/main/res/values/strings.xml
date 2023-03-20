@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Zero_Waste Application</string>
+    <string name="name_application">Zero Waste</string>
+    <string name="comunity_question">Já faz parte da nossa comunidade?</string>
+    <string name="faca_login">Faça login em sua conta e continue ajudando a salvar nosso planeta</string>
+    <string name="login">ENTRAR</string>
+    <string name="not_registered">Ainda não faz parte da nossa comunidade?</string>
+    <string name="register">Registre-se</string>
+    <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="title_activity_log_in">LogInActivity</string>
+    <string name="recycler">Reciclador</string>
+    <string name="catador">Catador</string>
+    <string name="welcome_message">Bem-vindo a Zero Waste!</string>
+    <string name="name_label">Nome Completo</string>
+    <string name="cpf_label">CPF/CNPJ</string>
+    <string name="email_label">E-mail</string>
+    <string name="telephone_label">Telefone</string>
+    <string name="password_label">Senha</string>
+    <string name="cep_label">CEP</string>
+    <string name="residencial_label">Número</string>
+    <string name="complement_label">Complemento</string>
+    <string name="confirm_password_label">Confirmar Senha</string>
+    <string name="select_bithday">Selecione sua data de nascimento</string>
+    <string name="login_as">Entrar como </string>
+    <string name="forgot_pass">Esqueceu a senha?</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="empty_error">Esse campo precisa ser preenchido!</string>
+    <string name="empty_field_reduced">Obrigatório!</string>
+    <string name="birthday_error">Selecione uma data válida!</string>
+    <string name="different_pass">As senhas devem ser as mesmas!</string>
+    <string name="learn_more">Saiba mais</string>
+    <string name="home_page_menu">Página Inicial</string>
+    <string name="actions_text_menu">Ações</string>
+    <string name="prize_text_menu">Pontuação</string>
+    <string name="request_pickup">Solicitar uma coleta</string>
+    <string name="register_pickup_location">Cadastre um ponto de coleta</string>
+    <string name="map_close_catadores">Mapa de catadores próximos</string>
+    <string name="hints_menu">Dicas</string>
+    <string name="favorites_menu">Favoritos</string>
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos.
+    </string>
+</resources>
