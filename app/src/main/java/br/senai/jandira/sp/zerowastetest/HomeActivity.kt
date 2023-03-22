@@ -1,5 +1,6 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,7 +35,7 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ZeroWasteTestTheme() {
+            ZeroWasteTestTheme {
 
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -55,6 +56,8 @@ fun HomeContent() {
 
     val scrollable = rememberScrollState()
 
+    val context = LocalContext.current
+
 
     var menuVisibility by remember {
         mutableStateOf(false)
@@ -63,8 +66,6 @@ fun HomeContent() {
     var actionOptionsVisibility by remember {
         mutableStateOf(false)
     }
-
-    var selectedColor = Color.Black
 
     var requestPickupClick by remember {
         mutableStateOf(false)
@@ -174,7 +175,7 @@ fun HomeContent() {
     ) {
         Card(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxHeight()
                 .padding(end = 100.dp)
                 .verticalScroll(scrollable),
             backgroundColor = colorResource(id = R.color.almost_white)
@@ -220,14 +221,14 @@ fun HomeContent() {
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
                         .padding(start = 8.dp, end = 20.dp)
                         .clickable {
-                            /*TODO*/
+                            menuVisibility = !menuVisibility
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -244,7 +245,7 @@ fun HomeContent() {
                         fontSize = 18.sp
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -290,7 +291,13 @@ fun HomeContent() {
                         targetScale = 1.2f
                     )
                 ) {
-                    Column(modifier = Modifier.padding(start = 10.dp, top = 10.dp, end = 20.dp)) {
+                    Column(
+                        modifier = Modifier.padding(
+                            start = 10.dp,
+                            top = 10.dp,
+                            end = 20.dp
+                        )
+                    ) {
                         Row(modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 10.dp, bottom = 10.dp)
@@ -326,11 +333,10 @@ fun HomeContent() {
                                     getClick = mapCatadoresClick
                                 )
                             )
-
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -354,7 +360,7 @@ fun HomeContent() {
                         fontSize = 18.sp
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -378,7 +384,7 @@ fun HomeContent() {
                         fontSize = 18.sp
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -402,13 +408,32 @@ fun HomeContent() {
                         fontSize = 18.sp
                     )
                 }
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .padding(start = 10.dp, end = 20.dp)
+                        .clickable {
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
+                        },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.log_out_icon),
+                        contentDescription = "Sair",
+                        modifier = Modifier
+                            .size(55.dp)
+                            .padding(start = 12.dp, end = 4.dp)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.logout_menu),
+                        modifier = Modifier.padding(start = 4.dp, end = 20.dp),
+                        fontSize = 18.sp
+                    )
+                }
             }
-            Image(
-                painter = painterResource(id = R.drawable.log_out_icon),
-                contentDescription = "Sair",
-                modifier = Modifier.size(1.dp),
-                alignment = Alignment.BottomStart
-            )
         }
     }
 }

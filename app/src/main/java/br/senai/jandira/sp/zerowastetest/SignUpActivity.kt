@@ -39,7 +39,7 @@ import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
 import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
 import br.senai.jandira.sp.zero_wasteapplication.ime.rememberImeState
 import br.senai.jandira.sp.zero_wasteapplication.model.Address
-import br.senai.jandira.sp.zero_wasteapplication.model.User
+import br.senai.jandira.sp.zero_wasteapplication.model.RecicladorUser
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -834,7 +834,7 @@ fun ZeroWasteApplication() {
                                     cep = cepState,
                                     complemento = complementState
                                 )
-                                var userData = User(
+                                var userData = RecicladorUser(
                                     name = nameState,
                                     cpf = cpfState,
                                     email = emailState,
@@ -846,15 +846,15 @@ fun ZeroWasteApplication() {
 
                                 val insertCatcher = userCalls.saveCatador(userData)
 
-                                insertCatcher.enqueue(object : Callback<User> {
+                                insertCatcher.enqueue(object : Callback<RecicladorUser> {
                                     override fun onResponse(
-                                        call: Call<User>,
-                                        response: Response<User>
+                                        call: Call<RecicladorUser>,
+                                        response: Response<RecicladorUser>
                                     ) {
                                         Log.i("Okay?", response.body()!!.toString())
                                     }
 
-                                    override fun onFailure(call: Call<User>, t: Throwable) {
+                                    override fun onFailure(call: Call<RecicladorUser>, t: Throwable) {
                                         Log.i("Não deu?", t.message.toString())
                                     }
                                 })

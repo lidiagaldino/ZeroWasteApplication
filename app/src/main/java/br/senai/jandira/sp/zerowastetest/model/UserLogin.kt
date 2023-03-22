@@ -1,4 +1,6 @@
 package br.senai.jandira.sp.zerowastetest.model
 
-class UserLogin {
-}
+data class UserLogin(
+    var email: String = "",
+    var senha: String = ""
+)

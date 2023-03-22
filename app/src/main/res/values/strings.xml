@@ -37,6 +37,7 @@
     <string name="map_close_catadores">Mapa de catadores próximos</string>
     <string name="hints_menu">Dicas</string>
     <string name="favorites_menu">Favoritos</string>
+    <string name="logout_menu">Sair</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
