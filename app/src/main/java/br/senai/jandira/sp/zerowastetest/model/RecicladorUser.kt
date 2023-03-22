@@ -11,7 +11,7 @@ data class RecicladorUser(
     var birthDay: String = "",
     var password: String = ""
 
-    )
+)
 
 //  {
 //      "nome": "Larissa",

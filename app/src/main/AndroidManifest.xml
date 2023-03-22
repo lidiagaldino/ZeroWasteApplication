@@ -16,17 +16,17 @@
             android:name=".SignInActivity"
             android:exported="false"
             android:label="@string/title_activity_sign_in"
-            android:theme="@style/Theme.ZeroWasteTest" />
+            android:theme="@style/Theme.ZeroWasteTest"/>
         <activity
             android:name=".LogInActivity"
             android:exported="false"
             android:label="@string/title_activity_log_in"
-            android:theme="@style/Theme.ZeroWasteTest" />
+            android:theme="@style/Theme.ZeroWasteTest"/>
         <activity
             android:name=".HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
-            android:theme="@style/Theme.ZeroWasteTest" />
+            android:theme="@style/Theme.ZeroWasteTest"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
