@@ -1,5 +1,6 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,13 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 
 class MyProfileActivity : ComponentActivity() {
@@ -57,7 +61,10 @@ fun ProfileContent() {
                 contentDescription = "Voltar para página inicial",
                 modifier = Modifier
                     .size(26.dp)
-                    .clickable { /*TODO*/ }
+                    .clickable {
+                        val intent = Intent(context, HomeActivity::class.java)
+                        context.startActivity(intent)
+                    }
             )
             Card(
                 modifier = Modifier.padding(start = 64.dp, end = 80.dp), border = BorderStroke(
@@ -99,7 +106,9 @@ fun ProfileContent() {
             shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
@@ -113,6 +122,7 @@ fun ProfileContent() {
                 )
                 Button(
                     onClick = { /*TODO*/ },
+                    modifier = Modifier.padding(bottom = 12.dp),
                     shape = (RoundedCornerShape(0.dp)),
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.fading_gray))
                 ) {
@@ -122,7 +132,220 @@ fun ProfileContent() {
                         color = Color.White
                     )
                 }
-                Image(painter = painterResource(id = R.drawable.content_divisor_white), contentDescription = "", modifier = Modifier.width(1440.dp).padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp))
+                Text(
+                    text = "Gerador de Resíduos",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp, end = 40.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.username_text),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.fillMaxWidth(0.9f))
+                    Image(
+                        painter = painterResource(id = R.drawable.edit_icon),
+                        contentDescription = "",
+                        modifier = Modifier.clickable { /*TODO*/ },
+                        alignment = Alignment.CenterEnd
+                    )
+                }
+                Text(
+                    text = "Nome do usuário",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp),
+                    textAlign = TextAlign.Start,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp, end = 40.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.user_email_text),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.fillMaxWidth(0.9f))
+                    Image(
+                        painter = painterResource(id = R.drawable.edit_icon),
+                        contentDescription = "",
+                        modifier = Modifier.clickable { /*TODO*/ },
+                        alignment = Alignment.CenterEnd
+                    )
+                }
+                Text(
+                    text = "Email do usuário",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp),
+                    textAlign = TextAlign.Start,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp, end = 40.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.materials_recycle_text),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.fillMaxWidth(0.8f))
+                    Image(
+                        painter = painterResource(id = R.drawable.edit_icon),
+                        contentDescription = "",
+                        modifier = Modifier.clickable { /*TODO*/ },
+                        alignment = Alignment.CenterEnd
+                    )
+                }
+                Text(
+                    text = "Lixo que recicla",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp),
+                    textAlign = TextAlign.Start,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp, end = 40.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.user_telephone_text),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.fillMaxWidth(0.9f))
+                    Image(painter = painterResource(id = R.drawable.edit_icon),
+                        contentDescription = "",
+                        modifier = Modifier.clickable { /*TODO*/ },
+                        alignment = Alignment.CenterEnd
+                    )
+                }
+                Text(
+                    text = "Telefone do usuário",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp),
+                    textAlign = TextAlign.Start,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp, end = 40.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.user_city_text),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.fillMaxWidth(0.9f))
+                    Image(
+                        painter = painterResource(id = R.drawable.edit_icon),
+                        contentDescription = "",
+                        modifier = Modifier.clickable { /*TODO*/ },
+                        alignment = Alignment.CenterEnd
+                    )
+                }
+                Text(
+                    text = "Cidade do usuário",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp),
+                    textAlign = TextAlign.Start,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp, end = 40.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.user_biography),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.fillMaxWidth(0.9f))
+                    Image(
+                        painter = painterResource(id = R.drawable.edit_icon),
+                        contentDescription = "",
+                        modifier = Modifier.clickable { /*TODO*/ },
+                        alignment = Alignment.CenterEnd
+                    )
+                }
+                Text(
+                    text = stringResource(id = R.string.lorem_ipsum),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 26.dp),
+                    textAlign = TextAlign.Start,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

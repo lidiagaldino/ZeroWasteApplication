@@ -42,6 +42,12 @@
     <string name="my_account">Minha Conta</string>
     <string name="edit_profile_picture">Editar foto</string>
     <string name="edit_text">Editar</string>
+    <string name="username_text">Nome</string>
+    <string name="user_email.text">Email</string>
+    <string name="materials_recycle_text">Materiais que recicla</string>
+    <string name="user_telephone_text">Telfone</string>
+    <string name="user_city_text">Cidade</string>
+    <string name="user_biography">Biografia</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
