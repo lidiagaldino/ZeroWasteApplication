@@ -195,7 +195,10 @@ fun HomeContent() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp)
-                        .clickable { },
+                        .clickable {
+                            val intent = Intent(context, MyProfileActivity::class.java)
+                            context.startActivity(intent)
+                        },
                     shape = RoundedCornerShape(10.dp),
                     backgroundColor = colorResource(id = R.color.dark_green)
                 ) {

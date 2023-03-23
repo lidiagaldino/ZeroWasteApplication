@@ -38,10 +38,15 @@
     <string name="hints_menu">Dicas</string>
     <string name="favorites_menu">Favoritos</string>
     <string name="logout_menu">Sair</string>
+    <string name="profile_text">Perfil</string>
+    <string name="my_account">Minha Conta</string>
+    <string name="edit_profile_picture">Editar foto</string>
+    <string name="edit_text">Editar</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
         dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
         litora torquent per conubia nostra, per inceptos himenaeos.
     </string>
+    <string name="title_activity_my_profile">MyProfileActivity</string>
 </resources>
