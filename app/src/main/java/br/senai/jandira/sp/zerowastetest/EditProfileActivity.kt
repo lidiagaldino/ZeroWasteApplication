@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +47,31 @@ fun ProfileContent() {
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    var nameState by remember {
+        mutableStateOf("")
+    }
+
+    var emailState by remember {
+        mutableStateOf("")
+    }
+
+    var materialsState by remember {
+        mutableStateOf("")
+    }
+
+    var telephoneState by remember {
+        mutableStateOf("")
+    }
+
+    var cepState by remember {
+        mutableStateOf("")
+    }
+
+    var biographyState by remember {
+        mutableStateOf("")
+    }
+
 
     Column(
         modifier = Modifier
@@ -160,14 +185,33 @@ fun ProfileContent() {
                         alignment = Alignment.CenterEnd
                     )
                 }
-                Text(
-                    text = "Nome do usuário",
+
+                TextField(
+                    value = nameState,
+                    onValueChange = { nameState = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 24.dp, top = 8.dp),
-                    textAlign = TextAlign.Start,
-                    color = Color.White
+                        .padding(start = 16.dp, end = 32.dp)
+                        .background(
+                            color = colorResource(id = R.color.dark_green),
+                            shape = RoundedCornerShape(0.dp)
+                        ),
+                    colors = TextFieldDefaults.textFieldColors(
+                        Color.White,
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = colorResource(
+                            id = R.color.light_green
+                        )
+                    )
                 )
+//                TextField(
+//                    text = "Nome do usuário",
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 24.dp, top = 8.dp),
+//                    textAlign = TextAlign.Start,
+//                    color = Color.White
+//                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -258,7 +302,8 @@ fun ProfileContent() {
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.fillMaxWidth(0.9f))
-                    Image(painter = painterResource(id = R.drawable.edit_icon),
+                    Image(
+                        painter = painterResource(id = R.drawable.edit_icon),
                         contentDescription = "",
                         modifier = Modifier.clickable { /*TODO*/ },
                         alignment = Alignment.CenterEnd
@@ -286,7 +331,7 @@ fun ProfileContent() {
                         .padding(start = 24.dp, top = 8.dp, end = 40.dp)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.user_city_text),
+                        text = stringResource(id = R.string.user_cep_text),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White

@@ -10,11 +10,11 @@ class RetrofitApi {
     companion object{
         private lateinit var instance: Retrofit
 
-        fun getRetrofit(): Retrofit{
+        fun getRetrofit(path: String): Retrofit{
             if (!::instance.isInitialized) {
                 instance = Retrofit
                     .Builder()
-                    .baseUrl(Constants.BASE_URL)
+                    .baseUrl(path)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }

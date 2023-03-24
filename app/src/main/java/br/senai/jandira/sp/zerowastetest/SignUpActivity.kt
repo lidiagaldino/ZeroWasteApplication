@@ -38,9 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
 import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
+import br.senai.jandira.sp.zero_wasteapplication.constants.Constants
 import br.senai.jandira.sp.zero_wasteapplication.ime.rememberImeState
 import br.senai.jandira.sp.zero_wasteapplication.model.Address
-import br.senai.jandira.sp.zero_wasteapplication.model.RecicladorUser
+import br.senai.jandira.sp.zero_wasteapplication.model.User
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -76,8 +77,9 @@ fun ZeroWasteApplication() {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    val retrofit = RetrofitApi.getRetrofit()
-    val userCalls = retrofit.create(ApiCalls::class.java)
+    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
+    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
+    val userCalls = retrofitApi.create(ApiCalls::class.java)
     val call = userCalls.getAll()
 
     val imeState = rememberImeState()
@@ -836,7 +838,7 @@ fun ZeroWasteApplication() {
                                     cep = cepState,
                                     complemento = complementState
                                 )
-                                var userData = RecicladorUser(
+                                var userData = User(
                                     name = nameState,
                                     cpf = cpfState,
                                     email = emailState,
@@ -848,15 +850,15 @@ fun ZeroWasteApplication() {
 
                                 val insertCatcher = userCalls.saveCatador(userData)
 
-                                insertCatcher.enqueue(object : Callback<RecicladorUser> {
+                                insertCatcher.enqueue(object : Callback<User> {
                                     override fun onResponse(
-                                        call: Call<RecicladorUser>,
-                                        response: Response<RecicladorUser>
+                                        call: Call<User>,
+                                        response: Response<User>
                                     ) {
                                         Log.i("Okay?", response.body()!!.toString())
                                     }
 
-                                    override fun onFailure(call: Call<RecicladorUser>, t: Throwable) {
+                                    override fun onFailure(call: Call<User>, t: Throwable) {
                                         Log.i("Não deu?", t.message.toString())
                                     }
                                 })

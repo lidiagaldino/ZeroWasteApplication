@@ -1,6 +1,6 @@
 package br.senai.jandira.sp.zero_wasteapplication.model
 
-data class RecicladorUser(
+data class User(
 
     var id: Long = 0,
     var name: String = "",
