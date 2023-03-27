@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,8 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,21 +51,35 @@ fun ProfileContent() {
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+    val focusRequester = FocusRequester()
+
 
     var nameState by remember {
         mutableStateOf("")
+    }
+    var nameEdit by remember {
+        mutableStateOf(true)
     }
 
     var emailState by remember {
         mutableStateOf("")
     }
+    var emailEdit by remember {
+        mutableStateOf(false)
+    }
 
     var materialsState by remember {
         mutableStateOf("")
     }
+    var materialsEdit by remember {
+        mutableStateOf(false)
+    }
 
     var telephoneState by remember {
         mutableStateOf("")
+    }
+    var telephoneEdit by remember {
+        mutableStateOf(false)
     }
 
     var cepState by remember {
@@ -71,6 +89,8 @@ fun ProfileContent() {
     var biographyState by remember {
         mutableStateOf("")
     }
+
+
 
 
     Column(
@@ -181,7 +201,6 @@ fun ProfileContent() {
                     Image(
                         painter = painterResource(id = R.drawable.edit_icon),
                         contentDescription = "",
-                        modifier = Modifier.clickable { /*TODO*/ },
                         alignment = Alignment.CenterEnd
                     )
                 }

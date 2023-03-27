@@ -13,20 +13,41 @@ data class User(
 
 )
 
-//  {
-//      "nome": "Larissa",
-//      "endereco": {
-//          "cep": "4444444",
-//          "logradouro": "Rua da prata",
-//          "bairro": "Bairro",
-//          "cidade": "Osasco",
-//          "estado": "SP",
-//          "complemento": " "
-//      },
-//      "telefone": "99999999999999",
-//      "email": "larissa@gmail.com",
-//      "senha": "larissa123",
-//      "materiais": ["4bae7e1f-1795-4bed-abd3-650f8df2502c"],
-//      "cnpj": "1234-5679",
-//      "data_nascimento": "2000-02-05T12:01:30.543Z"
-//  }
+//"user": {
+//    "id": "481aa0b6-0a8d-4039-8cea-12b7b5fce35e",
+//    "email": "miguel@gmail.com",
+//    "telefone": "98765432123456",
+//    "catador": [],
+//    "gerador": [
+//      {
+//          "id": "548beb8c-b220-4e4c-a376-04398980eb55",
+//          "id_usuario": "481aa0b6-0a8d-4039-8cea-12b7b5fce35e"
+//      }
+//    ],
+//    "pessoa_fisica": [
+//      {
+//           "id": "1c1c35ab-6fdb-4650-93ee-417efbefe624",
+//           "cpf": "47189167733",
+//           "nome": "Miguel",
+//           "data_nascimento": "2000-02-05T12:01:30.543Z",
+//           "id_usuario": "481aa0b6-0a8d-4039-8cea-12b7b5fce35e"
+//      }
+//    ],
+//    "pessoa_juridica": [],
+//    "endereco_usuario": [
+//          {
+//          "id": "07da6b21-c934-4e54-baa0-e65606eb7b13",
+//          "id_endereco": "f9899502-fd4c-4e5b-8b54-92dfc88f0835",
+//          "id_usuario": "481aa0b6-0a8d-4039-8cea-12b7b5fce35e",
+//          "endereco": {
+//              "id": "f9899502-fd4c-4e5b-8b54-92dfc88f0835",
+//              "logradouro": "Estrada das Pitas",
+//              "bairro": "Parque Viana",
+//              "cidade": "Barueri",
+//              "estado": "SP",
+//              "cep": "06449-300",
+//              "complemento": "134C"
+//              }
+//          }
+//      ]
+//}
