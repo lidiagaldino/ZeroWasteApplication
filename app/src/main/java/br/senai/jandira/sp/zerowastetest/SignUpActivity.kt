@@ -1,5 +1,6 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -41,7 +42,8 @@ import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
 import br.senai.jandira.sp.zero_wasteapplication.constants.Constants
 import br.senai.jandira.sp.zero_wasteapplication.ime.rememberImeState
 import br.senai.jandira.sp.zero_wasteapplication.model.Address
-import br.senai.jandira.sp.zero_wasteapplication.model.User
+import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
+import br.senai.jandira.sp.zerowastetest.model.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -216,30 +218,45 @@ fun ZeroWasteApplication() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 7.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .padding(top = 8.dp, bottom = 7.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.app_logo),
-                contentDescription = "App Logo",
+                painter = painterResource(id = R.drawable.back_arrow),
+                contentDescription = "Voltar",
                 modifier = Modifier
-                    .size(96.dp)
-                    .padding(end = 13.dp)
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.Black)) {
-                        append("Zero")
+                    .size(50.dp)
+                    .padding(start = 16.dp, top = 16.dp)
+                    .clickable {
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
                     }
-                    append(' ')
-                    withStyle(style = SpanStyle(color = Color(8, 113, 19))) {
-                        append("Waste")
-                    }
-                },
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold
             )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .size(96.dp)
+                        .padding(start = 8.dp, end = 8.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color.Black)) {
+                            append("Zero")
+                        }
+                        append(' ')
+                        withStyle(style = SpanStyle(color = Color(8, 113, 19))) {
+                            append("Waste")
+                        }
+                    },
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
         }
         Column(
             modifier = Modifier
@@ -483,7 +500,7 @@ fun ZeroWasteApplication() {
                     Spacer(modifier = Modifier.height(15.dp))
                 }
                 Row {
-                    Column{
+                    Column {
                         OutlinedTextField(
                             value = cepState, onValueChange = { newValue ->
                                 cepState = newValue
@@ -525,7 +542,7 @@ fun ZeroWasteApplication() {
                         }
                     }
                     Spacer(modifier = Modifier.width(10.dp))
-                    Column{
+                    Column {
                         OutlinedTextField(
                             value = resNumberState, onValueChange = { newValue ->
                                 resNumberState = newValue
@@ -838,7 +855,7 @@ fun ZeroWasteApplication() {
                                     cep = cepState,
                                     complemento = complementState
                                 )
-                                var userData = User(
+                                var userSignUpData = UserSignUp(
                                     name = nameState,
                                     cpf = cpfState,
                                     email = emailState,
@@ -848,17 +865,17 @@ fun ZeroWasteApplication() {
                                     password = passwordState
                                 )
 
-                                val insertCatcher = userCalls.saveCatador(userData)
+                                val insertCatcher = userCalls.saveCatador(userSignUpData)
 
-                                insertCatcher.enqueue(object : Callback<User> {
+                                insertCatcher.enqueue(object : Callback<UserData> {
                                     override fun onResponse(
-                                        call: Call<User>,
-                                        response: Response<User>
+                                        call: Call<UserData>,
+                                        response: Response<UserData>
                                     ) {
                                         Log.i("Okay?", response.body()!!.toString())
                                     }
 
-                                    override fun onFailure(call: Call<User>, t: Throwable) {
+                                    override fun onFailure(call: Call<UserData>, t: Throwable) {
                                         Log.i("Não deu?", t.message.toString())
                                     }
                                 })

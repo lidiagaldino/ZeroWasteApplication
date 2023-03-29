@@ -1,6 +1,9 @@
 package br.senai.jandira.sp.zero_wasteapplication.api
 
-import br.senai.jandira.sp.zero_wasteapplication.model.User
+import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
+import br.senai.jandira.sp.zerowastetest.model.LoginResponse
+import br.senai.jandira.sp.zerowastetest.model.UserData
+import br.senai.jandira.sp.zerowastetest.model.UserLoginRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -9,15 +12,15 @@ import retrofit2.http.POST
 interface ApiCalls {
 
     @GET("gerador")
-    fun getAll(): Call<List<User>>
+    fun getAll(): Call<List<UserSignUp>>
 
     @POST("gerador")
-    fun saveReciclador(@Body user: User): Call<User>
+    fun saveReciclador(@Body userSignUp: UserSignUp): Call<UserData>
 
     @POST("catador")
-    fun saveCatador(@Body user: User): Call<User>
+    fun saveCatador(@Body userSignUp: UserSignUp): Call<UserData>
 
     @POST("user/auth")
-    fun verifyLogin(@Body user: User): Call<User>
+    fun verifyLogin(@Body userLoginRequest: UserLoginRequest): Call<LoginResponse>
 
 }

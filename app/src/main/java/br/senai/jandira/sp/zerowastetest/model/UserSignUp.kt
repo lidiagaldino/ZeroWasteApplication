@@ -1,6 +1,6 @@
 package br.senai.jandira.sp.zero_wasteapplication.model
 
-data class User(
+data class UserSignUp(
 
     var id: Long = 0,
     var name: String = "",
