@@ -1,7 +1,8 @@
-package br.senai.jandira.sp.zero_wasteapplication.model
+package br.senai.jandira.sp.zerowastetest.model
 
 data class Address (
 
+    var id: String = "",
     var cep: String = "",
     var logradouro: String = "",
     var bairro: String = "",

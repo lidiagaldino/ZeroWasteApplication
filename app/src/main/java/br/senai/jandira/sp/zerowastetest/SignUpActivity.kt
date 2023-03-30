@@ -39,9 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
 import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
-import br.senai.jandira.sp.zero_wasteapplication.constants.Constants
+import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zero_wasteapplication.ime.rememberImeState
-import br.senai.jandira.sp.zero_wasteapplication.model.Address
+import br.senai.jandira.sp.zerowastetest.model.Address
 import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
 import br.senai.jandira.sp.zerowastetest.model.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
@@ -111,6 +111,22 @@ fun ZeroWasteApplication() {
 
     var nameState by rememberSaveable {
         mutableStateOf("")
+    }
+
+    var fisicoClick by remember {
+        mutableStateOf(true)
+    }
+
+    var juridicoClick by remember {
+        mutableStateOf(false)
+    }
+
+    var newColor1 by remember {
+        mutableStateOf(Color(128, 204, 40))
+    }
+
+    var newColor2 by remember {
+        mutableStateOf(Color.Transparent)
     }
 
     var cpfState by rememberSaveable {
@@ -373,6 +389,69 @@ fun ZeroWasteApplication() {
                 } else {
                     Spacer(modifier = Modifier.height(15.dp))
                 }
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 5.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        modifier = Modifier.background(
+                            color = Color.White,
+                            shape = RoundedCornerShape(5.dp)
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.recycler),
+                            modifier = Modifier
+                                .background(
+                                    newColor1,
+                                    shape = RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp)
+                                )
+                                .clickable {
+                                    fisicoClick = true
+                                    juridicoClick = false
+                                    newColor1 = Color(128, 204, 40)
+                                    newColor2 = Color.Transparent
+                                }
+                                .padding(
+                                    top = 5.dp,
+                                    bottom = 5.dp
+                                )
+                                .width(130.dp),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = stringResource(id = R.string.catador),
+                            modifier = Modifier
+                                .background(
+                                    newColor2,
+                                    shape = RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp)
+                                )
+                                .clickable {
+                                    fisicoClick = false
+                                    juridicoClick = true
+                                    newColor2 = Color(128, 204, 40)
+                                    newColor1 = Color.Transparent
+                                }
+                                .padding(
+                                    top = 5.dp,
+                                    bottom = 5.dp,
+                                )
+                                .width(130.dp),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+
                 OutlinedTextField(
                     value = cpfState, onValueChange = { newValue ->
                         cpfState = newValue
@@ -506,7 +585,7 @@ fun ZeroWasteApplication() {
                                 cepState = newValue
                             },
                             modifier = Modifier
-                                .width(220.dp)
+                                .width(200.dp)
                                 .padding(start = 30.dp)
                                 .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
                             placeholder = { Text(text = stringResource(id = R.string.cep_label)) },
@@ -541,14 +620,14 @@ fun ZeroWasteApplication() {
                             Spacer(modifier = Modifier.height(7.dp))
                         }
                     }
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(7.dp))
                     Column {
                         OutlinedTextField(
                             value = resNumberState, onValueChange = { newValue ->
                                 resNumberState = newValue
                             },
                             modifier = Modifier
-                                .width(200.dp)
+                                .width(220.dp)
                                 .padding(end = 30.dp)
                                 .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
                             placeholder = { Text(text = stringResource(id = R.string.residencial_label)) },

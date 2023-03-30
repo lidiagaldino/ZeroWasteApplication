@@ -1,7 +1,5 @@
 package br.senai.jandira.sp.zero_wasteapplication.api
 
-import android.provider.SyncStateContract
-import br.senai.jandira.sp.zero_wasteapplication.constants.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

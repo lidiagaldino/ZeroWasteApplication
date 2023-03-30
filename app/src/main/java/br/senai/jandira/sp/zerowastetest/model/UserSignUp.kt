@@ -1,5 +1,7 @@
 package br.senai.jandira.sp.zero_wasteapplication.model
 
+import br.senai.jandira.sp.zerowastetest.model.Address
+
 data class UserSignUp(
 
     var id: Long = 0,

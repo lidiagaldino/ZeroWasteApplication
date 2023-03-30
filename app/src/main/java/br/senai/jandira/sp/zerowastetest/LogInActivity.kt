@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
 import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
-import br.senai.jandira.sp.zero_wasteapplication.constants.Constants
+import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.model.LoginResponse
 import br.senai.jandira.sp.zerowastetest.model.UserLoginRequest
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
@@ -334,6 +334,7 @@ fun LogInActivityBody() {
                                 }
 
                                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                                    Log.i("ds3m", t.message.toString())
                                     Log.i("fail", t.message.toString())
                                 }
                             })

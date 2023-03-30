@@ -2,14 +2,14 @@ package br.senai.jandira.sp.zerowastetest.model
 
 data class UserData(
 
-    var id: Long = 0,
+    var id: String = "",
     var email: String = "",
-    var telephone: String = "",
-    var catador: Catador? = null,
-    var gerador: Gerador? = null,
-    var pessoa_fisica: PessoaFisica? = null,
-    var pessoa_juridica: PessoaJuridica? = null,
-    var endereco_usuario: UserAddress? = null,
+    var telefone: String = "",
+    var catador: List<Catador>? = null,
+    var gerador: List<Gerador>? = null,
+    var pessoa_fisica: List<PessoaFisica>? = null,
+    var pessoa_juridica: List<PessoaJuridica>? = null,
+    var endereco_usuario: List<UserAddress>? = null,
     var password: String = ""
 
 )

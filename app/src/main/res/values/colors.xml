@@ -12,4 +12,5 @@
     <color name="almost_white">#FFF8F4F4</color>
     <color name="lighter_gray">#FFE4E4E4</color>
     <color name="fading_gray">#54D9D9D9</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
