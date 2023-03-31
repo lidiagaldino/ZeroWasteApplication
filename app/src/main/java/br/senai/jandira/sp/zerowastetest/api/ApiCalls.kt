@@ -7,12 +7,10 @@ import br.senai.jandira.sp.zerowastetest.model.UserLoginRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ApiCalls {
-
-    @GET("gerador")
-    fun getAll(): Call<List<UserSignUp>>
 
     @POST("gerador")
     fun saveReciclador(@Body userSignUp: UserSignUp): Call<UserData>
@@ -22,5 +20,8 @@ interface ApiCalls {
 
     @POST("user/auth")
     fun verifyLogin(@Body userLoginRequest: UserLoginRequest): Call<LoginResponse>
+
+    @GET("user")
+    fun getUserData(): Call<UserData>
 
 }

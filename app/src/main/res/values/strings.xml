@@ -48,6 +48,8 @@
     <string name="user_telephone_text">Telefone</string>
     <string name="user_cep_text">Cep</string>
     <string name="user_biography">Biografia</string>
+    <string name="pessoa_juridica">Pessoa jurídica</string>
+    <string name="pessoa_fisica">Pessoa física</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -55,4 +57,6 @@
         litora torquent per conubia nostra, per inceptos himenaeos.
     </string>
     <string name="title_activity_my_profile">MyProfileActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_profile_gerador">ProfileActivityGerador</string>
 </resources>

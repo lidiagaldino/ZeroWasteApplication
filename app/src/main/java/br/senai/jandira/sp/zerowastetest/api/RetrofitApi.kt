@@ -1,5 +1,8 @@
 package br.senai.jandira.sp.zero_wasteapplication.api
 
+import android.content.Context
+import br.senai.jandira.sp.zerowastetest.dataSaving.AuthInterceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -18,6 +21,13 @@ class RetrofitApi {
             }
             return instance
         }
+
+        private fun okhttpClient(context: Context): OkHttpClient {
+            return OkHttpClient.Builder()
+                .addInterceptor(AuthInterceptor(context))
+                .build()
+        }
+
     }
 
 }

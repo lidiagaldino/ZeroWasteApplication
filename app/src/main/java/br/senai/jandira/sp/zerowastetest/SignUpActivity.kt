@@ -398,14 +398,17 @@ fun ZeroWasteApplication() {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Row(
-                        modifier = Modifier.background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(5.dp)
-                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 30.dp, end = 30.dp)
+                            .background(
+                                color = Color.White,
+                                shape = RoundedCornerShape(5.dp)
+                            ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(id = R.string.recycler),
+                            text = stringResource(id = R.string.pessoa_fisica),
                             modifier = Modifier
                                 .background(
                                     newColor1,
@@ -418,16 +421,16 @@ fun ZeroWasteApplication() {
                                     newColor2 = Color.Transparent
                                 }
                                 .padding(
-                                    top = 5.dp,
-                                    bottom = 5.dp
+                                    top = 2.dp,
+                                    bottom = 2.dp
                                 )
-                                .width(130.dp),
+                                .fillMaxWidth(0.5f),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = stringResource(id = R.string.catador),
+                            text = stringResource(id = R.string.pessoa_juridica),
                             modifier = Modifier
                                 .background(
                                     newColor2,
@@ -440,10 +443,10 @@ fun ZeroWasteApplication() {
                                     newColor1 = Color.Transparent
                                 }
                                 .padding(
-                                    top = 5.dp,
-                                    bottom = 5.dp,
+                                    top = 2.dp,
+                                    bottom = 2.dp,
                                 )
-                                .width(130.dp),
+                                .fillMaxWidth(),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center

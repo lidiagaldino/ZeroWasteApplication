@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
 import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
+import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.model.LoginResponse
 import br.senai.jandira.sp.zerowastetest.model.UserLoginRequest
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
@@ -70,6 +71,7 @@ fun LogInActivityBody() {
 
     val retrofit = RetrofitApi.getRetrofit(Constants.API_URL)
     val apiCalls = retrofit.create(ApiCalls::class.java)
+    val sessionManager = SessionManager(context)
 
 
     var recicladorClick by remember {
@@ -318,6 +320,7 @@ fun LogInActivityBody() {
                     Spacer(modifier = Modifier.height(50.dp))
                     Button(
                         onClick = {
+
                             val login = UserLoginRequest(
                                 email = emailState,
                                 senha = passwordState
@@ -330,11 +333,18 @@ fun LogInActivityBody() {
                                     call: Call<LoginResponse>,
                                     response: Response<LoginResponse>
                                 ) {
-                                    Log.i("success", response.body()!!.token)
+
+                                    val authToken = response.body()!!.token
+
+                                    if (authToken != "" && authToken != null) {
+                                        sessionManager.saveAuthToken(authToken)
+                                        Log.i("success", "Token salvo com êxito" + " - $authToken")
+                                    } else
+                                        Log.i("fail", "erro ao fazer login")
+
                                 }
 
                                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                                    Log.i("ds3m", t.message.toString())
                                     Log.i("fail", t.message.toString())
                                 }
                             })

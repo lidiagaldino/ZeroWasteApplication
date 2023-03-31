@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.senai.jandira.sp.zerowastetest.MainActivity
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 
 class HomeActivity : ComponentActivity() {
@@ -78,7 +79,7 @@ fun HomeContent() {
     }
 
     Image(
-        painter = painterResource(id = R.drawable.ellipse_top_home),
+        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.ellipse_top_home),
         contentDescription = "",
         modifier = Modifier
             .padding(start = 215.dp)
@@ -86,7 +87,7 @@ fun HomeContent() {
         alignment = Alignment.TopEnd
     )
     Image(
-        painter = painterResource(id = R.drawable.ellipse_bottom_home),
+        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.ellipse_bottom_home),
         contentDescription = "",
         modifier = Modifier
             .padding(end = 260.dp)
@@ -100,7 +101,7 @@ fun HomeContent() {
             .verticalScroll(scrollable)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.borgor),
+            painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.borgor),
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
@@ -117,7 +118,7 @@ fun HomeContent() {
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.app_logo),
+                painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.app_logo),
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .size(65.dp)
@@ -135,13 +136,13 @@ fun HomeContent() {
             )
         }
         Image(
-            painter = painterResource(id = R.drawable.lata_melhor),
+            painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.lata_melhor),
             contentDescription = "",
             modifier = Modifier.size(380.dp),
             alignment = Alignment.Center
         )
         Text(
-            text = stringResource(id = R.string.lorem_ipsum),
+            text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.lorem_ipsum),
             textAlign = TextAlign.Center,
             fontSize = 16.sp
         )
@@ -157,7 +158,7 @@ fun HomeContent() {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(8, 113, 19))
             ) {
                 Text(
-                    text = stringResource(id = R.string.learn_more),
+                    text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.learn_more),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
@@ -178,10 +179,10 @@ fun HomeContent() {
                 .fillMaxHeight()
                 .padding(end = 100.dp)
                 .verticalScroll(scrollable),
-            backgroundColor = colorResource(id = R.color.almost_white)
+            backgroundColor = colorResource(id = br.senai.jandira.sp.zerowastetest.R.color.almost_white)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                Image(painter = painterResource(id = R.drawable.back_arrow),
+                Image(painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.back_arrow),
                     contentDescription = "Voltar",
                     modifier = Modifier
                         .size(40.dp)
@@ -196,15 +197,15 @@ fun HomeContent() {
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp)
                         .clickable {
-                            val intent = Intent(context, MyProfileActivity::class.java)
+                            val intent = Intent(context, ProfileActivityGerador::class.java)
                             context.startActivity(intent)
                         },
                     shape = RoundedCornerShape(10.dp),
-                    backgroundColor = colorResource(id = R.color.dark_green)
+                    backgroundColor = colorResource(id = br.senai.jandira.sp.zerowastetest.R.color.dark_green)
                 ) {
                     Row {
                         Image(
-                            painter = painterResource(id = R.drawable.avatar_standard_icon),
+                            painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.avatar_standard_icon),
                             contentDescription = "Foto do Perfil",
                             modifier = Modifier
                                 .size(60.dp)
@@ -236,14 +237,14 @@ fun HomeContent() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.home_icon),
+                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.home_icon),
                         contentDescription = "Página inicial",
                         modifier = Modifier
                             .size(55.dp)
                             .padding(start = 12.dp, end = 4.dp)
                     )
                     Text(
-                        text = stringResource(id = R.string.home_page_menu),
+                        text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.home_page_menu),
                         modifier = Modifier.padding(start = 4.dp, end = 20.dp),
                         fontSize = 18.sp
                     )
@@ -260,7 +261,7 @@ fun HomeContent() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.actions_icon),
+                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.actions_icon),
                         contentDescription = "Ações",
                         modifier = Modifier
                             .size(60.dp)
@@ -271,11 +272,11 @@ fun HomeContent() {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = stringResource(id = R.string.actions_text_menu),
+                            text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.actions_text_menu),
                             fontSize = 18.sp
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.drop_down_icon),
+                            painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.drop_down_icon),
                             contentDescription = "Mais ações",
                             modifier = Modifier
                                 .size(15.dp)
@@ -306,7 +307,7 @@ fun HomeContent() {
                             .padding(top = 10.dp, bottom = 10.dp)
                             .clickable { requestPickupClick = !requestPickupClick }) {
                             Text(
-                                text = stringResource(id = R.string.request_pickup),
+                                text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.request_pickup),
                                 color = verifyClick(
                                     getClick = requestPickupClick
                                 )
@@ -318,7 +319,7 @@ fun HomeContent() {
                                 .padding(top = 10.dp, bottom = 10.dp)
                                 .clickable { registerLocationClick = !registerLocationClick }) {
                             Text(
-                                text = stringResource(id = R.string.register_pickup_location),
+                                text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.register_pickup_location),
                                 color = verifyClick(
                                     getClick = registerLocationClick
                                 )
@@ -331,7 +332,7 @@ fun HomeContent() {
                                 .padding(top = 10.dp, bottom = 10.dp)
                                 .clickable { mapCatadoresClick = !mapCatadoresClick }) {
                             Text(
-                                text = stringResource(id = R.string.map_close_catadores),
+                                text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.map_close_catadores),
                                 color = verifyClick(
                                     getClick = mapCatadoresClick
                                 )
@@ -351,14 +352,14 @@ fun HomeContent() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.prize_icon),
+                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.prize_icon),
                         contentDescription = "Página inicial",
                         modifier = Modifier
                             .size(55.dp)
                             .padding(start = 12.dp, end = 4.dp)
                     )
                     Text(
-                        text = stringResource(id = R.string.prize_text_menu),
+                        text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.prize_text_menu),
                         modifier = Modifier.padding(start = 4.dp, end = 20.dp),
                         fontSize = 18.sp
                     )
@@ -375,14 +376,14 @@ fun HomeContent() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.hints_icon),
+                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.hints_icon),
                         contentDescription = "Dicas",
                         modifier = Modifier
                             .size(55.dp)
                             .padding(start = 12.dp, end = 4.dp)
                     )
                     Text(
-                        text = stringResource(id = R.string.hints_menu),
+                        text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.hints_menu),
                         modifier = Modifier.padding(start = 4.dp, end = 20.dp),
                         fontSize = 18.sp
                     )
@@ -399,14 +400,14 @@ fun HomeContent() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.favorites_icon),
+                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.favorites_icon),
                         contentDescription = "Favoritos",
                         modifier = Modifier
                             .size(55.dp)
                             .padding(start = 12.dp, end = 4.dp)
                     )
                     Text(
-                        text = stringResource(id = R.string.favorites_menu),
+                        text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.favorites_menu),
                         modifier = Modifier.padding(start = 4.dp, end = 20.dp),
                         fontSize = 18.sp
                     )
@@ -424,14 +425,14 @@ fun HomeContent() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.log_out_icon),
+                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.log_out_icon),
                         contentDescription = "Sair",
                         modifier = Modifier
                             .size(55.dp)
                             .padding(start = 12.dp, end = 4.dp)
                     )
                     Text(
-                        text = stringResource(id = R.string.logout_menu),
+                        text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.logout_menu),
                         modifier = Modifier.padding(start = 4.dp, end = 20.dp),
                         fontSize = 18.sp
                     )
@@ -452,9 +453,9 @@ fun blurEffect(menuVisibility: Boolean): Dp {
 @Composable
 fun verifyClick(getClick: Boolean): Color {
     return if (getClick)
-        colorResource(id = R.color.light_green)
+        colorResource(id = br.senai.jandira.sp.zerowastetest.R.color.light_green)
     else
-        colorResource(id = R.color.black)
+        colorResource(id = br.senai.jandira.sp.zerowastetest.R.color.black)
 }
 
 @Preview(showSystemUi = true, showBackground = true)
