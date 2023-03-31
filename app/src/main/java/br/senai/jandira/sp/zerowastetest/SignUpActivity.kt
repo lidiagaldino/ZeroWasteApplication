@@ -82,7 +82,6 @@ fun ZeroWasteApplication() {
     val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
     val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
     val userCalls = retrofitApi.create(ApiCalls::class.java)
-    val call = userCalls.getAll()
 
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
