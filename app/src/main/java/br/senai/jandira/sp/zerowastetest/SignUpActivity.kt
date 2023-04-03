@@ -79,8 +79,8 @@ fun ZeroWasteApplication() {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
-    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
+    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL, context)
+    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL, context)
     val userCalls = retrofitApi.create(ApiCalls::class.java)
 
     val imeState = rememberImeState()

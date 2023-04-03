@@ -2,6 +2,7 @@ package br.senai.jandira.sp.zerowastetest
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -29,8 +30,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
+import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.MainActivity
+import br.senai.jandira.sp.zerowastetest.constants.Constants
+import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
+import br.senai.jandira.sp.zerowastetest.model.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +67,13 @@ fun HomeContent() {
     val scrollable = rememberScrollState()
 
     val context = LocalContext.current
+
+    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL, context)
+    val apiCalls = retrofit.create(ApiCalls::class.java)
+    val sessionManager = SessionManager(context)
+
+    val tokenAuth = sessionManager.fetchAuthToken()
+
 
 
     var menuVisibility by remember {
@@ -101,7 +117,7 @@ fun HomeContent() {
             .verticalScroll(scrollable)
     ) {
         Image(
-            painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.borgor),
+            painter = painterResource(id = R.drawable.borgor),
             contentDescription = "",
             modifier = Modifier
                 .size(40.dp)
@@ -118,7 +134,7 @@ fun HomeContent() {
             horizontalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.app_logo),
+                painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .size(65.dp)
@@ -136,7 +152,7 @@ fun HomeContent() {
             )
         }
         Image(
-            painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.lata_melhor),
+            painter = painterResource(id = R.drawable.lata_melhor),
             contentDescription = "",
             modifier = Modifier.size(380.dp),
             alignment = Alignment.Center
@@ -216,7 +232,7 @@ fun HomeContent() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Nome do usuário",
+                                text = "Nome do Usuário",
                                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                                 color = Color.White,
                                 fontSize = 18.sp
@@ -425,7 +441,7 @@ fun HomeContent() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.log_out_icon),
+                        painter = painterResource(id = R.drawable.log_out_icon),
                         contentDescription = "Sair",
                         modifier = Modifier
                             .size(55.dp)
@@ -453,9 +469,9 @@ fun blurEffect(menuVisibility: Boolean): Dp {
 @Composable
 fun verifyClick(getClick: Boolean): Color {
     return if (getClick)
-        colorResource(id = br.senai.jandira.sp.zerowastetest.R.color.light_green)
+        colorResource(id = R.color.light_green)
     else
-        colorResource(id = br.senai.jandira.sp.zerowastetest.R.color.black)
+        colorResource(id = R.color.black)
 }
 
 @Preview(showSystemUi = true, showBackground = true)

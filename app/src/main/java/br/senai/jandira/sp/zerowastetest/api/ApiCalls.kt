@@ -22,6 +22,6 @@ interface ApiCalls {
     fun verifyLogin(@Body userLoginRequest: UserLoginRequest): Call<LoginResponse>
 
     @GET("user")
-    fun getUserData(): Call<UserData>
+    fun getUserData(@Header("Authorization") token: String): Call<UserData>
 
 }

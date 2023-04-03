@@ -69,7 +69,7 @@ fun LogInActivityBody() {
 
     val context = LocalContext.current
 
-    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL)
+    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL, context)
     val apiCalls = retrofit.create(ApiCalls::class.java)
     val sessionManager = SessionManager(context)
 
@@ -90,7 +90,7 @@ fun LogInActivityBody() {
     }
 
     var emailState by remember {
-        mutableStateOf("")
+        mutableStateOf(sessionManager.getUserEmail())
     }
 
     var passwordState by remember {
@@ -338,7 +338,9 @@ fun LogInActivityBody() {
 
                                     if (authToken != "" && authToken != null) {
                                         sessionManager.saveAuthToken(authToken)
-                                        Log.i("success", "Token salvo com êxito" + " - $authToken")
+                                        sessionManager.saveUserLogin(emailState)
+                                        val intent = Intent(context, HomeActivity::class.java)
+                                        context.startActivity(intent)
                                     } else
                                         Log.i("fail", "erro ao fazer login")
 

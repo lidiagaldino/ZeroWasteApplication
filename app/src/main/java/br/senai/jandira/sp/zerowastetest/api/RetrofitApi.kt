@@ -11,11 +11,12 @@ class RetrofitApi {
     companion object{
         private lateinit var instance: Retrofit
 
-        fun getRetrofit(path: String): Retrofit{
+        fun getRetrofit(path: String, context: Context): Retrofit{
             if (!::instance.isInitialized) {
                 instance = Retrofit
                     .Builder()
                     .baseUrl(path)
+//                    .client(okhttpClient(context))
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }

@@ -9,6 +9,19 @@ class SessionManager (context: Context) {
 
     companion object {
         const val USER_TOKEN = "user_token"
+        const val USER_EMAIL = "Email"
+    }
+
+    // Function to save user Login Information
+
+    fun saveUserLogin(email: String){
+        val editor = prefs.edit()
+        editor.putString(USER_EMAIL, email)
+        editor.apply()
+    }
+
+    fun getUserEmail(): String {
+        return prefs.getString(USER_EMAIL, "Email").toString()
     }
 
 
