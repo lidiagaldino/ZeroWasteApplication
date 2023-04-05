@@ -36,8 +36,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
-import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
+import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.model.LoginResponse
@@ -69,7 +69,7 @@ fun LogInActivityBody() {
 
     val context = LocalContext.current
 
-    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL, context)
+    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL)
     val apiCalls = retrofit.create(ApiCalls::class.java)
     val sessionManager = SessionManager(context)
 
@@ -337,6 +337,8 @@ fun LogInActivityBody() {
                                     val authToken = response.body()!!.token
 
                                     if (authToken != "" && authToken != null) {
+
+                                        Log.i("success", authToken)
                                         sessionManager.saveAuthToken(authToken)
                                         sessionManager.saveUserLogin(emailState)
                                         val intent = Intent(context, HomeActivity::class.java)

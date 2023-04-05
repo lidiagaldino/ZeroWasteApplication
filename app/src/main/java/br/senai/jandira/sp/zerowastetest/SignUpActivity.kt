@@ -37,8 +37,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
-import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
+import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zero_wasteapplication.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.model.Address
@@ -79,8 +79,8 @@ fun ZeroWasteApplication() {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL, context)
-    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL, context)
+    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
+    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
     val userCalls = retrofitApi.create(ApiCalls::class.java)
 
     val imeState = rememberImeState()

@@ -59,4 +59,5 @@
     <string name="title_activity_my_profile">MyProfileActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_profile_gerador">ProfileActivityGerador</string>
+    <string name="title_activity_edit_profile_catador">EditProfileCatadorActivity</string>
 </resources>

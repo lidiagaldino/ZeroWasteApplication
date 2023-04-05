@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zero_wasteapplication.api
+package br.senai.jandira.sp.zerowastetest.api
 
 import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
 import br.senai.jandira.sp.zerowastetest.model.LoginResponse
@@ -22,6 +22,6 @@ interface ApiCalls {
     fun verifyLogin(@Body userLoginRequest: UserLoginRequest): Call<LoginResponse>
 
     @GET("user")
-    fun getUserData(@Header("Authorization") token: String): Call<UserData>
+    fun getUserData(@Header("Authorization") token: String?): Call<UserData>
 
 }

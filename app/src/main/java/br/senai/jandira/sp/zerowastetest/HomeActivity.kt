@@ -2,7 +2,6 @@ package br.senai.jandira.sp.zerowastetest
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -30,16 +29,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
-import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
-import br.senai.jandira.sp.zerowastetest.MainActivity
+import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.model.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +62,7 @@ fun HomeContent() {
 
     val context = LocalContext.current
 
-    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL, context)
+    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL)
     val apiCalls = retrofit.create(ApiCalls::class.java)
     val sessionManager = SessionManager(context)
 

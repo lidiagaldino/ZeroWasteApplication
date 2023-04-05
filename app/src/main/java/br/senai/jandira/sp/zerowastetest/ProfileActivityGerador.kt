@@ -24,8 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.jandira.sp.zero_wasteapplication.api.ApiCalls
-import br.senai.jandira.sp.zero_wasteapplication.api.RetrofitApi
+import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.model.UserData
@@ -59,7 +59,7 @@ fun ProfileActivityBody() {
     val context = LocalContext.current
     val scrollable = rememberScrollState()
 
-    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL, context)
+    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL)
     val apiCalls = retrofit.create(ApiCalls::class.java)
 
     val sessionManager = SessionManager(context)
@@ -107,21 +107,21 @@ fun ProfileActivityBody() {
                 }
         )
         Button(onClick = {
-            val userInfo = apiCalls.getUserData(authToken.toString())
-            userInfo.enqueue(object : Callback<UserData> {
-                override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
-                    if (response.body() != null)
-                        Log.i("success", response.body()!!.id)
-                    else
-                        Log.i("late fail", response.body().toString())
 
+
+
+            val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData>{
+                override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+                    Log.i("Success... But at what cost?", response.body()!!.id)
                 }
 
                 override fun onFailure(call: Call<UserData>, t: Throwable) {
-                    Log.i("failed", t.message.toString())
+                    Log.i("Failure... But why? And how?", "${t.message.toString()}. The token is: ${authToken}")
                 }
-
             })
+
+
+
         }) {
 
         }
