@@ -43,13 +43,15 @@
     <string name="edit_profile_picture">Editar foto</string>
     <string name="edit_text">Editar</string>
     <string name="username_text">Nome</string>
-    <string name="user_email.text">Email</string>
+    <string name="user_email_text">Email</string>
     <string name="materials_recycle_text">Materiais que recicla</string>
     <string name="user_telephone_text">Telefone</string>
     <string name="user_cep_text">Cep</string>
     <string name="user_biography">Biografia</string>
     <string name="pessoa_juridica">Pessoa jurídica</string>
     <string name="pessoa_fisica">Pessoa física</string>
+    <string name="enderecos_text">Endereços</string>
+    <string name="cidades_text">Cidades</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

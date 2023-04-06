@@ -10,16 +10,21 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -106,25 +111,161 @@ fun ProfileActivityBody() {
                     menuVisibility = !menuVisibility
                 }
         )
-        Button(onClick = {
 
 
+//        Button(onClick = {
+//            val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData>{
+//                override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+//                    Log.i("Success... But at what cost?", response.body()!!.id)
+//                }
+//
+//                override fun onFailure(call: Call<UserData>, t: Throwable) {
+//                    Log.i("Failure... But why? And how?", "${t.message.toString()}. The token is: ${authToken}")
+//                }
+//            })
+//        }){}
 
-            val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData>{
-                override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
-                    Log.i("Success... But at what cost?", response.body()!!.id)
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 25.dp, end = 25.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 85.dp)
+                    .background(
+                        color = colorResource(id = R.color.almost_white),
+                        shape = RoundedCornerShape(25.dp)
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Nome do Usuário",
+                    modifier = Modifier.padding(start = 20.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = "Gerador/Catador",
+                    modifier = Modifier.padding(start = 20.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            }
+            Image(
+                painter = getData(authToken),
+                contentDescription = "Foto do usuário",
+                modifier = Modifier
+                    .size(130.dp)
+                    .clip(CircleShape)
+                    .background(colorResource(id = R.color.almost_white))
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(start = 10.dp, end = 5.dp),
+                colors = ButtonDefaults.buttonColors(
+                    colorResource(id = R.color.dark_green)
+                )
+            ) {
+                Text(text = "Favoritar", color = Color.White)
+            }
+            OutlinedButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 10.dp, start = 5.dp),
+                border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
+            ) {
+                Row(horizontalArrangement = Arrangement.SpaceAround) {
+                    Image(
+                        painter = painterResource(id = R.drawable.whatsapp_icon),
+                        contentDescription = "Contato",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = "Contato",
+                        color = Color.Black,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
                 }
+            }
+        }
 
-                override fun onFailure(call: Call<UserData>, t: Throwable) {
-                    Log.i("Failure... But why? And how?", "${t.message.toString()}. The token is: ${authToken}")
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            border = BorderStroke(1.dp, colorResource(id = R.color.light_green)),
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+        ) {
+
+            Row(modifier = Modifier.padding(top = 20.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.4f)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.user_email_text),
+                        modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = FontFamily.,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = stringResource(id = R.string.enderecos_text),
+                        modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = stringResource(id = R.string.user_telephone_text),
+                        modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.Black
+                    )
                 }
-            })
-
-
-
-        }) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Email do usuário",
+                        modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorResource(id = R.color.dark_green)
+                    )
+                    Text(
+                        text = "Visualizar",
+                        modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorResource(id = R.color.dark_green)
+                    )
+                    Text(
+                        text = "Telefone do usuário",
+                        modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorResource(id = R.color.dark_green)
+                    )
+                }
+            }
 
         }
+
     }
     AnimatedVisibility(visible = menuVisibility,
         enter = slideInHorizontally(animationSpec = tween(400)) { fullWidth -> -fullWidth } + fadeIn(
@@ -157,8 +298,7 @@ fun ProfileActivityBody() {
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp)
                         .clickable {
-                            val intent = Intent(context, ProfileActivityGerador::class.java)
-                            context.startActivity(intent)
+                            menuVisibility = !menuVisibility
                         },
                     shape = RoundedCornerShape(10.dp),
                     backgroundColor = colorResource(id = R.color.dark_green)
@@ -192,7 +332,8 @@ fun ProfileActivityBody() {
                         .height(55.dp)
                         .padding(start = 8.dp, end = 20.dp)
                         .clickable {
-                            menuVisibility = !menuVisibility
+                            val intent = Intent(context, HomeActivity::class.java)
+                            context.startActivity(intent)
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -401,6 +542,18 @@ fun ProfileActivityBody() {
         }
     }
 }
+
+@Composable
+fun getData(token: String?): Painter {
+
+    var getInfo = "."
+
+    if (getInfo == "")
+        return painterResource(id = R.drawable.back_arrow)
+    else
+        return painterResource(id = R.drawable.avatar_standard_icon)
+}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
