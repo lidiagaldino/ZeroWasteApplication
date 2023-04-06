@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -90,27 +91,30 @@ fun ProfileActivityBody() {
         mutableStateOf(false)
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.top_profile_rectangle),
-            contentDescription = "",
-            modifier = Modifier.fillMaxSize(),
-            alignment = Alignment.TopCenter
-        )
-    }
+    Box(
+        modifier = Modifier
+            .verticalScroll(scrollable)
+            .fillMaxSize()
+    ) {
 
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.borgor),
-            contentDescription = "",
+        Box(
             modifier = Modifier
-                .size(50.dp)
-                .padding(start = 15.dp, top = 15.dp)
-                .clickable {
-                    menuVisibility = !menuVisibility
-                }
+                .background(colorResource(id = R.color.dark_green))
+                .fillMaxWidth()
+                .height(155.dp)
         )
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = R.drawable.borgor),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(start = 15.dp, top = 15.dp)
+                    .clickable {
+                        menuVisibility = !menuVisibility
+                    }
+            )
 
 
 //        Button(onClick = {
@@ -126,147 +130,166 @@ fun ProfileActivityBody() {
 //        }){}
 
 
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 25.dp, end = 25.dp),
-            contentAlignment = Alignment.CenterStart
-        ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 25.dp, end = 25.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 85.dp)
+                        .background(
+                            color = colorResource(id = R.color.almost_white),
+                            shape = RoundedCornerShape(25.dp)
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Nome do Usuário",
+                        modifier = Modifier.padding(start = 20.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        text = "Gerador/Catador",
+                        modifier = Modifier.padding(start = 20.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
+                }
+                Image(
+                    painter = getData(authToken),
+                    contentDescription = "Foto do usuário",
+                    modifier = Modifier
+                        .size(130.dp)
+                        .clip(CircleShape)
+                        .background(colorResource(id = R.color.almost_white))
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(start = 10.dp, end = 5.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        colorResource(id = R.color.dark_green)
+                    )
+                ) {
+                    Text(text = "Favoritar", color = Color.White)
+                }
+                OutlinedButton(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp, start = 5.dp),
+                    border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
+                ) {
+                    Row(horizontalArrangement = Arrangement.SpaceAround) {
+                        Image(
+                            painter = painterResource(id = R.drawable.whatsapp_icon),
+                            contentDescription = "Contato",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = "Contato",
+                            color = Color.Black,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                border = BorderStroke(1.dp, colorResource(id = R.color.light_green)),
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+            ) {
+
+                Row(modifier = Modifier.padding(top = 20.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.4f)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.user_email_text),
+                            modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+//                        fontFamily = FontFamily,
+                            color = Color.Black
+                        )
+                        Text(
+                            text = stringResource(id = R.string.enderecos_text),
+                            modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
+                        Text(
+                            text = stringResource(id = R.string.user_telephone_text),
+                            modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.Black
+                        )
+                    }
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Email do usuário",
+                            modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colorResource(id = R.color.dark_green)
+                        )
+                        Text(
+                            text = "Visualizar",
+                            modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colorResource(id = R.color.dark_green)
+                        )
+                        Text(
+                            text = "Telefone do usuário",
+                            modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colorResource(id = R.color.dark_green)
+                        )
+                    }
+                }
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 85.dp)
-                    .background(
-                        color = colorResource(id = R.color.almost_white),
-                        shape = RoundedCornerShape(25.dp)
-                    ),
+                    .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Nome do Usuário",
-                    modifier = Modifier.padding(start = 20.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    text = stringResource(id = R.string.user_biography),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
                 )
-                Text(
-                    text = "Gerador/Catador",
-                    modifier = Modifier.padding(start = 20.dp),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
-            }
-            Image(
-                painter = getData(authToken),
-                contentDescription = "Foto do usuário",
-                modifier = Modifier
-                    .size(130.dp)
-                    .clip(CircleShape)
-                    .background(colorResource(id = R.color.almost_white))
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(start = 10.dp, end = 5.dp),
-                colors = ButtonDefaults.buttonColors(
-                    colorResource(id = R.color.dark_green)
-                )
-            ) {
-                Text(text = "Favoritar", color = Color.White)
-            }
-            OutlinedButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 10.dp, start = 5.dp),
-                border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
-            ) {
-                Row(horizontalArrangement = Arrangement.SpaceAround) {
-                    Image(
-                        painter = painterResource(id = R.drawable.whatsapp_icon),
-                        contentDescription = "Contato",
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = "Contato",
-                        color = Color.Black,
-                        modifier = Modifier.padding(start = 10.dp)
-                    )
-                }
+                Text(text = getBiography(authToken), fontSize = 16.sp, textAlign = TextAlign.Center)
             }
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            border = BorderStroke(1.dp, colorResource(id = R.color.light_green)),
-            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-        ) {
-
-            Row(modifier = Modifier.padding(top = 20.dp)) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.4f)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.user_email_text),
-                        modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        fontFamily = FontFamily.,
-                        color = Color.Black
-                    )
-                    Text(
-                        text = stringResource(id = R.string.enderecos_text),
-                        modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.Black
-                    )
-                    Text(
-                        text = stringResource(id = R.string.user_telephone_text),
-                        modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.Black
-                    )
-                }
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "Email do usuário",
-                        modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colorResource(id = R.color.dark_green)
-                    )
-                    Text(
-                        text = "Visualizar",
-                        modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colorResource(id = R.color.dark_green)
-                    )
-                    Text(
-                        text = "Telefone do usuário",
-                        modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colorResource(id = R.color.dark_green)
-                    )
-                }
-            }
-
-        }
-
     }
+
+
+    //Parte do MENU
     AnimatedVisibility(visible = menuVisibility,
         enter = slideInHorizontally(animationSpec = tween(400)) { fullWidth -> -fullWidth } + fadeIn(
             animationSpec = tween(durationMillis = 200)
@@ -541,6 +564,17 @@ fun ProfileActivityBody() {
             }
         }
     }
+}
+
+
+fun getBiography(authToken: String?): String {
+
+    var biography: String = ""
+
+    if (biography == "")
+        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos."
+    else
+        return biography
 }
 
 @Composable
