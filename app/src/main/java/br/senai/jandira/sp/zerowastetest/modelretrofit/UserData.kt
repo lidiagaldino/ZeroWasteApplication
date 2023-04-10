@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zerowastetest.model
+package br.senai.jandira.sp.zerowastetest.modelretrofit
 
 data class UserData(
 
@@ -10,7 +10,9 @@ data class UserData(
     var pessoa_fisica: List<PessoaFisica>? = null,
     var pessoa_juridica: List<PessoaJuridica>? = null,
     var endereco_usuario: List<UserAddress>? = null,
-    var password: String = ""
+    var senha: String = "",
+    var biografia: String = "",
+    var foto: String = ""
 
 )
 

@@ -41,9 +41,9 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zero_wasteapplication.ime.rememberImeState
-import br.senai.jandira.sp.zerowastetest.model.Address
+import br.senai.jandira.sp.zerowastetest.modelretrofit.Address
 import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
-import br.senai.jandira.sp.zerowastetest.model.UserData
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog

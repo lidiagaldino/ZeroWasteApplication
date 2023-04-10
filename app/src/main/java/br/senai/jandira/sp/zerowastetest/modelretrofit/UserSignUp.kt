@@ -1,6 +1,6 @@
 package br.senai.jandira.sp.zero_wasteapplication.model
 
-import br.senai.jandira.sp.zerowastetest.model.Address
+import br.senai.jandira.sp.zerowastetest.modelretrofit.Address
 
 data class UserSignUp(
 

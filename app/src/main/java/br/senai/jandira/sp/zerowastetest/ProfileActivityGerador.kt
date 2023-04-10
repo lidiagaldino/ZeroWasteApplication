@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,7 +33,7 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.model.UserData
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import retrofit2.Call
 import retrofit2.Callback
@@ -71,7 +70,19 @@ fun ProfileActivityBody() {
     val sessionManager = SessionManager(context)
     val authToken = sessionManager.fetchAuthToken()
 
-//    Log.i("token", authToken.toString())
+    var dadosUsuario: UserData? = null
+
+    val userInfo = apiCalls.getUserData("Bearer $authToken").enqueue(object : Callback<UserData>{
+        override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+            dadosUsuario = response.body()!!
+            Log.i("success", dadosUsuario?.pessoa_fisica!![0].nome)
+        }
+
+        override fun onFailure(call: Call<UserData>, t: Throwable) {
+            Log.i("fail", t.message.toString())
+        }
+    })
+
 
     var menuVisibility by remember {
         mutableStateOf(false)
@@ -115,21 +126,6 @@ fun ProfileActivityBody() {
                         menuVisibility = !menuVisibility
                     }
             )
-
-
-//        Button(onClick = {
-//            val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData>{
-//                override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
-//                    Log.i("Success... But at what cost?", response.body()!!.id)
-//                }
-//
-//                override fun onFailure(call: Call<UserData>, t: Throwable) {
-//                    Log.i("Failure... But why? And how?", "${t.message.toString()}. The token is: ${authToken}")
-//                }
-//            })
-//        }){}
-
-
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -152,7 +148,7 @@ fun ProfileActivityBody() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Nome do Usuário",
+                        text = "Nome usuário",
                         modifier = Modifier.padding(start = 20.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
@@ -285,6 +281,17 @@ fun ProfileActivityBody() {
                 )
                 Text(text = getBiography(authToken), fontSize = 16.sp, textAlign = TextAlign.Center)
             }
+
+
+
+            Button(onClick = {
+                Log.i("success", dadosUsuario!!?.pessoa_fisica!![0].nome)
+            }) {
+                Text(text = "Yahallo!")
+            }
+
+
+
         }
     }
 
@@ -572,13 +579,18 @@ fun getBiography(authToken: String?): String {
     var biography: String = ""
 
     if (biography == "")
-        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos."
+        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus," +
+                " sit amet mattis purus dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra," +
+                " per inceptos himenaeos."
+    else if (biography == null)
+        return "Não tem biografia!"
+
     else
         return biography
 }
 
 @Composable
-fun getData(token: String?): Painter {
+fun getData(token: String): Painter {
 
     var getInfo = "."
 
@@ -587,7 +599,6 @@ fun getData(token: String?): Painter {
     else
         return painterResource(id = R.drawable.avatar_standard_icon)
 }
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

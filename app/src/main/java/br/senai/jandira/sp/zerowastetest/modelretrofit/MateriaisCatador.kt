@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zerowastetest.model
+package br.senai.jandira.sp.zerowastetest.modelretrofit
 
 data class MateriaisCatador(
 

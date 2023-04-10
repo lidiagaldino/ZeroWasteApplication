@@ -40,8 +40,8 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.model.LoginResponse
-import br.senai.jandira.sp.zerowastetest.model.UserLoginRequest
+import br.senai.jandira.sp.zerowastetest.modelretrofit.LoginResponse
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserLoginRequest
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import retrofit2.Call
 import retrofit2.Callback

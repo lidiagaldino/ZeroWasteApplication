@@ -1,9 +1,9 @@
 package br.senai.jandira.sp.zerowastetest.api
 
 import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
-import br.senai.jandira.sp.zerowastetest.model.LoginResponse
-import br.senai.jandira.sp.zerowastetest.model.UserData
-import br.senai.jandira.sp.zerowastetest.model.UserLoginRequest
+import br.senai.jandira.sp.zerowastetest.modelretrofit.LoginResponse
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserLoginRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -22,6 +22,6 @@ interface ApiCalls {
     fun verifyLogin(@Body userLoginRequest: UserLoginRequest): Call<LoginResponse>
 
     @GET("user")
-    fun getUserData(@Header("Authorization") token: String?): Call<UserData>
+    fun getUserData(@Header("Authorization") token: String): Call<UserData>
 
 }
