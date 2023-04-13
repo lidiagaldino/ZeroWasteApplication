@@ -2,6 +2,7 @@ package br.senai.jandira.sp.zerowastetest
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -33,7 +34,11 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +71,37 @@ fun HomeContent() {
     val apiCalls = retrofit.create(ApiCalls::class.java)
     val sessionManager = SessionManager(context)
 
-    val tokenAuth = sessionManager.fetchAuthToken()
+    val authToken = "Bearer " + sessionManager.fetchAuthToken()
+
+    var dadosUsuario by remember {
+        mutableStateOf(UserData("", "", "", null, null, null, null, null, "", "", ""))
+    }
+    var username by remember {
+        mutableStateOf("...")
+    }
+    var userType by remember {
+        mutableStateOf("...")
+    }
+
+    val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
+        override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+            dadosUsuario = response.body()!!
+            username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
+                dadosUsuario.pessoa_juridica!![0].nome_fantasia
+            else
+                dadosUsuario.pessoa_fisica!![0].nome
+
+            userType = if (dadosUsuario.catador!!.isEmpty())
+                "Gerador"
+            else
+                "Catador"
+
+        }
+
+        override fun onFailure(call: Call<UserData>, t: Throwable) {
+            Log.i("fail", t.message.toString())
+        }
+    })
 
 
 
@@ -226,7 +261,7 @@ fun HomeContent() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Nome do Usuário",
+                                text = username,
                                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                                 color = Color.White,
                                 fontSize = 18.sp

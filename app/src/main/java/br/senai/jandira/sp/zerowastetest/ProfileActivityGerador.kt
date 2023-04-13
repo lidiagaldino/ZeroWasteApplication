@@ -33,7 +33,7 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
+import br.senai.jandira.sp.zerowastetest.modelretrofit.*
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import retrofit2.Call
 import retrofit2.Callback
@@ -68,14 +68,32 @@ fun ProfileActivityBody() {
     val apiCalls = retrofit.create(ApiCalls::class.java)
 
     val sessionManager = SessionManager(context)
-    val authToken = sessionManager.fetchAuthToken()
+    val authToken = "Bearer " + sessionManager.fetchAuthToken()
 
-    var dadosUsuario: UserData? = null
+    var dadosUsuario by remember {
+        mutableStateOf(UserData("", "", "", null, null, null, null, null, "", "", ""))
+    }
+    var username by remember {
+        mutableStateOf("...")
+    }
+    var userType by remember {
+        mutableStateOf("...")
+    }
 
-    val userInfo = apiCalls.getUserData("Bearer $authToken").enqueue(object : Callback<UserData>{
+    val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
             dadosUsuario = response.body()!!
-            Log.i("success", dadosUsuario?.pessoa_fisica!![0].nome)
+            username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
+                dadosUsuario.pessoa_juridica!![0].nome_fantasia
+            else
+                dadosUsuario.pessoa_fisica!![0].nome
+
+            userType = if (dadosUsuario.catador!!.isEmpty())
+                "Gerador"
+            else
+                "Catador"
+
+
         }
 
         override fun onFailure(call: Call<UserData>, t: Throwable) {
@@ -83,6 +101,7 @@ fun ProfileActivityBody() {
         }
     })
 
+    var userTelephone = dadosUsuario.telefone
 
     var menuVisibility by remember {
         mutableStateOf(false)
@@ -148,20 +167,20 @@ fun ProfileActivityBody() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Nome usuário",
-                        modifier = Modifier.padding(start = 20.dp),
+                        text = username,
+                        modifier = Modifier.padding(start = 20.dp, bottom = 5.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                     Text(
-                        text = "Gerador/Catador",
+                        text = userType,
                         modifier = Modifier.padding(start = 20.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
                 }
                 Image(
-                    painter = getData(authToken),
+                    painter = getPicture(authToken),
                     contentDescription = "Foto do usuário",
                     modifier = Modifier
                         .size(130.dp)
@@ -217,50 +236,50 @@ fun ProfileActivityBody() {
                 Row(modifier = Modifier.padding(top = 20.dp)) {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(0.4f)
+                            .fillMaxWidth(0.35f)
                     ) {
                         Text(
-                            text = stringResource(id = R.string.user_email_text),
+                            text = stringResource(id = R.string.user_email_text) + ":",
                             modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
 //                        fontFamily = FontFamily,
                             color = Color.Black
                         )
                         Text(
-                            text = stringResource(id = R.string.enderecos_text),
+                            text = stringResource(id = R.string.enderecos_text) + ":",
                             modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
                         Text(
-                            text = stringResource(id = R.string.user_telephone_text),
+                            text = stringResource(id = R.string.user_telephone_text) + ":",
                             modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
                     }
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = "Email do usuário",
+                            text = dadosUsuario.email,
                             modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = colorResource(id = R.color.dark_green)
                         )
                         Text(
                             text = "Visualizar",
                             modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = colorResource(id = R.color.dark_green)
                         )
                         Text(
-                            text = "Telefone do usuário",
+                            text = userTelephone,
                             modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = colorResource(id = R.color.dark_green)
                         )
@@ -271,27 +290,21 @@ fun ProfileActivityBody() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 20.dp),
+                    .padding(top = 20.dp, start = 15.dp, end = 15.dp, bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = stringResource(id = R.string.user_biography),
-                    fontSize = 20.sp,
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = getBiography(authToken), fontSize = 16.sp, textAlign = TextAlign.Center)
+                Text(
+                    text = getBiography(dadosUsuario),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Justify
+                )
             }
-
-
-
-            Button(onClick = {
-                Log.i("success", dadosUsuario!!?.pessoa_fisica!![0].nome)
-            }) {
-                Text(text = "Yahallo!")
-            }
-
-
-
         }
     }
 
@@ -346,7 +359,7 @@ fun ProfileActivityBody() {
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Nome do usuário",
+                                text = username,
                                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
                                 color = Color.White,
                                 fontSize = 18.sp
@@ -573,28 +586,24 @@ fun ProfileActivityBody() {
     }
 }
 
+fun getBiography(dadosUsuario: UserData): String {
 
-fun getBiography(authToken: String?): String {
-
-    var biography: String = ""
+    var biography = dadosUsuario.biografia
 
     if (biography == "")
         return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus," +
                 " sit amet mattis purus dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra," +
                 " per inceptos himenaeos."
-    else if (biography == null)
-        return "Não tem biografia!"
-
     else
         return biography
 }
 
 @Composable
-fun getData(token: String): Painter {
+fun getPicture(token: String): Painter {
 
-    var getInfo = "."
+    var info = "."
 
-    if (getInfo == "")
+    if (info == "")
         return painterResource(id = R.drawable.back_arrow)
     else
         return painterResource(id = R.drawable.avatar_standard_icon)
