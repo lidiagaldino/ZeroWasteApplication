@@ -52,6 +52,8 @@
     <string name="pessoa_fisica">Pessoa física</string>
     <string name="enderecos_text">Endereços</string>
     <string name="cidades_text">Cidades</string>
+    <string name="workHours">Horário</string>
+    <string name="materials_text">Materiais</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -101,7 +102,7 @@ fun ProfileActivityBody() {
         }
     })
 
-    var userTelephone = dadosUsuario.telefone
+    val userTelephone = dadosUsuario.telefone
 
     var menuVisibility by remember {
         mutableStateOf(false)
@@ -118,6 +119,9 @@ fun ProfileActivityBody() {
         mutableStateOf(false)
     }
     var mapCatadoresClick by remember {
+        mutableStateOf(false)
+    }
+    var materialsClick by remember {
         mutableStateOf(false)
     }
 
@@ -176,7 +180,8 @@ fun ProfileActivityBody() {
                         text = userType,
                         modifier = Modifier.padding(start = 20.dp),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = colorResource(id = R.color.dark_green)
                     )
                 }
                 Image(
@@ -243,7 +248,6 @@ fun ProfileActivityBody() {
                             modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
-//                        fontFamily = FontFamily,
                             color = Color.Black
                         )
                         Text(
@@ -260,7 +264,24 @@ fun ProfileActivityBody() {
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
+                        if (userType == "Catador") {
+                            Text(
+                                text = stringResource(id = R.string.workHours) + ":",
+                                modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black
+                            )
+                            Text(
+                                text = stringResource(id = R.string.materials_text) + ":",
+                                modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.Black
+                            )
+                        }
                     }
+
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = dadosUsuario.email,
@@ -283,6 +304,59 @@ fun ProfileActivityBody() {
                             fontWeight = FontWeight.SemiBold,
                             color = colorResource(id = R.color.dark_green)
                         )
+                        if (userType == "Catador") {
+                            Text(
+                                text = "10:00-14:30",
+                                modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = colorResource(id = R.color.dark_green)
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .padding(end = 15.dp, bottom = 40.dp)
+                                    .clickable { materialsClick = !materialsClick },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.materials_recycle_text),
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = colorResource(id = R.color.dark_green)
+                                )
+                                Image(
+                                    painter = painterResource(id = R.drawable.drop_down_icon),
+                                    contentDescription = "Visualizar Materiais",
+                                    modifier = Modifier
+                                        .size(25.dp)
+                                        .padding(start = 6.dp)
+                                )
+                            }
+                            AnimatedVisibility(
+                                visible = materialsClick,
+                                enter = slideInVertically(
+                                    // Start the slide from 40 (pixels) above where the content is supposed to go, to
+                                    // produce a parallax effect
+                                    initialOffsetY = { -40 }
+                                ) + expandVertically(
+                                    expandFrom = Alignment.Top
+                                ) + scaleIn(
+                                    // Animate scale from 0f to 1f using the top center as the pivot point.
+                                    transformOrigin = TransformOrigin(0.5f, 0f)
+                                ) + fadeIn(initialAlpha = 0.3f),
+                                exit = slideOutVertically() + shrinkVertically() + fadeOut() + scaleOut(
+                                    targetScale = 1.2f
+                                )
+                            ) {
+                                // Content that needs to appear/disappear goes here:
+                                Text(
+                                    "Content to appear/disappear",
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .requiredHeight(200.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -305,11 +379,28 @@ fun ProfileActivityBody() {
                     textAlign = TextAlign.Justify
                 )
             }
+
+            Card(
+                modifier = Modifier.padding(start = 30.dp, end = 30.dp, bottom = 20.dp),
+                border = BorderStroke(1.dp, colorResource(id = R.color.light_green)),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp), horizontalArrangement = Arrangement.Center) {
+                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
+                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
+                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
+                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
+                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
+                    }
+                }
+            }
+
         }
     }
 
 
-    //Parte do MENU
+//Parte do MENU
     AnimatedVisibility(visible = menuVisibility,
         enter = slideInHorizontally(animationSpec = tween(400)) { fullWidth -> -fullWidth } + fadeIn(
             animationSpec = tween(durationMillis = 200)
@@ -590,7 +681,7 @@ fun getBiography(dadosUsuario: UserData): String {
 
     var biography = dadosUsuario.biografia
 
-    if (biography == "")
+    if (biography == "" || biography == null)
         return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus," +
                 " sit amet mattis purus dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra," +
                 " per inceptos himenaeos."
