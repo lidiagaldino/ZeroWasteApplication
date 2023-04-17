@@ -242,7 +242,7 @@ fun HomeContent() {
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp)
                         .clickable {
-                            val intent = Intent(context, ProfileActivityGerador::class.java)
+                            val intent = Intent(context, MyProfileActivity::class.java)
                             context.startActivity(intent)
                         },
                     shape = RoundedCornerShape(10.dp),

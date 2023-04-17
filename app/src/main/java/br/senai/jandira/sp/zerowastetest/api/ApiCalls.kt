@@ -9,6 +9,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface ApiCalls {
 
@@ -23,5 +24,8 @@ interface ApiCalls {
 
     @GET("user")
     fun getUserData(@Header("Authorization") token: String): Call<UserData>
+
+//    @PUT("user")
+//    fun updateUserData(@Header("Authorization") token: String):
 
 }

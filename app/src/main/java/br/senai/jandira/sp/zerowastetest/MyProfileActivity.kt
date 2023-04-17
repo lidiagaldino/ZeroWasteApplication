@@ -40,7 +40,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProfileActivityGerador : ComponentActivity() {
+class MyProfileActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,7 +94,6 @@ fun ProfileActivityBody() {
             else
                 "Catador"
 
-
         }
 
         override fun onFailure(call: Call<UserData>, t: Throwable) {
@@ -139,16 +138,29 @@ fun ProfileActivityBody() {
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(id = R.drawable.borgor),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(50.dp)
-                    .padding(start = 15.dp, top = 15.dp)
-                    .clickable {
-                        menuVisibility = !menuVisibility
-                    }
-            )
+            Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween) {
+                Image(
+                    painter = painterResource(id = R.drawable.borgor),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(45.dp)
+                        .padding(start = 15.dp, top = 15.dp)
+                        .clickable {
+                            menuVisibility = !menuVisibility
+                        }
+                )
+                Image(painter = painterResource(id = R.drawable.edit_icon),
+                    contentDescription = "Editar Perfil",
+                    modifier = Modifier.size(45.dp)
+                        .padding(end = 15.dp, top = 15.dp)
+                        .clickable {
+                            val toEditActivity = Intent(context, EditMyProfileActivity::class.java)
+                            context.startActivity(toEditActivity)
+                        }
+                )
+            }
+
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -386,12 +398,37 @@ fun ProfileActivityBody() {
                 shape = RoundedCornerShape(20.dp)
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp), horizontalArrangement = Arrangement.Center) {
-                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
-                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
-                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
-                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
-                        Image(painter = painterResource(R.drawable.star_filled_icon), contentDescription = "Estrelas de Avaliação", modifier = Modifier.size(40.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.star_filled_icon),
+                            contentDescription = "Estrelas de Avaliação",
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.star_filled_icon),
+                            contentDescription = "Estrelas de Avaliação",
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.star_filled_icon),
+                            contentDescription = "Estrelas de Avaliação",
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.star_filled_icon),
+                            contentDescription = "Estrelas de Avaliação",
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Image(
+                            painter = painterResource(R.drawable.star_filled_icon),
+                            contentDescription = "Estrelas de Avaliação",
+                            modifier = Modifier.size(40.dp)
+                        )
                     }
                 }
             }

@@ -1,0 +1,446 @@
+package br.senai.jandira.sp.zerowastetest
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
+import br.senai.jandira.sp.zerowastetest.constants.Constants
+import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserAddress
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
+import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class EditMyProfileActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            ZeroWasteTestTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
+                ) {
+                    ProfileContent()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileContent() {
+
+    val context = LocalContext.current
+    val scrollState = rememberScrollState()
+
+    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL)
+    val apiCalls = retrofit.create(ApiCalls::class.java)
+
+    val sessionManager = SessionManager(context)
+    val authToken = "Bearer " + sessionManager.fetchAuthToken()
+
+
+    var dadosUsuario by remember {
+        mutableStateOf(UserData("", "", "", null, null, null, null, null, "", "", ""))
+    }
+    var username by remember {
+        mutableStateOf("...")
+    }
+    var userType by remember {
+        mutableStateOf("...")
+    }
+    var enderecoUsuario by remember {
+        mutableStateOf("")
+    }
+
+    val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
+
+        override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+            dadosUsuario = response.body()!!
+            username =
+                if (dadosUsuario.pessoa_fisica!!.isEmpty()) dadosUsuario.pessoa_juridica!![0].nome_fantasia
+                else dadosUsuario.pessoa_fisica!![0].nome
+
+            userType = if (dadosUsuario.catador!!.isEmpty()) "Gerador"
+            else "Catador"
+
+            enderecoUsuario = dadosUsuario.endereco_usuario!![0].endereco!!.cidade
+
+        }
+
+        override fun onFailure(call: Call<UserData>, t: Throwable) {
+            Log.i("fail", t.message.toString())
+        }
+
+    })
+
+    var emailState by remember {
+        mutableStateOf("...")
+    }
+    emailState = dadosUsuario.email
+
+    var materialsState by remember {
+        mutableStateOf("...")
+    }
+
+    var telephoneState by remember {
+        mutableStateOf("")
+    }
+    telephoneState = dadosUsuario.telefone
+
+    var biographyState by remember {
+        mutableStateOf("...")
+    }
+    biographyState = if (dadosUsuario.biografia != null) dadosUsuario.biografia
+    else "Inserir Biografia"
+
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Image(painter = painterResource(id = R.drawable.back_arrow),
+                contentDescription = "Voltar para página inicial",
+                modifier = Modifier
+                    .size(26.dp)
+                    .clickable {
+                        val intent = Intent(context, MyProfileActivity::class.java)
+                        context.startActivity(intent)
+                    })
+            Card(
+                modifier = Modifier.padding(start = 64.dp, end = 80.dp), border = BorderStroke(
+                    2.dp, color = colorResource(
+                        id = R.color.lighter_gray
+                    )
+                ), shape = RoundedCornerShape(0.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.avatar_standard_icon),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(4.dp)
+                            .clip(CircleShape)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.profile_text),
+                        modifier = Modifier.padding(start = 4.dp, end = 6.dp),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(id = R.string.my_account),
+            modifier = Modifier.padding(start = 16.dp),
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Card(
+            backgroundColor = colorResource(id = R.color.dark_green),
+            shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.avatar_standard_icon),
+                    contentDescription = "Foto de perfil",
+                    modifier = Modifier
+                        .size(130.dp)
+                        .clip(
+                            CircleShape
+                        )
+                )
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier.padding(bottom = 12.dp),
+                    shape = (RoundedCornerShape(0.dp)),
+                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.fading_gray))
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.edit_profile_picture),
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+                Text(
+                    text = userType,
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+
+                Text(
+                    text = stringResource(id = R.string.username_text),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+
+                TextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 32.dp)
+                        .background(
+                            color = colorResource(id = R.color.dark_green),
+                            shape = RoundedCornerShape(0.dp)
+                        ),
+                    trailingIcon = {
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        Color.White,
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = colorResource(
+                            id = R.color.light_green
+                        ),
+                        cursorColor = colorResource(
+                            id = R.color.light_green
+                        )
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+
+                Text(
+                    text = stringResource(id = R.string.user_email_text),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                TextField(
+                    value = emailState,
+                    onValueChange = { emailState = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 32.dp)
+                        .background(
+                            color = colorResource(id = R.color.dark_green),
+                            shape = RoundedCornerShape(0.dp)
+                        ),
+                    trailingIcon = {
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        Color.White,
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = colorResource(
+                            id = R.color.light_green
+                        ),
+                        cursorColor = colorResource(
+                            id = R.color.light_green
+                        )
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+
+                Text(
+                    text = stringResource(id = R.string.materials_recycle_text),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                Text(
+                    text = "Lixo que recicla",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, top = 8.dp),
+                    textAlign = TextAlign.Start,
+                    color = Color.White
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+                Text(
+                    text = stringResource(id = R.string.user_telephone_text),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+                TextField(
+                    value = telephoneState,
+                    onValueChange = { telephoneState = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 32.dp)
+                        .background(
+                            color = colorResource(id = R.color.dark_green),
+                            shape = RoundedCornerShape(0.dp)
+                        ),
+                    trailingIcon = {
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        Color.White,
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = colorResource(
+                            id = R.color.light_green
+                        ),
+                        cursorColor = colorResource(
+                            id = R.color.light_green
+                        )
+                    ),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+
+                Text(
+                    text = stringResource(id = R.string.user_cep_text),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                TextField(
+                    value = enderecoUsuario,
+                    onValueChange = { enderecoUsuario = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 32.dp)
+                        .background(
+                            color = colorResource(id = R.color.dark_green),
+                            shape = RoundedCornerShape(0.dp)
+                        ),
+                    trailingIcon = {
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        Color.White,
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = colorResource(
+                            id = R.color.light_green
+                        ),
+                        cursorColor = colorResource(
+                            id = R.color.light_green
+                        )
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.White,
+                    thickness = 0.5f.dp
+                )
+
+                Text(
+                    text = stringResource(id = R.string.user_biography),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                TextField(
+                    value = biographyState,
+                    onValueChange = { biographyState = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 32.dp)
+                        .background(
+                            color = colorResource(id = R.color.dark_green),
+                            shape = RoundedCornerShape(0.dp)
+                        ),
+                    trailingIcon = {
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "")
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        Color.White,
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = colorResource(
+                            id = R.color.light_green
+                        ),
+                        cursorColor = colorResource(
+                            id = R.color.light_green
+                        )
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun DefaultPreview2() {
+    ZeroWasteTestTheme {
+        ProfileContent()
+    }
+}
