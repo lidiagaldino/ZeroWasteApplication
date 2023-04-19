@@ -7,10 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,6 +34,7 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
+import br.senai.jandira.sp.zerowastetest.modelretrofit.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.modelretrofit.UserAddress
 import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
@@ -79,6 +84,11 @@ fun ProfileContent() {
         mutableStateOf("")
     }
 
+    var materiaisCatador by remember {
+        mutableStateOf(listOf<MateriaisCatador>())
+    }
+
+
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
 
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
@@ -91,6 +101,8 @@ fun ProfileContent() {
             else "Catador"
 
             enderecoUsuario = dadosUsuario.endereco_usuario!![0].endereco!!.cidade
+
+            materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
 
         }
 
@@ -194,7 +206,7 @@ fun ProfileContent() {
                     onClick = { /*TODO*/ },
                     modifier = Modifier.padding(bottom = 12.dp),
                     shape = (RoundedCornerShape(0.dp)),
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.fading_gray))
+                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.light_green))
                 ) {
                     Text(
                         text = stringResource(id = R.string.edit_profile_picture),
@@ -243,17 +255,18 @@ fun ProfileContent() {
                         ),
                         cursorColor = colorResource(
                             id = R.color.light_green
-                        )
+                        ),
+                        trailingIconColor = Color.White
                     )
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Divider(
-                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-                    color = Color.White,
-                    thickness = 0.5f.dp
-                )
+//                Divider(
+//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+//                    color = Color.White,
+//                    thickness = 0.5f.dp
+//                )
 
                 Text(
                     text = stringResource(id = R.string.user_email_text),
@@ -283,41 +296,84 @@ fun ProfileContent() {
                         ),
                         cursorColor = colorResource(
                             id = R.color.light_green
-                        )
+                        ),
+                        trailingIconColor = Color.White
                     )
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Divider(
-                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-                    color = Color.White,
-                    thickness = 0.5f.dp
-                )
+//                Divider(
+//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+//                    color = Color.White,
+//                    thickness = 0.5f.dp
+//                )
 
-                Text(
-                    text = stringResource(id = R.string.materials_recycle_text),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (userType == "Catador") {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 40.dp, top = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.materials_recycle_text),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Adicionar Material",
+                            modifier = Modifier
+                                .clickable { /*TODO*/ }
+                                .size(30.dp),
+                            tint = Color.White
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 40.dp, top = 8.dp)
+                    ) {
 
-                Text(
-                    text = "Lixo que recicla",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp, top = 8.dp),
-                    textAlign = TextAlign.Start,
-                    color = Color.White
-                )
+                        for (i in materiaisCatador.indices){
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                materiaisCatador[1].material!!.nome?.let { Text(text = it) }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                    }
 
-                Divider(
-                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-                    color = Color.White,
-                    thickness = 0.5f.dp
-                )
+//                    LazyColumn(modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 24.dp, end = 40.dp, top = 8.dp)){
+//                        items(materiaisCatador){
+//                            Row {
+//                                it.material!!.nome?.let { it1 -> Text(text = it1) }
+//                                Icon(imageVector = Icons.Default.Delete, contentDescription = "Excluir Material")
+//                            }
+//                        }
+//                    }
+
+                    Text(
+                        text = "Lixo que recicla",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, top = 16.dp),
+                        textAlign = TextAlign.Start,
+                        color = Color.White
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Divider(
+                        modifier = Modifier.padding(start = 16.dp, end = 26.dp, bottom = 8.dp),
+                        color = Color.Black,
+                        thickness = 0.7f.dp
+                    )
+                }
+
                 Text(
                     text = stringResource(id = R.string.user_telephone_text),
                     fontSize = 20.sp,
@@ -345,18 +401,19 @@ fun ProfileContent() {
                         ),
                         cursorColor = colorResource(
                             id = R.color.light_green
-                        )
+                        ),
+                        trailingIconColor = Color.White
                     ),
                     singleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Divider(
-                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-                    color = Color.White,
-                    thickness = 0.5f.dp
-                )
+//                Divider(
+//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+//                    color = Color.White,
+//                    thickness = 0.5f.dp
+//                )
 
                 Text(
                     text = stringResource(id = R.string.user_cep_text),
@@ -386,17 +443,18 @@ fun ProfileContent() {
                         ),
                         cursorColor = colorResource(
                             id = R.color.light_green
-                        )
+                        ),
+                        trailingIconColor = Color.White
                     )
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Divider(
-                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-                    color = Color.White,
-                    thickness = 0.5f.dp
-                )
+//                Divider(
+//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
+//                    color = Color.White,
+//                    thickness = 0.5f.dp
+//                )
 
                 Text(
                     text = stringResource(id = R.string.user_biography),
@@ -426,11 +484,25 @@ fun ProfileContent() {
                         ),
                         cursorColor = colorResource(
                             id = R.color.light_green
-                        )
+                        ),
+                        trailingIconColor = Color.White
                     )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.light_green)),
+                    shape = RoundedCornerShape(0.dp),
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.save_changes_text),
+                        color = Color.White
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
 
             }
         }

@@ -44,7 +44,7 @@
     <string name="edit_text">Editar</string>
     <string name="username_text">Nome</string>
     <string name="user_email_text">Email</string>
-    <string name="materials_recycle_text">Materiais que recicla</string>
+    <string name="materials_recycle_text">Materiais que recolhe</string>
     <string name="user_telephone_text">Telefone</string>
     <string name="user_cep_text">Cep</string>
     <string name="user_biography">Biografia</string>
@@ -54,6 +54,7 @@
     <string name="cidades_text">Cidades</string>
     <string name="workHours">Horário</string>
     <string name="materials_text">Materiais</string>
+    <string name="save_changes_text">Salvar Alterações</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

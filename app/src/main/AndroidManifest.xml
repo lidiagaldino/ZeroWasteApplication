@@ -15,11 +15,6 @@
         android:theme="@style/Theme.ZeroWasteTest"
         tools:targetApi="31">
         <activity
-            android:name=".EditProfileCatadorActivity"
-            android:exported="false"
-            android:label="@string/title_activity_edit_profile_catador"
-            android:theme="@style/Theme.ZeroWasteTest" />
-        <activity
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_profile_gerador"
