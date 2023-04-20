@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
@@ -81,8 +84,19 @@ fun ProfileActivityBody() {
         mutableStateOf("...")
     }
 
+    var materiaisCatador by remember {
+        mutableStateOf(listOf<MateriaisCatador>())
+    }
+
+    var enderecosCadastrados by remember {
+        mutableStateOf(listOf<UserAddress>())
+    }
+
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+
+            Log.i("response", "token: $authToken")
+
             dadosUsuario = response.body()!!
             username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
                 dadosUsuario.pessoa_juridica!![0].nome_fantasia
@@ -93,6 +107,11 @@ fun ProfileActivityBody() {
                 "Gerador"
             else
                 "Catador"
+
+            if (userType == "Catador")
+                materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
+
+            enderecosCadastrados = dadosUsuario.endereco_usuario!!
 
         }
 
@@ -123,11 +142,15 @@ fun ProfileActivityBody() {
     var materialsClick by remember {
         mutableStateOf(false)
     }
+    var enderecoVisibility by remember {
+        mutableStateOf(false)
+    }
 
     Box(
         modifier = Modifier
             .verticalScroll(scrollable)
             .fillMaxSize()
+            .blur(blurEffect(menuVisibility))
     ) {
 
         Box(
@@ -138,8 +161,10 @@ fun ProfileActivityBody() {
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Row(modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.borgor),
                     contentDescription = "",
@@ -152,7 +177,8 @@ fun ProfileActivityBody() {
                 )
                 Image(painter = painterResource(id = R.drawable.edit_icon),
                     contentDescription = "Editar Perfil",
-                    modifier = Modifier.size(45.dp)
+                    modifier = Modifier
+                        .size(45.dp)
                         .padding(end = 15.dp, top = 15.dp)
                         .clickable {
                             val toEditActivity = Intent(context, EditMyProfileActivity::class.java)
@@ -209,21 +235,23 @@ fun ProfileActivityBody() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(start = 10.dp, end = 5.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        colorResource(id = R.color.dark_green)
-                    )
-                ) {
-                    Text(text = "Favoritar", color = Color.White)
-                }
+
+//                Button(
+//                    onClick = { /*TODO*/ },
+//                    modifier = Modifier
+//                        .fillMaxWidth(0.5f)
+//                        .padding(start = 10.dp, end = 5.dp),
+//                    colors = ButtonDefaults.buttonColors(
+//                        colorResource(id = R.color.dark_green)
+//                    )
+//                ) {
+//                    Text(text = "Favoritar", color = Color.White)
+//                }
+
                 OutlinedButton(
                     onClick = { /*TODO*/ },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(0.5f)
                         .padding(end = 10.dp, start = 5.dp),
                     border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
                 ) {
@@ -304,11 +332,44 @@ fun ProfileActivityBody() {
                         )
                         Text(
                             text = "Visualizar",
-                            modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
+                            modifier = Modifier.padding(end = 15.dp, bottom = 40.dp).clickable { enderecoVisibility = !enderecoVisibility },
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = colorResource(id = R.color.dark_green)
                         )
+                        AnimatedVisibility(
+                            visible = enderecoVisibility,
+                            enter = slideInVertically(
+                                initialOffsetY = { -40 }
+                            ) + expandVertically(
+                                expandFrom = Alignment.Top
+                            ) + scaleIn(
+                                transformOrigin = TransformOrigin(0.5f, 0f)
+                            ) + fadeIn(initialAlpha = 0.3f),
+                            exit = slideOutVertically() + shrinkVertically() + fadeOut() + scaleOut(
+                                targetScale = 1.2f
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 40.dp, bottom = 15.dp)
+                            ) {
+
+                                for (i in enderecosCadastrados.indices) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        enderecosCadastrados[i].endereco!!.cidade?.let {
+                                            Text(
+                                                text = "- $it",
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         Text(
                             text = userTelephone,
                             modifier = Modifier.padding(end = 15.dp, bottom = 40.dp),
@@ -326,7 +387,7 @@ fun ProfileActivityBody() {
                             )
                             Row(
                                 modifier = Modifier
-                                    .padding(end = 15.dp, bottom = 40.dp)
+                                    .padding(end = 15.dp, bottom = 15.dp)
                                     .clickable { materialsClick = !materialsClick },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -361,12 +422,25 @@ fun ProfileActivityBody() {
                                 )
                             ) {
                                 // Content that needs to appear/disappear goes here:
-                                Text(
-                                    "Content to appear/disappear",
-                                    Modifier
+                                Column(
+                                    modifier = Modifier
                                         .fillMaxWidth()
-                                        .requiredHeight(200.dp)
-                                )
+                                        .padding(end = 40.dp, bottom = 15.dp)
+                                ) {
+
+                                    for (i in materiaisCatador.indices) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            materiaisCatador[i].material!!.nome?.let {
+                                                Text(
+                                                    text = "- $it",
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -394,14 +468,17 @@ fun ProfileActivityBody() {
 
             Card(
                 modifier = Modifier.padding(start = 30.dp, end = 30.dp, bottom = 20.dp),
-                border = BorderStroke(1.dp, colorResource(id = R.color.light_green)),
+                border = BorderStroke(2.dp, colorResource(id = R.color.light_green)),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Image(
@@ -430,6 +507,22 @@ fun ProfileActivityBody() {
                             modifier = Modifier.size(40.dp)
                         )
                     }
+                    Text(text = "5.0", fontSize = 80.sp)
+                    Divider(
+                        modifier = Modifier.fillMaxWidth(0.7f),
+                        color = colorResource(id = R.color.light_green),
+                        thickness = 1.dp
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(text = stringResource(id = R.string.corridas_finalizadas))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "300", fontWeight = FontWeight.SemiBold, fontSize = 40.sp)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(text = stringResource(id = R.string.favoritos_text))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "13", fontWeight = FontWeight.SemiBold, fontSize = 40.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
+
                 }
             }
 
@@ -719,9 +812,7 @@ fun getBiography(dadosUsuario: UserData): String {
     var biography = dadosUsuario.biografia
 
     if (biography == "" || biography == null)
-        return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus," +
-                " sit amet mattis purus dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra," +
-                " per inceptos himenaeos."
+        return "Sem biografia ainda."
     else
         return biography
 }

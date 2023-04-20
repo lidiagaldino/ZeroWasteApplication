@@ -55,6 +55,10 @@
     <string name="workHours">Horário</string>
     <string name="materials_text">Materiais</string>
     <string name="save_changes_text">Salvar Alterações</string>
+    <string name="corridas_finalizadas">Coletas realizadas:</string>
+    <string name="favoritos_text">Favoritos:</string>
+    <string name="confirm">Confirmar</string>
+    <string name="confirm_password_to_update">Confirme a senha para salvar as alterações:</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

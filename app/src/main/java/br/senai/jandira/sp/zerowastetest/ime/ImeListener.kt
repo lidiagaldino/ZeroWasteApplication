@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zero_wasteapplication.ime
+package br.senai.jandira.sp.zerowastetest.ime
 
 import android.view.ViewTreeObserver
 import androidx.compose.runtime.Composable

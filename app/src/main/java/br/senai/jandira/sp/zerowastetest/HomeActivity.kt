@@ -124,7 +124,7 @@ fun HomeContent() {
     }
 
     Image(
-        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.ellipse_top_home),
+        painter = painterResource(id = R.drawable.ellipse_top_home),
         contentDescription = "",
         modifier = Modifier
             .padding(start = 215.dp)
@@ -132,7 +132,7 @@ fun HomeContent() {
         alignment = Alignment.TopEnd
     )
     Image(
-        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.ellipse_bottom_home),
+        painter = painterResource(id = R.drawable.ellipse_bottom_home),
         contentDescription = "",
         modifier = Modifier
             .padding(end = 260.dp)

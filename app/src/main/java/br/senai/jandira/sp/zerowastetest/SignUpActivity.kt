@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
-import br.senai.jandira.sp.zero_wasteapplication.ime.rememberImeState
+import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.modelretrofit.Address
 import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
 import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData

@@ -3,22 +3,28 @@ package br.senai.jandira.sp.zerowastetest
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +32,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,6 +67,7 @@ class EditMyProfileActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProfileContent() {
 
@@ -100,9 +110,10 @@ fun ProfileContent() {
             userType = if (dadosUsuario.catador!!.isEmpty()) "Gerador"
             else "Catador"
 
-            enderecoUsuario = dadosUsuario.endereco_usuario!![0].endereco!!.cidade
+            enderecoUsuario = dadosUsuario.endereco_usuario!![0].endereco!!.cep
 
-            materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
+            if (userType == "Catador")
+                materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
 
         }
 
@@ -133,11 +144,29 @@ fun ProfileContent() {
     else "Inserir Biografia"
 
 
+    var confirmationVisibility by remember {
+        mutableStateOf(false)
+    }
+
+    var passwordState by remember {
+        mutableStateOf("")
+    }
+
+    var passwordVisibility by remember {
+        mutableStateOf(false)
+    }
+
+    val icon =
+        if (passwordVisibility)
+            painterResource(id = R.drawable.visibility_icon_on)
+        else
+            painterResource(id = R.drawable.visibility_icon_off)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
+            .blur(blurEffect(confirmationVisibility))
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             Image(painter = painterResource(id = R.drawable.back_arrow),
@@ -262,12 +291,6 @@ fun ProfileContent() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-//                Divider(
-//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-//                    color = Color.White,
-//                    thickness = 0.5f.dp
-//                )
-
                 Text(
                     text = stringResource(id = R.string.user_email_text),
                     fontSize = 20.sp,
@@ -303,12 +326,6 @@ fun ProfileContent() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-//                Divider(
-//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-//                    color = Color.White,
-//                    thickness = 0.5f.dp
-//                )
-
                 if (userType == "Catador") {
                     Row(
                         modifier = Modifier
@@ -337,33 +354,28 @@ fun ProfileContent() {
                             .padding(start = 24.dp, end = 40.dp, top = 8.dp)
                     ) {
 
-                        for (i in materiaisCatador.indices){
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                materiaisCatador[1].material!!.nome?.let { Text(text = it) }
-
+                        for (i in materiaisCatador.indices) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                materiaisCatador[i].material!!.nome?.let {
+                                    Text(
+                                        text = "- $it",
+                                        color = Color.White
+                                    )
+                                }
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Excluir Material",
+                                    modifier = Modifier.clickable { /*TODO*/ },
+                                    tint = Color.White
+                                )
                             }
                         }
                     }
-
-//                    LazyColumn(modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(start = 24.dp, end = 40.dp, top = 8.dp)){
-//                        items(materiaisCatador){
-//                            Row {
-//                                it.material!!.nome?.let { it1 -> Text(text = it1) }
-//                                Icon(imageVector = Icons.Default.Delete, contentDescription = "Excluir Material")
-//                            }
-//                        }
-//                    }
-
-                    Text(
-                        text = "Lixo que recicla",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 24.dp, top = 16.dp),
-                        textAlign = TextAlign.Start,
-                        color = Color.White
-                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -409,12 +421,6 @@ fun ProfileContent() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-//                Divider(
-//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-//                    color = Color.White,
-//                    thickness = 0.5f.dp
-//                )
-
                 Text(
                     text = stringResource(id = R.string.user_cep_text),
                     fontSize = 20.sp,
@@ -449,12 +455,6 @@ fun ProfileContent() {
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-
-//                Divider(
-//                    modifier = Modifier.padding(start = 10.dp, end = 26.dp, bottom = 8.dp),
-//                    color = Color.White,
-//                    thickness = 0.5f.dp
-//                )
 
                 Text(
                     text = stringResource(id = R.string.user_biography),
@@ -492,7 +492,7 @@ fun ProfileContent() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { confirmationVisibility = !confirmationVisibility },
                     colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.light_green)),
                     shape = RoundedCornerShape(0.dp),
                 ) {
@@ -504,6 +504,91 @@ fun ProfileContent() {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+            }
+        }
+    }
+    AnimatedVisibility(
+        visible = confirmationVisibility,
+        enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
+        exit = scaleOut(animationSpec = tween(1)) + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+    ) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .clickable { confirmationVisibility = !confirmationVisibility },
+            contentAlignment = Alignment.Center,
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .fillMaxHeight(0.4f),
+                shape = RoundedCornerShape(15.dp),
+                border = BorderStroke(3.dp, color = colorResource(id = R.color.light_green))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(0.9f)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.confirm_password_to_update),
+                        fontSize = 20.sp
+                    )
+
+//                    Spacer(modifier = Modifier.height(24.dp))
+
+                    OutlinedTextField(
+                        value = passwordState,
+                        onValueChange = { passwordState = it },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = ""
+                            )
+                        },
+                        trailingIcon = {
+                            IconButton(onClick = {
+                                passwordVisibility = !passwordVisibility
+                            }) {
+                                Icon(
+                                    painter = icon,
+                                    contentDescription = "Visualizar Senha",
+                                    modifier = Modifier.width(35.dp)
+                                )
+                            }
+                        },
+                        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        singleLine = true,
+                        shape = RoundedCornerShape(10.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = colorResource(
+                                id = R.color.light_green
+                            ),
+                            unfocusedBorderColor = colorResource(
+                                id = R.color.dark_green
+                            ),
+                            cursorColor = colorResource(
+                                id = R.color.dark_green
+                            )
+                        )
+                    )
+
+                    Button(
+                        onClick = {
+
+                            //Código para cerificar senha e atualizar, para DEPOIS voltar para a activity do perfil
+
+                            val toMyProfile = Intent(context, MyProfileActivity::class.java)
+                            context.startActivity(toMyProfile)
+
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.light_green))
+                    ) {
+                        Text(text = stringResource(id = R.string.confirm))
+                    }
+                }
             }
         }
     }
