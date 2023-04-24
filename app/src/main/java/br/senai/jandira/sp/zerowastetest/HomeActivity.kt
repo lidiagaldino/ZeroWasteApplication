@@ -196,7 +196,10 @@ fun HomeContent() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val toPagerSlider = Intent(context, PageSliderActivity::class.java)
+                    context.startActivity(toPagerSlider)
+                },
                 border = BorderStroke(2.dp, color = Color.White),
                 modifier = Modifier.padding(start = 25.dp, top = 20.dp),
                 shape = RoundedCornerShape(10.dp),
@@ -405,30 +408,6 @@ fun HomeContent() {
                     )
                     Text(
                         text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.prize_text_menu),
-                        modifier = Modifier.padding(start = 4.dp, end = 20.dp),
-                        fontSize = 18.sp
-                    )
-                }
-                Spacer(modifier = Modifier.height(15.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp)
-                        .padding(start = 8.dp, end = 20.dp)
-                        .clickable {
-                            /*TODO*/
-                        },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = br.senai.jandira.sp.zerowastetest.R.drawable.hints_icon),
-                        contentDescription = "Dicas",
-                        modifier = Modifier
-                            .size(55.dp)
-                            .padding(start = 12.dp, end = 4.dp)
-                    )
-                    Text(
-                        text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.hints_menu),
                         modifier = Modifier.padding(start = 4.dp, end = 20.dp),
                         fontSize = 18.sp
                     )

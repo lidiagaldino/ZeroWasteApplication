@@ -1,6 +1,6 @@
 package br.senai.jandira.sp.zerowastetest.api
 
-import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserSignUp
 import br.senai.jandira.sp.zerowastetest.modelretrofit.LoginResponse
 import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
 import br.senai.jandira.sp.zerowastetest.modelretrofit.UserLoginRequest
@@ -9,7 +9,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.PUT
 
 interface ApiCalls {
 

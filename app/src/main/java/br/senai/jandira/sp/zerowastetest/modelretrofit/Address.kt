@@ -8,15 +8,21 @@ data class Address (
     var bairro: String = "",
     var cidade: String = "",
     var estado: String = "",
-    var complemento: String = ""
+    var complemento: String = "",
+    var latitude: String = "",
+    var longitude: String = "",
+    var numero : String = "",
+    var apelido: String? = null
 
 )
 
-//  "endereco": {
-//      "cep": "4444444",
-//      "logradouro": "Rua da prata",
-//      "bairro": "Bairro",
-//      "cidade": "Osasco",
-//      "estado": "SP",
-//      "complemento": " "
-//  }
+//bairro: endereco.bairro,
+//cep: endereco.cep,
+//cidade: endereco.cidade,
+//estado: endereco.estado,
+//logradouro: endereco.logradouro,
+//complemento: endereco.complemento,
+//latitude: endereco.latitude,
+//longitude: endereco.longitude,
+//apelido: endereco.apelido,
+//numero: endereco.numero,

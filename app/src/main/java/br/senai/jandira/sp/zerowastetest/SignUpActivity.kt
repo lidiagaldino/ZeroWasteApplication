@@ -42,7 +42,7 @@ import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.modelretrofit.Address
-import br.senai.jandira.sp.zero_wasteapplication.model.UserSignUp
+import br.senai.jandira.sp.zerowastetest.modelretrofit.UserSignUp
 import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
@@ -462,7 +462,12 @@ fun ZeroWasteApplication() {
                         .fillMaxWidth()
                         .padding(start = 30.dp, end = 30.dp)
                         .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
-                    placeholder = { Text(text = stringResource(id = R.string.cpf_label)) },
+                    placeholder = { if(fisicoClick){
+                        Text(text = stringResource(id = R.string.cpf_label))
+                    } else {
+                        Text(text = stringResource(id = R.string.cnpj_label))
+                    }
+                    },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Code,
@@ -937,7 +942,7 @@ fun ZeroWasteApplication() {
                                     complemento = complementState
                                 )
                                 var userSignUpData = UserSignUp(
-                                    name = nameState,
+                                    nome = nameState,
                                     cpf = cpfState,
                                     email = emailState,
                                     phone = phoneState,

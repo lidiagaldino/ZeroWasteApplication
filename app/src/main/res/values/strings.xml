@@ -12,7 +12,7 @@
     <string name="catador">Catador</string>
     <string name="welcome_message">Bem-vindo a Zero Waste!</string>
     <string name="name_label">Nome Completo</string>
-    <string name="cpf_label">CPF/CNPJ</string>
+    <string name="cnpj_label">CNPJ</string>
     <string name="email_label">E-mail</string>
     <string name="telephone_label">Telefone</string>
     <string name="password_label">Senha</string>
@@ -58,6 +58,7 @@
     <string name="corridas_finalizadas">Coletas realizadas:</string>
     <string name="favoritos_text">Favoritos:</string>
     <string name="confirm">Confirmar</string>
+    <string name="cpf_label">CPF</string>
     <string name="confirm_password_to_update">Confirme a senha para salvar as alterações:</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -69,4 +70,5 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_profile_gerador">ProfileActivityGerador</string>
     <string name="title_activity_edit_profile_catador">EditProfileCatadorActivity</string>
+    <string name="title_activity_page_slider">PageSliderActivity</string>
 </resources>
