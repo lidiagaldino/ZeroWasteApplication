@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zerowastetest.modelSlider
+package br.senai.jandira.sp.zerowastetest.models.modelSlider
 
 import br.senai.jandira.sp.zerowastetest.R
 

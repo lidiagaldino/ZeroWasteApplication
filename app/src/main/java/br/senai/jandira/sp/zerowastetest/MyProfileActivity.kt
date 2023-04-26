@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +36,9 @@ import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.modelretrofit.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.MateriaisCatador
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserAddress
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import retrofit2.Call
 import retrofit2.Callback

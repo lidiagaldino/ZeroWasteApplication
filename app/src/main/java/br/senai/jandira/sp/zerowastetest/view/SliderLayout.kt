@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import br.senai.jandira.sp.zerowastetest.HomeActivity
 import br.senai.jandira.sp.zerowastetest.MyProfileActivity
-import br.senai.jandira.sp.zerowastetest.modelSlider.fotoslist
+import br.senai.jandira.sp.zerowastetest.models.modelSlider.fotoslist
 import com.google.accompanist.pager.*
 import br.senai.jandira.sp.zerowastetest.R
 import kotlinx.coroutines.delay

@@ -34,7 +34,7 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import retrofit2.Call
 import retrofit2.Callback

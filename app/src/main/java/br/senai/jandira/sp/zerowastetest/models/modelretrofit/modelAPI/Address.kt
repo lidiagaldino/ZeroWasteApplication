@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zerowastetest.modelretrofit
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
 
 data class Address (
 
@@ -8,7 +8,7 @@ data class Address (
     var bairro: String = "",
     var cidade: String = "",
     var estado: String = "",
-    var complemento: String = "",
+    var complemento: String? = null,
     var latitude: String = "",
     var longitude: String = "",
     var numero : String = "",

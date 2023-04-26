@@ -38,12 +38,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.CepCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
-import br.senai.jandira.sp.zerowastetest.modelretrofit.Address
-import br.senai.jandira.sp.zerowastetest.modelretrofit.UserSignUp
-import br.senai.jandira.sp.zerowastetest.modelretrofit.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.NewCatador
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -82,6 +84,7 @@ fun ZeroWasteApplication() {
     val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
     val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
     val userCalls = retrofitApi.create(ApiCalls::class.java)
+    val cepCalls = retrofitApi.create(CepCalls::class.java)
 
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
@@ -90,6 +93,10 @@ fun ZeroWasteApplication() {
         if (imeState.value) {
             scrollState.animateScrollTo(scrollState.maxValue / 4, tween(200))
         }
+    }
+
+    var addressInfo by remember {
+        mutableStateOf(CepResponse("", "", "", "", "", "", "","", "", ""))
     }
 
     var recyclerClick by remember {
@@ -922,6 +929,7 @@ fun ZeroWasteApplication() {
                 ) {
                     Button(
                         onClick = {
+
                             confirmPassError = validatePass(
                                 passwordState,
                                 confirmPassState
@@ -937,23 +945,38 @@ fun ZeroWasteApplication() {
                             conPassError = confirmPassState.isEmpty()
 
                             if (!confirmPassError && !nameError && !cpfError && !emailError && !phoneError && !cepError && !resNumError && !birthDayError && !passError && !conPassError) {
+
+
+
+                                var cepData = cepCalls.getAddressInfo(cepState).enqueue(object : Callback<CepResponse>{
+                                    override fun onResponse(
+                                        call: Call<CepResponse>,
+                                        response: Response<CepResponse>
+                                    ) {
+                                        addressInfo = response.body()!!
+                                    }
+
+                                    override fun onFailure(call: Call<CepResponse>, t: Throwable) {
+                                        TODO("Not yet implemented")
+                                    }
+                                })
+
                                 var userAddress = Address(
-                                    cep = cepState,
-                                    complemento = complementState
+
                                 )
-                                var userSignUpData = UserSignUp(
+
+                                var newCatadorData = NewCatador(
                                     nome = nameState,
                                     cpf = cpfState,
                                     email = emailState,
-                                    phone = phoneState,
+                                    telefone = phoneState,
                                     endereco = userAddress,
-                                    birthDay = birthdayState,
-                                    password = passwordState
+                                    data_nascimento = birthdayState,
+                                    senha = passwordState,
+                                    materiais = ["3"]
                                 )
 
-                                val insertCatcher = userCalls.saveCatador(userSignUpData)
-
-                                insertCatcher.enqueue(object : Callback<UserData> {
+                                val insertCatcher = userCalls.saveCatador(newCatadorData).enqueue(object : Callback<UserData> {
                                     override fun onResponse(
                                         call: Call<UserData>,
                                         response: Response<UserData>
@@ -965,6 +988,8 @@ fun ZeroWasteApplication() {
                                         Log.i("Não deu?", t.message.toString())
                                     }
                                 })
+
+
                             }
                         },
                         modifier = Modifier
@@ -986,6 +1011,10 @@ fun ZeroWasteApplication() {
             Spacer(modifier = Modifier.height(50.dp))
         }
     }
+}
+
+private fun <T> Call<T>.enqueue(callback: Callback<Address>) {
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)
