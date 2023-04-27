@@ -12,6 +12,8 @@ import retrofit2.http.POST
 
 interface ApiCalls {
 
+    @GET("")
+
     @POST("gerador")
     fun saveReciclador(@Body newCatador: NewCatador): Call<UserData>
 

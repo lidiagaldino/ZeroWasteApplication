@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -27,6 +29,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -107,6 +110,15 @@ fun LogInActivityBody() {
         else
             painterResource(id = R.drawable.visibility_icon_off)
 
+    var emailError by remember {
+        mutableStateOf(false)
+    }
+    var passError by remember {
+        mutableStateOf(false)
+    }
+
+
+
     Column() {
         Row(
             modifier = Modifier
@@ -157,7 +169,7 @@ fun LogInActivityBody() {
         ) {
             Card(
                 modifier = Modifier
-                    .height(450.dp)
+                    .height(500.dp)
                     .padding(start = 25.dp, end = 25.dp),
                 shape = RoundedCornerShape(20.dp),
                 backgroundColor = Color(8, 113, 19)
@@ -248,6 +260,7 @@ fun LogInActivityBody() {
                                 contentDescription = ""
                             )
                         },
+                        isError = emailError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         singleLine = true,
                         shape = RoundedCornerShape(10.dp),
@@ -260,7 +273,21 @@ fun LogInActivityBody() {
                             )
                         )
                     )
-                    Spacer(modifier = Modifier.height(15.dp))
+                    if (emailError) {
+                        Text(
+                            text = stringResource(id = R.string.empty_error),
+                            color = Color.Red,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 30.dp, start = 30.dp),
+                            textAlign = TextAlign.End
+                        )
+                        Spacer(modifier = Modifier.height(7.dp))
+                    } else {
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
+
                     OutlinedTextField(
                         value = passwordState,
                         onValueChange = { newValue ->
@@ -270,9 +297,7 @@ fun LogInActivityBody() {
                             .fillMaxWidth()
                             .padding(start = 30.dp, end = 30.dp)
                             .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
-                        placeholder = {
-                            Text(text = stringResource(id = R.string.password_label))
-                        },
+                        placeholder = { Text(text = stringResource(id = R.string.password_label)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
@@ -290,19 +315,29 @@ fun LogInActivityBody() {
                                 )
                             }
                         },
+                        isError = passError,
                         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next
+                        ),
                         singleLine = true,
-                        shape = RoundedCornerShape(10.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = colorResource(
-                                id = R.color.light_green
-                            ),
-                            cursorColor = colorResource(
-                                id = R.color.dark_green
-                            )
-                        )
+                        shape = RoundedCornerShape(10.dp)
                     )
+                    if (passError) {
+                        Text(
+                            text = stringResource(id = R.string.empty_error),
+                            color = Color.Red,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 30.dp, start = 30.dp),
+                            textAlign = TextAlign.End
+                        )
+                        Spacer(modifier = Modifier.height(7.dp))
+                    } else {
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
                     TextButton(
                         onClick = {
                             //Esqueceu a senha parte
@@ -321,37 +356,42 @@ fun LogInActivityBody() {
                     Button(
                         onClick = {
 
-                            val login = UserLoginRequest(
-                                email = emailState,
-                                senha = passwordState
-                            )
+                            emailError = emailState.isEmpty()
+                            passError = passwordState.isEmpty()
 
-                            val userLogin = apiCalls.verifyLogin(login)
+                            if (emailState.isNotEmpty() && passwordState.isNotEmpty()){
+                                val login = UserLoginRequest(
+                                    email = emailState,
+                                    senha = passwordState
+                                )
 
-                            userLogin.enqueue(object : Callback<LoginResponse> {
-                                override fun onResponse(
-                                    call: Call<LoginResponse>,
-                                    response: Response<LoginResponse>
-                                ) {
+                                val userLogin = apiCalls.verifyLogin(login)
 
-                                    val authToken = response.body()!!.token
+                                userLogin.enqueue(object : Callback<LoginResponse> {
+                                    override fun onResponse(
+                                        call: Call<LoginResponse>,
+                                        response: Response<LoginResponse>
+                                    ) {
 
-                                    if (authToken != "" && authToken != null) {
+                                        val authToken = response.body()!!.token
 
-                                        Log.i("success", authToken)
-                                        sessionManager.saveAuthToken(authToken)
-                                        sessionManager.saveUserLogin(emailState)
-                                        val intent = Intent(context, HomeActivity::class.java)
-                                        context.startActivity(intent)
-                                    } else
-                                        Log.i("fail", "erro ao fazer login")
+                                        if (authToken != "" && authToken != null) {
 
-                                }
+                                            Log.i("success", authToken)
+                                            sessionManager.saveAuthToken(authToken)
+                                            sessionManager.saveUserLogin(emailState)
+                                            val intent = Intent(context, HomeActivity::class.java)
+                                            context.startActivity(intent)
+                                        } else
+                                            Log.i("fail", "erro ao fazer login")
 
-                                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                                    Log.i("fail", t.message.toString())
-                                }
-                            })
+                                    }
+
+                                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                                        Log.i("fail", t.message.toString())
+                                    }
+                                })
+                            }
 
                         },
                         modifier = Modifier

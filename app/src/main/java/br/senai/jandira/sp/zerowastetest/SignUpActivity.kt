@@ -54,6 +54,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URLEncoder
 
 class SignInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,10 +82,10 @@ fun ZeroWasteApplication() {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
-    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
-    val userCalls = retrofitApi.create(ApiCalls::class.java)
-    val cepCalls = retrofitApi.create(CepCalls::class.java)
+//    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
+//    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
+//    val userCalls = retrofitApi.create(ApiCalls::class.java)
+//    val cepCalls = retrofitCep.create(CepCalls::class.java)
 
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
@@ -930,67 +931,102 @@ fun ZeroWasteApplication() {
                     Button(
                         onClick = {
 
-                            confirmPassError = validatePass(
-                                passwordState,
-                                confirmPassState
-                            )
-                            nameError = nameState.isEmpty()
-                            cpfError = cpfState.isEmpty()
-                            emailError = emailState.isEmpty()
-                            phoneError = phoneState.isEmpty()
-                            cepError = cepState.isEmpty()
-                            resNumError = resNumberState.isEmpty()
-                            birthDayError = birthdayState == "Ano-Mes-Dia"
-                            passError = passwordState.isEmpty()
-                            conPassError = confirmPassState.isEmpty()
+//                            confirmPassError = validatePass(
+//                                passwordState,
+//                                confirmPassState
+//                            )
+//                            nameError = nameState.isEmpty()
+//                            cpfError = cpfState.isEmpty()
+//                            emailError = emailState.isEmpty()
+//                            phoneError = phoneState.isEmpty()
+//                            cepError = cepState.isEmpty()
+//                            resNumError = resNumberState.isEmpty()
+//                            birthDayError = birthdayState == "Ano-Mes-Dia"
+//                            passError = passwordState.isEmpty()
+//                            conPassError = confirmPassState.isEmpty()
+//
+//                            if (!confirmPassError && !nameError && !cpfError && !emailError && !phoneError && !cepError && !resNumError && !birthDayError && !passError && !conPassError) {
 
-                            if (!confirmPassError && !nameError && !cpfError && !emailError && !phoneError && !cepError && !resNumError && !birthDayError && !passError && !conPassError) {
 
 
+                            val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
+                            val cepCalls = retrofitCep.create(CepCalls::class.java)
 
                                 var cepData = cepCalls.getAddressInfo(cepState).enqueue(object : Callback<CepResponse>{
                                     override fun onResponse(
                                         call: Call<CepResponse>,
                                         response: Response<CepResponse>
                                     ) {
+                                        Log.i("success", cepState)
+                                        Log.i("success", response.body()!!.toString())
+
                                         addressInfo = response.body()!!
+
+                                        Log.i("success", URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}"))
                                     }
 
                                     override fun onFailure(call: Call<CepResponse>, t: Throwable) {
-                                        TODO("Not yet implemented")
+                                        Log.i("fail", t.message.toString())
                                     }
                                 })
+
+                            val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
+                            val apiCalls = retrofitApi.create(ApiCalls::class.java)
+
+                            apiCalls.
 
                                 var userAddress = Address(
 
+                                    cep = cepState,
+                                    logradouro = addressInfo.logradouro,
+                                    bairro = addressInfo.bairro,
+                                    cidade = addressInfo.localidade,
+                                    estado = addressInfo.uf,
+                                    complemento = complementState,
+                                    numero = resNumberState,
+                                    latitude = ".",
+                                    longitude = "."
+
                                 )
 
-                                var newCatadorData = NewCatador(
-                                    nome = nameState,
-                                    cpf = cpfState,
-                                    email = emailState,
-                                    telefone = phoneState,
-                                    endereco = userAddress,
-                                    data_nascimento = birthdayState,
-                                    senha = passwordState,
-                                    materiais = ["3"]
-                                )
+//                                var cep: String = "",
+//    var logradouro: String = "",
+//    var bairro: String = "",
+//    var cidade: String = "",
+//    var estado: String = "",
+//    var complemento: String? = null,
+//    var latitude: String = "",
+//    var longitude: String = "",
+//    var numero : String = "",
+//    var apelido: String? = null
 
-                                val insertCatcher = userCalls.saveCatador(newCatadorData).enqueue(object : Callback<UserData> {
-                                    override fun onResponse(
-                                        call: Call<UserData>,
-                                        response: Response<UserData>
-                                    ) {
-                                        Log.i("Okay?", response.body()!!.toString())
-                                    }
+//
+//                                var newCatadorData = NewCatador(
+//                                    nome = nameState,
+//                                    cpf = cpfState,
+//                                    email = emailState,
+//                                    telefone = phoneState,
+//                                    endereco = userAddress,
+//                                    data_nascimento = birthdayState,
+//                                    senha = passwordState,
+//                                    materiais = ["3"]
+//                                )
 
-                                    override fun onFailure(call: Call<UserData>, t: Throwable) {
-                                        Log.i("Não deu?", t.message.toString())
-                                    }
-                                })
+//                                val insertCatcher = userCalls.saveCatador(newCatadorData).enqueue(object : Callback<UserData> {
+//                                    override fun onResponse(
+//                                        call: Call<UserData>,
+//                                        response: Response<UserData>
+//                                    ) {
+//                                        Log.i("Okay?", response.body()!!.toString())
+//                                    }
+//
+//                                    override fun onFailure(call: Call<UserData>, t: Throwable) {
+//                                        Log.i("Não deu?", t.message.toString())
+//                                    }
+//                                })
 
 
-                            }
+//                            }
                         },
                         modifier = Modifier
                             .padding(start = 30.dp, end = 30.dp),
@@ -1011,10 +1047,6 @@ fun ZeroWasteApplication() {
             Spacer(modifier = Modifier.height(50.dp))
         }
     }
-}
-
-private fun <T> Call<T>.enqueue(callback: Callback<Address>) {
-
 }
 
 @Preview(showBackground = true, showSystemUi = true)

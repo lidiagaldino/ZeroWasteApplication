@@ -35,7 +35,6 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.modelretrofit.*
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserAddress
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
