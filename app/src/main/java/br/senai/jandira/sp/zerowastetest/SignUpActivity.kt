@@ -43,8 +43,6 @@ import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.NewCatador
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
@@ -949,7 +947,7 @@ fun ZeroWasteApplication() {
 
 
 
-                            val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
+                            val retrofitCep = RetrofitApi.getCepApi()
                             val cepCalls = retrofitCep.create(CepCalls::class.java)
 
                                 var cepData = cepCalls.getAddressInfo(cepState).enqueue(object : Callback<CepResponse>{
@@ -970,10 +968,8 @@ fun ZeroWasteApplication() {
                                     }
                                 })
 
-                            val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
+                            val retrofitApi = RetrofitApi.getMainApi()
                             val apiCalls = retrofitApi.create(ApiCalls::class.java)
-
-                            apiCalls.
 
                                 var userAddress = Address(
 

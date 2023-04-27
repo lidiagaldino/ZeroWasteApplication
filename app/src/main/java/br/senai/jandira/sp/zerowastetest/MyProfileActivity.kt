@@ -68,7 +68,7 @@ fun ProfileActivityBody() {
     val context = LocalContext.current
     val scrollable = rememberScrollState()
 
-    val retrofit = RetrofitApi.getRetrofit(Constants.API_URL)
+    val retrofit = RetrofitApi.getMainApi()
     val apiCalls = retrofit.create(ApiCalls::class.java)
 
     val sessionManager = SessionManager(context)
