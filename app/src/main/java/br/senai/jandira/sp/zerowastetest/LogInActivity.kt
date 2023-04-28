@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -111,7 +112,10 @@ fun LogInActivityBody() {
     var emailError by remember {
         mutableStateOf(false)
     }
-    var passError by remember {
+    var authError by remember {
+        mutableStateOf(false)
+    }
+    var passEmpty by remember {
         mutableStateOf(false)
     }
 
@@ -255,10 +259,16 @@ fun LogInActivityBody() {
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
-                                contentDescription = ""
+                                contentDescription = "Email"
                             )
                         },
-                        isError = emailError,
+                        trailingIcon = {
+                            if (emailError)
+                                       Icon(imageVector = Icons.Default.Error, contentDescription = "E-mail Error")
+                            else
+                                null
+                        },
+                        isError = emailError || authError,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         singleLine = true,
                         shape = RoundedCornerShape(10.dp),
@@ -313,7 +323,7 @@ fun LogInActivityBody() {
                                 )
                             }
                         },
-                        isError = passError,
+                        isError = authError || passEmpty,
                         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
@@ -322,7 +332,18 @@ fun LogInActivityBody() {
                         singleLine = true,
                         shape = RoundedCornerShape(10.dp)
                     )
-                    if (passError) {
+                    if (authError) {
+                        Text(
+                            text = stringResource(id = R.string.failed_auth_message),
+                            color = Color.Red,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 30.dp, start = 30.dp),
+                            textAlign = TextAlign.End
+                        )
+                        Spacer(modifier = Modifier.height(7.dp))
+                    } else if (passEmpty){
                         Text(
                             text = stringResource(id = R.string.empty_error),
                             color = Color.Red,
@@ -355,9 +376,9 @@ fun LogInActivityBody() {
                         onClick = {
 
                             emailError = emailState.isEmpty()
-                            passError = passwordState.isEmpty()
+                            authError = passwordState.isEmpty()
 
-                            if (emailState.isNotEmpty() && passwordState.isNotEmpty()){
+                            if (emailState.isNotEmpty() && passwordState.isNotEmpty()) {
                                 val login = UserLoginRequest(
                                     email = emailState,
                                     senha = passwordState
@@ -371,21 +392,31 @@ fun LogInActivityBody() {
                                         response: Response<LoginResponse>
                                     ) {
 
-                                        val authToken = response.body()!!.token
+                                        if (response.body() != null) {
 
-                                        if (authToken != "" && authToken != null) {
+                                            val authToken = response.body()!!.token
 
-                                            Log.i("success", authToken)
-                                            sessionManager.saveAuthToken(authToken)
-                                            sessionManager.saveUserLogin(emailState)
-                                            val intent = Intent(context, HomeActivity::class.java)
-                                            context.startActivity(intent)
-                                        } else
-                                            Log.i("fail", "erro ao fazer login")
+                                            if (authToken != "" && authToken != null) {
 
+                                                Log.i("success", authToken)
+                                                sessionManager.saveAuthToken(authToken)
+                                                sessionManager.saveUserLogin(emailState)
+                                                val intent =
+                                                    Intent(context, HomeActivity::class.java)
+                                                context.startActivity(intent)
+                                            } else
+                                                Log.i("fail", "erro ao fazer login")
+
+                                        } else {
+                                            authError = true
+                                            Log.i("failed authentication", response.toString())
+                                        }
                                     }
 
-                                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                                    override fun onFailure(
+                                        call: Call<LoginResponse>,
+                                        t: Throwable
+                                    ) {
                                         Log.i("fail", t.message.toString())
                                     }
                                 })

@@ -60,6 +60,7 @@
     <string name="confirm">Confirmar</string>
     <string name="cpf_label">CPF</string>
     <string name="confirm_password_to_update">Confirme a senha para salvar as alterações:</string>
+    <string name="failed_auth_message">Email ou senha Incorretos</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

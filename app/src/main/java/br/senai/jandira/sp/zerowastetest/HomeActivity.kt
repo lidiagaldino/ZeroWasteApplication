@@ -189,7 +189,8 @@ fun HomeContent() {
         Text(
             text = stringResource(id = br.senai.jandira.sp.zerowastetest.R.string.lorem_ipsum),
             textAlign = TextAlign.Center,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            modifier = Modifier.padding(start = 12.dp, end = 12.dp)
         )
         Column(
             modifier = Modifier.fillMaxWidth(),

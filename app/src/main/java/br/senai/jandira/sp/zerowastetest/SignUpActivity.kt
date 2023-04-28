@@ -39,11 +39,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.CepCalls
+import br.senai.jandira.sp.zerowastetest.api.GeoCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -80,10 +82,12 @@ fun ZeroWasteApplication() {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
-//    val retrofitApi = RetrofitApi.getRetrofit(Constants.API_URL)
-//    val retrofitCep = RetrofitApi.getRetrofit(Constants.CEP_URL)
-//    val userCalls = retrofitApi.create(ApiCalls::class.java)
-//    val cepCalls = retrofitCep.create(CepCalls::class.java)
+    val retrofitApi = RetrofitApi.getMainApi()
+    val retrofitCep = RetrofitApi.getCepApi()
+    val retrofitGeocode = RetrofitApi.getGeoCodeApi()
+    val userCalls = retrofitApi.create(ApiCalls::class.java)
+    val cepCalls = retrofitCep.create(CepCalls::class.java)
+    val geoCalls = retrofitGeocode.create(GeoCalls::class.java)
 
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
@@ -95,7 +99,7 @@ fun ZeroWasteApplication() {
     }
 
     var addressInfo by remember {
-        mutableStateOf(CepResponse("", "", "", "", "", "", "","", "", ""))
+        mutableStateOf(CepResponse("", "", "", "", "", "", "", "", "", ""))
     }
 
     var recyclerClick by remember {
@@ -166,10 +170,18 @@ fun ZeroWasteApplication() {
         mutableStateOf("")
     }
 
+    var resultLatLong by remember {
+        mutableStateOf(Results(null))
+    }
+
     val calendarState = rememberSheetState()
 
     var birthdayState by rememberSaveable {
         mutableStateOf("Ano-Mes-Dia")
+    }
+
+    var urlEncoded by remember{
+        mutableStateOf("")
     }
 
     var passwordVisibility by remember { mutableStateOf(false) }
@@ -255,7 +267,7 @@ fun ZeroWasteApplication() {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.app_logo),
                     contentDescription = "App Logo",
@@ -468,11 +480,12 @@ fun ZeroWasteApplication() {
                         .fillMaxWidth()
                         .padding(start = 30.dp, end = 30.dp)
                         .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
-                    placeholder = { if(fisicoClick){
-                        Text(text = stringResource(id = R.string.cpf_label))
-                    } else {
-                        Text(text = stringResource(id = R.string.cnpj_label))
-                    }
+                    placeholder = {
+                        if (fisicoClick) {
+                            Text(text = stringResource(id = R.string.cpf_label))
+                        } else {
+                            Text(text = stringResource(id = R.string.cnpj_label))
+                        }
                     },
                     leadingIcon = {
                         Icon(
@@ -945,22 +958,45 @@ fun ZeroWasteApplication() {
 //
 //                            if (!confirmPassError && !nameError && !cpfError && !emailError && !phoneError && !cepError && !resNumError && !birthDayError && !passError && !conPassError) {
 
-
-
-                            val retrofitCep = RetrofitApi.getCepApi()
-                            val cepCalls = retrofitCep.create(CepCalls::class.java)
-
-                                var cepData = cepCalls.getAddressInfo(cepState).enqueue(object : Callback<CepResponse>{
+                            cepCalls.getAddressInfo(cepState)
+                                .enqueue(object : Callback<CepResponse> {
                                     override fun onResponse(
                                         call: Call<CepResponse>,
                                         response: Response<CepResponse>
                                     ) {
                                         Log.i("success", cepState)
+                                        Log.i("success", response.toString())
                                         Log.i("success", response.body()!!.toString())
 
                                         addressInfo = response.body()!!
 
-                                        Log.i("success", URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}"))
+                                        Log.i(
+                                            "success",
+                                            URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
+                                        )
+
+                                        urlEncoded = URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
+
+                                        geoCalls.getLatiLong(urlEncoded, "8c86308380ad443fac12280fd96b4ac5").enqueue(object : Callback<Results>{
+                                            override fun onResponse(
+                                                call: Call<Results>,
+                                                response: Response<Results>
+                                            ) {
+                                                Log.i("success", response.body().toString())
+                                                //Log.i("success", response.body()!!.toString())
+
+
+
+//                                                resultLatLong = response.body()!!
+
+                                            }
+
+                                            override fun onFailure(call: Call<Results>, t: Throwable) {
+                                                TODO("Not yet implemented")
+                                            }
+
+                                        })
+
                                     }
 
                                     override fun onFailure(call: Call<CepResponse>, t: Throwable) {
@@ -968,22 +1004,39 @@ fun ZeroWasteApplication() {
                                     }
                                 })
 
-                            val retrofitApi = RetrofitApi.getMainApi()
-                            val apiCalls = retrofitApi.create(ApiCalls::class.java)
 
-                                var userAddress = Address(
 
-                                    cep = cepState,
-                                    logradouro = addressInfo.logradouro,
-                                    bairro = addressInfo.bairro,
-                                    cidade = addressInfo.localidade,
-                                    estado = addressInfo.uf,
-                                    complemento = complementState,
-                                    numero = resNumberState,
-                                    latitude = ".",
-                                    longitude = "."
+//                            geoCalls.getLatiLong(urlEncoded, "8c86308380ad443fac12280fd96b4ac5").enqueue(object : Callback<Results>{
+//                                override fun onResponse(
+//                                    call: Call<Results>,
+//                                    response: Response<Results>
+//                                ) {
+//
+//                                    Log.i("success", urlEncoded)
+//                                    Log.i("success", response.toString())
+//
+//
+//                                }
+//
+//                                override fun onFailure(call: Call<Results>, t: Throwable) {
+//                                    TODO("Not yet implemented")
+//                                }
+//
+//                            })
 
-                                )
+                            var userAddress = Address(
+
+                                cep = cepState,
+                                logradouro = addressInfo.logradouro,
+                                bairro = addressInfo.bairro,
+                                cidade = addressInfo.localidade,
+                                estado = addressInfo.uf,
+                                complemento = complementState,
+                                numero = resNumberState,
+                                latitude = ".",
+                                longitude = "."
+
+                            )
 
 //                                var cep: String = "",
 //    var logradouro: String = "",

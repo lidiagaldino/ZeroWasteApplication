@@ -59,7 +59,7 @@ fun ViewPagerSlider(context: Context) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 10.dp, start = 6.dp),
+                .padding(start = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -70,7 +70,7 @@ fun ViewPagerSlider(context: Context) {
                         val intent = Intent(context, HomeActivity::class.java)
                         context.startActivity(intent)
                     }
-                    .size(30.dp)
+                    .size(35.dp)
             )
             Text(
                 text = "O que Reciclar?",
@@ -82,8 +82,8 @@ fun ViewPagerSlider(context: Context) {
             )
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
 
-        //Spacer(modifier = Modifier.height(5.dp))
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
@@ -120,7 +120,7 @@ fun ViewPagerSlider(context: Context) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.LightGray)
+                        .background(Color.Transparent)
                         .align(Alignment.Center)
 
                 ) {
@@ -130,7 +130,6 @@ fun ViewPagerSlider(context: Context) {
 
                         ),
                         contentDescription = "Image",
-                        contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
 
@@ -152,7 +151,7 @@ fun ViewPagerSlider(context: Context) {
         HorizontalPagerIndicator(
             pagerState = pagerState, modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
+                .padding(10.dp)
         )
 
     }

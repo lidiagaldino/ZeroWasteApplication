@@ -22,7 +22,35 @@ data class Annotation(
     @SerializedName("UN_M49")
     var un_m49: UN_M49? = null,
 
+    @SerializedName("callingcode")
+    var callingCode: Int = 0,
 
+    @SerializedName("currency")
+    var currency: Currency? = null,
+
+    @SerializedName("flag")
+    var flag: String = "",
+
+    @SerializedName("geohash")
+    var geohash: String = "",
+
+    @SerializedName("qibla")
+    var qibla: Float = 0.0f,
+
+    @SerializedName("roadinfo")
+    var roadinfo: RoadInfo? = null,
+
+    @SerializedName("sun")
+    var sunInfo: SunInfo? = null,
+
+    @SerializedName("timezone")
+    var timeZone: TimeZone? = null,
+
+    @SerializedName("what3words")
+    var what3words: What3Words? = null,
+
+    @SerializedName("wikidata")
+    var wikiData: String = ""
 
 )
 
@@ -81,13 +109,13 @@ data class Annotation(
 //        "astronomical": 1682583060,
 //        "civil": 1682586240,
 //        "nautical": 1682584620
-//    },
+//        },
 //        "set": {
 //        "apparent": 1682628180,
 //        "astronomical": 1682632740,
 //        "civil": 1682629560,
 //        "nautical": 1682631180
-//    }
+//        }
 //    },
 //    "timezone": {
 //        "name": "America/Sao_Paulo",

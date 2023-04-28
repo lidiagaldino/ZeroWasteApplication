@@ -7,39 +7,41 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitApi {
 
     companion object{
-        private lateinit var instance: Retrofit
+        private lateinit var instanceMain: Retrofit
+        private lateinit var instanceCep: Retrofit
+        private lateinit var instanceGeoCode: Retrofit
 
         fun getMainApi(): Retrofit{
-            if (!Companion::instance.isInitialized) {
-                instance = Retrofit
+            if (!Companion::instanceMain.isInitialized) {
+                instanceMain = Retrofit
                     .Builder()
                     .baseUrl(Constants.API_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }
-            return instance
+            return instanceMain
         }
 
         fun getCepApi(): Retrofit{
-            if (!Companion::instance.isInitialized) {
-                instance = Retrofit
+            if (!Companion::instanceCep.isInitialized) {
+                instanceCep = Retrofit
                     .Builder()
                     .baseUrl(Constants.CEP_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }
-            return instance
+            return instanceCep
         }
 
         fun getGeoCodeApi(): Retrofit{
-            if (!Companion::instance.isInitialized) {
-                instance = Retrofit
+            if (!Companion::instanceGeoCode.isInitialized) {
+                instanceGeoCode = Retrofit
                     .Builder()
                     .baseUrl(Constants.GEO_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }
-            return instance
+            return instanceGeoCode
         }
 
     }
