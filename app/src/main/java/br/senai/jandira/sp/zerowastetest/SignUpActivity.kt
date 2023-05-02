@@ -42,6 +42,9 @@ import br.senai.jandira.sp.zerowastetest.api.GeoCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Materials
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.NewCatador
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
@@ -175,6 +178,10 @@ fun ZeroWasteApplication() {
 
     var userAddress by remember{
         mutableStateOf(Address())
+    }
+
+    var materials by remember {
+        mutableStateOf(Materials())
     }
 
     val calendarState = rememberSheetState()
@@ -1004,7 +1011,7 @@ fun ZeroWasteApplication() {
 
                                                 )
 
-                                                Log.i("success", resultLatLong.toString())
+                                                Log.i("what", userAddress.toString())
 
                                             }
 
@@ -1024,10 +1031,7 @@ fun ZeroWasteApplication() {
                                     }
                                 })
 
-
-
-                            Log.i("testing", userAddress.toString())
-//                                var cep: String = "",
+//    var cep: String = "",
 //    var logradouro: String = "",
 //    var bairro: String = "",
 //    var cidade: String = "",
@@ -1038,30 +1042,32 @@ fun ZeroWasteApplication() {
 //    var numero : String = "",
 //    var apelido: String? = null
 
-//
-//                                var newCatadorData = NewCatador(
-//                                    nome = nameState,
-//                                    cpf = cpfState,
-//                                    email = emailState,
-//                                    telefone = phoneState,
-//                                    endereco = userAddress,
-//                                    data_nascimento = birthdayState,
-//                                    senha = passwordState,
-//                                    materiais = ["3"]
-//                                )
 
-//                                val insertCatcher = userCalls.saveCatador(newCatadorData).enqueue(object : Callback<UserData> {
-//                                    override fun onResponse(
-//                                        call: Call<UserData>,
-//                                        response: Response<UserData>
-//                                    ) {
-//                                        Log.i("Okay?", response.body()!!.toString())
-//                                    }
-//
-//                                    override fun onFailure(call: Call<UserData>, t: Throwable) {
-//                                        Log.i("Não deu?", t.message.toString())
-//                                    }
-//                                })
+
+
+                                var newCatadorData = NewCatador(
+                                    nome = nameState,
+                                    cpf = cpfState,
+                                    email = emailState,
+                                    telefone = phoneState,
+                                    endereco = userAddress,
+                                    data_nascimento = birthdayState,
+                                    senha = passwordState,
+//                                    materiais = "3"
+                                )
+
+                                userCalls.saveCatador(newCatadorData).enqueue(object : Callback<UserData> {
+                                    override fun onResponse(
+                                        call: Call<UserData>,
+                                        response: Response<UserData>
+                                    ) {
+                                        Log.i("Okay?", response.body()!!.toString())
+                                    }
+
+                                    override fun onFailure(call: Call<UserData>, t: Throwable) {
+                                        Log.i("Não deu?", t.message.toString())
+                                    }
+                                })
 
 
 //                            }
