@@ -2,11 +2,6 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode
 
 data class ResultBody(
 
-    var annotation: Annotation? = null,
-    var bounds: Bounds? = null,
-    var components: Components? = null,
-    var confidence: Int = 0,
-    var formatted: String = "",
     var geometry: Geometry? = null
 
 )

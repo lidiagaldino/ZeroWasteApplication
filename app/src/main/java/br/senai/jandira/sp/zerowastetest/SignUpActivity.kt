@@ -45,6 +45,7 @@ import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
@@ -171,8 +172,10 @@ fun ZeroWasteApplication() {
     }
 
     var resultLatLong by remember {
-        mutableStateOf(Results(null))
+        mutableStateOf(Geometry(null))
     }
+
+
 
     val calendarState = rememberSheetState()
 
@@ -180,7 +183,7 @@ fun ZeroWasteApplication() {
         mutableStateOf("Ano-Mes-Dia")
     }
 
-    var urlEncoded by remember{
+    var urlEncoded by remember {
         mutableStateOf("")
     }
 
@@ -975,23 +978,32 @@ fun ZeroWasteApplication() {
                                             URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
                                         )
 
-                                        urlEncoded = URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
+                                        urlEncoded =
+                                            URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
 
-                                        geoCalls.getLatiLong(urlEncoded, "8c86308380ad443fac12280fd96b4ac5").enqueue(object : Callback<Results>{
+                                        geoCalls.getLatiLong(
+                                            urlEncoded,
+                                            "8c86308380ad443fac12280fd96b4ac5"
+                                        ).enqueue(object : Callback<Results> {
                                             override fun onResponse(
                                                 call: Call<Results>,
                                                 response: Response<Results>
                                             ) {
                                                 Log.i("success", response.body().toString())
-                                                //Log.i("success", response.body()!!.toString())
+                                                Log.i("success", response.toString())
+                                                Log.i("success", urlEncoded)
 
 
+                                                resultLatLong = response.body()!!.results!!.get(0).geometry!!
 
-//                                                resultLatLong = response.body()!!
+                                                Log.i("success", resultLatLong.toString())
 
                                             }
 
-                                            override fun onFailure(call: Call<Results>, t: Throwable) {
+                                            override fun onFailure(
+                                                call: Call<Results>,
+                                                t: Throwable
+                                            ) {
                                                 TODO("Not yet implemented")
                                             }
 
@@ -1003,7 +1015,6 @@ fun ZeroWasteApplication() {
                                         Log.i("fail", t.message.toString())
                                     }
                                 })
-
 
 
 //                            geoCalls.getLatiLong(urlEncoded, "8c86308380ad443fac12280fd96b4ac5").enqueue(object : Callback<Results>{
@@ -1033,11 +1044,12 @@ fun ZeroWasteApplication() {
                                 estado = addressInfo.uf,
                                 complemento = complementState,
                                 numero = resNumberState,
-                                latitude = ".",
-                                longitude = "."
+                                latitude = resultLatLong.lat.toString(),
+                                longitude = resultLatLong.lng.toString()
 
                             )
 
+                            Log.i("testing", userAddress.toString())
 //                                var cep: String = "",
 //    var logradouro: String = "",
 //    var bairro: String = "",
