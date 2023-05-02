@@ -3,7 +3,6 @@ package br.senai.jandira.sp.zerowastetest
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -41,7 +40,6 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.CepCalls
 import br.senai.jandira.sp.zerowastetest.api.GeoCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
-import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
@@ -60,9 +58,9 @@ import java.net.URLEncoder
 class SignInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+//        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setContent {
-            ZeroWasteTestTheme() {
+            ZeroWasteTestTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -172,10 +170,12 @@ fun ZeroWasteApplication() {
     }
 
     var resultLatLong by remember {
-        mutableStateOf(Geometry(null))
+        mutableStateOf(Geometry(null, null))
     }
 
-
+    var userAddress by remember{
+        mutableStateOf(Address())
+    }
 
     val calendarState = rememberSheetState()
 
@@ -973,11 +973,6 @@ fun ZeroWasteApplication() {
 
                                         addressInfo = response.body()!!
 
-                                        Log.i(
-                                            "success",
-                                            URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
-                                        )
-
                                         urlEncoded =
                                             URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
 
@@ -989,12 +984,25 @@ fun ZeroWasteApplication() {
                                                 call: Call<Results>,
                                                 response: Response<Results>
                                             ) {
-                                                Log.i("success", response.body().toString())
                                                 Log.i("success", response.toString())
                                                 Log.i("success", urlEncoded)
 
 
-                                                resultLatLong = response.body()!!.results!!.get(0).geometry!!
+                                                resultLatLong = response.body()!!.results!![0].geometry!!
+
+                                                userAddress = Address(
+
+                                                    cep = cepState,
+                                                    logradouro = addressInfo.logradouro,
+                                                    bairro = addressInfo.bairro,
+                                                    cidade = addressInfo.localidade,
+                                                    estado = addressInfo.uf,
+                                                    complemento = complementState,
+                                                    numero = resNumberState,
+                                                    latitude = resultLatLong.lat.toString(),
+                                                    longitude = resultLatLong.lng.toString()
+
+                                                )
 
                                                 Log.i("success", resultLatLong.toString())
 
@@ -1017,37 +1025,6 @@ fun ZeroWasteApplication() {
                                 })
 
 
-//                            geoCalls.getLatiLong(urlEncoded, "8c86308380ad443fac12280fd96b4ac5").enqueue(object : Callback<Results>{
-//                                override fun onResponse(
-//                                    call: Call<Results>,
-//                                    response: Response<Results>
-//                                ) {
-//
-//                                    Log.i("success", urlEncoded)
-//                                    Log.i("success", response.toString())
-//
-//
-//                                }
-//
-//                                override fun onFailure(call: Call<Results>, t: Throwable) {
-//                                    TODO("Not yet implemented")
-//                                }
-//
-//                            })
-
-                            var userAddress = Address(
-
-                                cep = cepState,
-                                logradouro = addressInfo.logradouro,
-                                bairro = addressInfo.bairro,
-                                cidade = addressInfo.localidade,
-                                estado = addressInfo.uf,
-                                complemento = complementState,
-                                numero = resNumberState,
-                                latitude = resultLatLong.lat.toString(),
-                                longitude = resultLatLong.lng.toString()
-
-                            )
 
                             Log.i("testing", userAddress.toString())
 //                                var cep: String = "",
