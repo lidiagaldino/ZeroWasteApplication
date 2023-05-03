@@ -7,14 +7,14 @@ data class NewCatador(
     var telefone: String = "",
     var email: String = "",
     var senha: String = "",
-    var materiais: Materials? = null,
+    var materiais: List<Long?>? = null,
 
     var cpf: String? = null,
     var cnpj: String? = null,
 
     var data_nascimento: String = "",
 
-)
+    )
 
 //{
 //    "nome": "Miguel",

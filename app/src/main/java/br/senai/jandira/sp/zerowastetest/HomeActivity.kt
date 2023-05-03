@@ -3,6 +3,7 @@ package br.senai.jandira.sp.zerowastetest
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -71,7 +72,7 @@ fun HomeContent() {
     val apiCalls = retrofit.create(ApiCalls::class.java)
     val sessionManager = SessionManager(context)
 
-    val authToken = "Bearer " + sessionManager.fetchAuthToken()
+    var authToken = "Bearer " + sessionManager.fetchAuthToken()
 
     var dadosUsuario by remember {
         mutableStateOf(UserData("", "", "", null, null, null, null, null, "", "", ""))
@@ -85,16 +86,24 @@ fun HomeContent() {
 
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
-            dadosUsuario = response.body()!!
-            username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
-                dadosUsuario.pessoa_juridica!![0].nome_fantasia
-            else
-                dadosUsuario.pessoa_fisica!![0].nome
 
-            userType = if (dadosUsuario.catador!!.isEmpty())
-                "Gerador"
-            else
-                "Catador"
+            if(response.body() == null){
+
+                val backToMain = Intent(context, MainActivity::class.java)
+                context.startActivity(backToMain)
+
+            } else {
+                dadosUsuario = response.body()!!
+                username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
+                    dadosUsuario.pessoa_juridica!![0].nome_fantasia
+                else
+                    dadosUsuario.pessoa_fisica!![0].nome
+
+                userType = if (dadosUsuario.catador!!.isEmpty())
+                    "Gerador"
+                else
+                    "Catador"
+            }
 
         }
 
@@ -444,6 +453,7 @@ fun HomeContent() {
                         .height(55.dp)
                         .padding(start = 10.dp, end = 20.dp)
                         .clickable {
+                            sessionManager.eraseAuthToken()
                             val intent = Intent(context, MainActivity::class.java)
                             context.startActivity(intent)
                         },

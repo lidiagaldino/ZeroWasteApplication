@@ -784,6 +784,7 @@ fun ProfileActivityBody() {
                         .height(55.dp)
                         .padding(start = 10.dp, end = 20.dp)
                         .clickable {
+                            sessionManager.eraseAuthToken()
                             val intent = Intent(context, MainActivity::class.java)
                             context.startActivity(intent)
                         },

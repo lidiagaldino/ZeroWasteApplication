@@ -113,13 +113,13 @@ fun ViewPagerSlider(context: Context) {
                 }
                 .fillMaxWidth(),
 //                .padding(top = 10.dp),
-                shape = RoundedCornerShape(16.dp)
+//                shape = RoundedCornerShape(16.dp)
             ) {
 
                 val newFotos = fotoslist[page]
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
+//                        .fillMaxSize()
                         .background(Color.Transparent)
                         .align(Alignment.Center)
 
