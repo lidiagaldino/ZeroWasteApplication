@@ -12,10 +12,10 @@ interface ApiCalls {
     @GET("")
 
     @POST("gerador")
-    fun saveReciclador(@Body newCatador: NewCatador): Call<UserData>
+    fun saveReciclador(@Body newCatadorFisico: NewCatadorFisico): Call<UserData>
 
     @POST("catador")
-    fun saveCatador(@Body newCatador: NewCatador): Call<SignResponseCatador>
+    fun saveCatador(@Body newCatadorFisico: NewCatadorFisico): Call<SignResponseCatador>
 
     @POST("user/auth")
     fun verifyLogin(@Body userLoginRequest: UserLoginRequest): Call<LoginResponse>

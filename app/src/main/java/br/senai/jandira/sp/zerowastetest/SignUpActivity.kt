@@ -173,7 +173,7 @@ fun ZeroWasteApplication() {
         mutableStateOf(Geometry(null, null))
     }
 
-    var userAddress by remember{
+    var userAddress by remember {
         mutableStateOf(Address())
     }
 
@@ -962,8 +962,8 @@ fun ZeroWasteApplication() {
 
                                                     )
 
-                                                    if(fisicoClick){
-                                                        val newGeradorInfo = NewGerador(
+                                                    if (fisicoClick) {
+                                                        val newGeradorFisicoInfo = NewGeradorFisico(
                                                             nome = nameState,
                                                             endereco = userAddress,
                                                             telefone = phoneState,
@@ -973,13 +973,13 @@ fun ZeroWasteApplication() {
                                                             data_nascimento = birthdayState
                                                         )
                                                     } else {
-                                                        val newGeradorInfo = NewGerador(
+                                                        val newGeradorFisicoInfo = NewGeradorFisico(
                                                             nome = nameState,
                                                             endereco = userAddress,
                                                             telefone = phoneState,
                                                             email = emailState,
                                                             senha = passwordState,
-                                                            cnpj = cpfState,
+//                                                            cnpj = cpfState,
                                                             data_nascimento = birthdayState
 
                                                         )
@@ -1036,150 +1036,164 @@ fun ZeroWasteApplication() {
                     Button(
                         onClick = {
 
-//                            confirmPassError = validatePass(
-//                                passwordState,
-//                                confirmPassState
-//                            )
-//                            nameError = nameState.isEmpty()
-//                            cpfError = cpfState.isEmpty()
-//                            emailError = emailState.isEmpty()
-//                            phoneError = phoneState.isEmpty()
-//                            cepError = cepState.isEmpty()
-//                            resNumError = resNumberState.isEmpty()
-//                            birthDayError = birthdayState == "Ano-Mes-Dia"
-//                            passError = passwordState.isEmpty()
-//                            conPassError = confirmPassState.isEmpty()
-//
-//                            if (!confirmPassError && !nameError && !cpfError && !emailError && !phoneError && !cepError && !resNumError && !birthDayError && !passError && !conPassError) {
+                            confirmPassError = validatePass(
+                                passwordState,
+                                confirmPassState
+                            )
+                            nameError = nameState.isEmpty()
+                            cpfError = cpfState.isEmpty()
+                            emailError = emailState.isEmpty()
+                            phoneError = phoneState.isEmpty()
+                            cepError = cepState.isEmpty()
+                            resNumError = resNumberState.isEmpty()
+                            birthDayError = birthdayState == "Ano-Mes-Dia"
+                            passError = passwordState.isEmpty()
+                            conPassError = confirmPassState.isEmpty()
 
-                            cepCalls.getAddressInfo(cepState)
-                                .enqueue(object : Callback<CepResponse> {
-                                    override fun onResponse(
-                                        call: Call<CepResponse>,
-                                        response: Response<CepResponse>
-                                    ) {
+                            if (!confirmPassError && !nameError && !cpfError && !emailError && !phoneError && !cepError && !resNumError && !birthDayError && !passError && !conPassError) {
 
-                                        addressInfo = response.body()!!
+                                cepCalls.getAddressInfo(cepState)
+                                    .enqueue(object : Callback<CepResponse> {
+                                        override fun onResponse(
+                                            call: Call<CepResponse>,
+                                            response: Response<CepResponse>
+                                        ) {
 
-                                        urlEncoded =
-                                            URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
+                                            addressInfo = response.body()!!
 
-                                        geoCalls.getLatiLong(
-                                            urlEncoded,
-                                            "8c86308380ad443fac12280fd96b4ac5"
-                                        ).enqueue(object : Callback<Results> {
-                                            override fun onResponse(
-                                                call: Call<Results>,
-                                                response: Response<Results>
-                                            ) {
-//                                                Log.i("success", response.toString())
-//                                                Log.i("success", urlEncoded)
+                                            urlEncoded =
+                                                URLEncoder.encode("${addressInfo.logradouro}, ${addressInfo.localidade}, ${addressInfo.uf}")
 
+                                            geoCalls.getLatiLong(
+                                                urlEncoded,
+                                                "8c86308380ad443fac12280fd96b4ac5"
+                                            ).enqueue(object : Callback<Results> {
+                                                override fun onResponse(
+                                                    call: Call<Results>,
+                                                    response: Response<Results>
+                                                ) {
 
-                                                resultLatLong = response.body()!!.results!![0].geometry!!
+                                                    resultLatLong =
+                                                        response.body()!!.results!![0].geometry!!
 
-                                                userAddress = Address(
+                                                    userAddress = Address(
 
-                                                    cep = cepState,
-                                                    logradouro = addressInfo.logradouro,
-                                                    bairro = addressInfo.bairro,
-                                                    cidade = addressInfo.localidade,
-                                                    estado = addressInfo.uf,
-                                                    complemento = complementState,
-                                                    numero = resNumberState,
-                                                    latitude = resultLatLong.lat.toString(),
-                                                    longitude = resultLatLong.lng.toString()
+                                                        cep = cepState,
+                                                        logradouro = addressInfo.logradouro,
+                                                        bairro = addressInfo.bairro,
+                                                        cidade = addressInfo.localidade,
+                                                        estado = addressInfo.uf,
+                                                        complemento = complementState,
+                                                        numero = resNumberState,
+                                                        latitude = resultLatLong.lat.toString(),
+                                                        longitude = resultLatLong.lng.toString()
 
-                                                )
+                                                    )
 
-                                                Log.i("what", userAddress.toString())
+                                                    Log.i("what", userAddress.toString())
 
-                                                userCalls.getMateriaisList().enqueue(object : Callback<MaterialsList> {
-                                                    override fun onResponse(
-                                                        call: Call<MaterialsList>,
-                                                        response: Response<MaterialsList>
-                                                    ) {
-
-                                                        for (i in response.body()!!.materials!!){
-                                                            materialsList.add(i.id!!)
-                                                        }
-
-                                                        var newCatadorData = NewCatador(
-                                                            nome = nameState,
-                                                            cpf = cpfState,
-                                                            email = emailState,
-                                                            telefone = phoneState,
-                                                            endereco = userAddress,
-                                                            data_nascimento = birthdayState + "T12:01:30.543Z",
-                                                            senha = passwordState,
-                                                            materiais = materialsList
-                                                        )
-
-                                                        Log.i("Testing", newCatadorData.materiais.toString())
-                                                        Log.i("Testing", newCatadorData.toString())
-
-                                                        userCalls.saveCatador(newCatadorData).enqueue(object : Callback<SignResponseCatador>{
+                                                    userCalls.getMateriaisList()
+                                                        .enqueue(object : Callback<MaterialsList> {
                                                             override fun onResponse(
-                                                                call: Call<SignResponseCatador>,
-                                                                response: Response<SignResponseCatador>
+                                                                call: Call<MaterialsList>,
+                                                                response: Response<MaterialsList>
                                                             ) {
-                                                                Log.i("success?", response.body().toString())
+
+                                                                for (i in response.body()!!.materials!!) {
+                                                                    materialsList.add(i.id!!)
+                                                                }
+
+                                                                if (fisicoClick) {
+                                                                    var newCatadorData =
+                                                                        NewCatadorFisico(
+                                                                            nome = nameState,
+                                                                            cpf = cpfState,
+                                                                            email = emailState,
+                                                                            telefone = phoneState,
+                                                                            endereco = userAddress,
+                                                                            data_nascimento = birthdayState + "T12:01:30.543Z",
+                                                                            senha = passwordState,
+                                                                            materiais = materialsList
+                                                                        )
+                                                                } else {
+                                                                    var newCatadorData =
+                                                                        NewCatadorJuridico(
+                                                                            nome = nameState,
+                                                                            cnpj = cpfState,
+                                                                            email = emailState,
+                                                                            telefone = phoneState,
+                                                                            endereco = userAddress,
+                                                                            data_nascimento = birthdayState + "T12:01:30.543Z",
+                                                                            senha = passwordState,
+                                                                            materiais = materialsList
+                                                                        )
+                                                                }
+                                                                Log.i(
+                                                                    "Testing",
+                                                                    newCatadorData.materiais.toString()
+                                                                )
+                                                                Log.i(
+                                                                    "Testing",
+                                                                    newCatadorData.toString()
+                                                                )
+
+                                                                userCalls.saveCatador(newCatadorData)
+                                                                    .enqueue(object :
+                                                                        Callback<SignResponseCatador> {
+                                                                        override fun onResponse(
+                                                                            call: Call<SignResponseCatador>,
+                                                                            response: Response<SignResponseCatador>
+                                                                        ) {
+                                                                            Log.i(
+                                                                                "success?",
+                                                                                response.body()
+                                                                                    .toString()
+                                                                            )
+                                                                        }
+
+                                                                        override fun onFailure(
+                                                                            call: Call<SignResponseCatador>,
+                                                                            t: Throwable
+                                                                        ) {
+                                                                            Log.i(
+                                                                                "fail",
+                                                                                t.message.toString()
+                                                                            )
+                                                                        }
+
+                                                                    })
+
                                                             }
 
                                                             override fun onFailure(
-                                                                call: Call<SignResponseCatador>,
+                                                                call: Call<MaterialsList>,
                                                                 t: Throwable
                                                             ) {
-                                                                Log.i("fail", t.message.toString())
+                                                                TODO("Not yet implemented")
                                                             }
-
                                                         })
 
-                                                    }
+                                                }
 
-                                                    override fun onFailure(call: Call<MaterialsList>, t: Throwable) {
-                                                        TODO("Not yet implemented")
-                                                    }
-                                                })
+                                                override fun onFailure(
+                                                    call: Call<Results>,
+                                                    t: Throwable
+                                                ) {
+                                                    TODO("Not yet implemented")
+                                                }
 
-                                            }
+                                            })
 
-                                            override fun onFailure(
-                                                call: Call<Results>,
-                                                t: Throwable
-                                            ) {
-                                                TODO("Not yet implemented")
-                                            }
+                                        }
 
-                                        })
-
-                                    }
-
-                                    override fun onFailure(call: Call<CepResponse>, t: Throwable) {
-                                        Log.i("fail", t.message.toString())
-                                    }
-                                })
-
-
-
-
-//                            Log.i("testing", newCatadorData.toString())
-
-//                                userCalls.saveCatador(newCatadorData).enqueue(object : Callback<UserData> {
-//                                    override fun onResponse(
-//                                        call: Call<UserData>,
-//                                        response: Response<UserData>
-//                                    ) {
-//                                        Log.i("Okay?", response.body()!!.toString())
-//                                    }
-//
-//                                    override fun onFailure(call: Call<UserData>, t: Throwable) {
-//                                        Log.i("Não deu?", t.message.toString())
-//                                    }
-//                                })
-
-
-//                            }
+                                        override fun onFailure(
+                                            call: Call<CepResponse>,
+                                            t: Throwable
+                                        ) {
+                                            Log.i("fail", t.message.toString())
+                                        }
+                                    })
+                            }
                         },
                         modifier = Modifier
                             .padding(start = 30.dp, end = 30.dp),
