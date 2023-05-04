@@ -353,7 +353,8 @@ fun ProfileContent() {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
+                                    .padding(bottom = 16.dp)
+                                    .clickable {  },
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 materiaisCatador[i].material!!.nome?.let {
@@ -365,7 +366,6 @@ fun ProfileContent() {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Excluir Material",
-                                    modifier = Modifier.clickable { /*TODO*/ },
                                     tint = Color.White
                                 )
                             }
