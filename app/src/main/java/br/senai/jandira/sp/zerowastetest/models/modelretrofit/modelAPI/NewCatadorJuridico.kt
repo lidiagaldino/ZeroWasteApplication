@@ -11,8 +11,6 @@ data class NewCatadorJuridico(
 
     var cnpj: String? = null,
 
-    var data_nascimento: String = "",
-
     )
 
 //{

@@ -10,8 +10,6 @@ data class NewGeradorJuridico(
 
     var cnpj: String? = null,
 
-    var data_nascimento: String = ""
-
 )
 
 //{

@@ -4,19 +4,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 
 data class SignResponseCatador(
 
-    var id: String = "",
-    var nome: String = "",
-    var endereco: Address? = null,
-    var telefone: String = "",
-    var email: String = "",
-    var senha: String = "",
-
-    var materiais: List<Materials>? = null,
-
-    var cpf: String? = null,
-    var cnpj: String? = null,
-
-    var data_nascimento: String = ""
+    var id: Long? = null,
 
 )
 

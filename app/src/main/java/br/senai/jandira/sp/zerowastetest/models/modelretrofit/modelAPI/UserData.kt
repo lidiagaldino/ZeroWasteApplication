@@ -15,5 +15,3 @@ data class UserData(
     var foto: String = ""
 
 )
-
-//     var cpf: String = "",

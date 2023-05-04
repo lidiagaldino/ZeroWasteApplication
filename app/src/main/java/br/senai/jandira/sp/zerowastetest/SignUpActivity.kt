@@ -3,6 +3,7 @@ package br.senai.jandira.sp.zerowastetest
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -40,6 +41,7 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.CepCalls
 import br.senai.jandira.sp.zerowastetest.api.GeoCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
+import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
@@ -74,12 +76,14 @@ class SignInActivity : ComponentActivity() {
 }
 
 //@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Preview
 @Composable
 fun ZeroWasteApplication() {
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val sessionManager = SessionManager(context)
 
     val retrofitApi = RetrofitApi.getMainApi()
     val retrofitCep = RetrofitApi.getCepApi()
@@ -179,6 +183,19 @@ fun ZeroWasteApplication() {
 
     var materials by remember {
         mutableStateOf(Materials())
+    }
+
+    var infoCatadorFisico by remember {
+        mutableStateOf(NewCatadorFisico())
+    }
+    var infoCatadorJuridico by remember {
+        mutableStateOf(NewCatadorJuridico())
+    }
+    var infoGeradorFisico by remember {
+        mutableStateOf(NewGeradorFisico())
+    }
+    var infoGeradorJuridico by remember {
+        mutableStateOf(NewGeradorJuridico())
     }
 
     var materialsList = mutableListOf<Long?>()
@@ -429,7 +446,12 @@ fun ZeroWasteApplication() {
                             .padding(start = 30.dp, end = 30.dp)
                             .background(
                                 color = Color.White,
-                                shape = RoundedCornerShape(5.dp)
+                                shape = RoundedCornerShape(
+                                    topStart = 10.dp,
+                                    topEnd = 10.dp,
+                                    bottomStart = 0.dp,
+                                    bottomEnd = 0.dp
+                                )
                             ),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -438,7 +460,7 @@ fun ZeroWasteApplication() {
                             modifier = Modifier
                                 .background(
                                     newColor1,
-                                    shape = RoundedCornerShape(topStart = 5.dp, bottomStart = 5.dp)
+                                    shape = RoundedCornerShape(topStart = 10.dp)
                                 )
                                 .clickable {
                                     fisicoClick = true
@@ -460,7 +482,7 @@ fun ZeroWasteApplication() {
                             modifier = Modifier
                                 .background(
                                     newColor2,
-                                    shape = RoundedCornerShape(topEnd = 5.dp, bottomEnd = 5.dp)
+                                    shape = RoundedCornerShape(topEnd = 10.dp)
                                 )
                                 .clickable {
                                     fisicoClick = false
@@ -488,7 +510,15 @@ fun ZeroWasteApplication() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 30.dp, end = 30.dp)
-                        .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
+                        .background(
+                            color = Color.White,
+                            shape = RoundedCornerShape(
+                                topStart = 0.dp,
+                                topEnd = 0.dp,
+                                bottomStart = 10.dp,
+                                bottomEnd = 10.dp
+                            )
+                        ),
                     placeholder = {
                         if (fisicoClick) {
                             Text(text = stringResource(id = R.string.cpf_label))
@@ -513,7 +543,7 @@ fun ZeroWasteApplication() {
                         }
                     ),
                     singleLine = true,
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 10.dp, bottomEnd = 10.dp)
                 )
                 if (cpfError) {
                     Text(
@@ -728,56 +758,79 @@ fun ZeroWasteApplication() {
                     singleLine = true,
                     shape = RoundedCornerShape(10.dp)
                 )
-                CalendarDialog(
-                    state = calendarState,
-                    config = CalendarConfig(
-                        yearSelection = true
-                    ),
-                    selection = CalendarSelection.Date { birthdate ->
-                        birthdayState = birthdate.toString()
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Button(
-                    onClick = {
-                        calendarState.show()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 30.dp, end = 30.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(128, 204, 40))
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.select_bithday),
-                        color = Color.White,
-                        fontSize = 16.sp
-                    )
-                }
-                Text(
-                    text = birthdayState,
-                    modifier = Modifier
-                        .padding(start = 30.dp, end = 30.dp)
-                        .background(color = Color.White, shape = RoundedCornerShape(5.dp))
-                        .height(30.dp)
-                        .fillMaxWidth(),
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-                )
-                if (birthDayError) {
-                    Text(
-                        text = stringResource(id = R.string.birthday_error),
-                        color = Color.Red,
-                        fontSize = 12.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 30.dp, start = 30.dp),
-                        textAlign = TextAlign.End
-                    )
-                    Spacer(modifier = Modifier.height(7.dp))
 
-                } else {
-                    Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+
+                AnimatedVisibility(
+                    visible = fisicoClick,
+                    enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
+                    exit = scaleOut() + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+                ) {
+                    Column() {
+                        CalendarDialog(
+                            state = calendarState,
+                            config = CalendarConfig(
+                                yearSelection = true
+                            ),
+                            selection = CalendarSelection.Date { birthdate ->
+                                birthdayState = birthdate.toString()
+                            }
+                        )
+
+                        Button(
+                            onClick = {
+                                calendarState.show()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 30.dp, end = 30.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color(128, 204, 40)),
+                            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.select_bithday),
+                                color = Color.White,
+                                fontSize = 16.sp
+                            )
+                        }
+                        Text(
+                            text = birthdayState,
+                            modifier = Modifier
+                                .padding(start = 30.dp, end = 30.dp)
+                                .background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(
+                                        topStart = 0.dp,
+                                        topEnd = 0.dp,
+                                        bottomStart = 10.dp,
+                                        bottomEnd = 10.dp
+                                    )
+                                )
+                                .height(30.dp)
+                                .fillMaxWidth(),
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        if (birthDayError) {
+                            Text(
+                                text = stringResource(id = R.string.birthday_error),
+                                color = Color.Red,
+                                fontSize = 12.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 30.dp, start = 30.dp),
+                                textAlign = TextAlign.End
+                            )
+                            Spacer(modifier = Modifier.height(7.dp))
+
+                        } else {
+                            Spacer(modifier = Modifier.height(15.dp))
+                        }
+                    }
+
                 }
+
+
                 OutlinedTextField(
                     value = passwordState,
                     onValueChange = { newValue ->
@@ -908,10 +961,12 @@ fun ZeroWasteApplication() {
                 ) {
                     Button(
                         onClick = {
+
                             confirmPassError = validatePass(
                                 passwordState,
                                 confirmPassState
                             )
+
                             nameError = nameState.isEmpty()
                             cpfError = cpfState.isEmpty()
                             emailError = emailState.isEmpty()
@@ -948,6 +1003,9 @@ fun ZeroWasteApplication() {
                                                     resultLatLong =
                                                         response.body()!!.results!![0].geometry!!
 
+                                                    if (addressInfo.complemento == "")
+                                                        addressInfo.complemento = " "
+
                                                     userAddress = Address(
 
                                                         cep = cepState,
@@ -955,35 +1013,123 @@ fun ZeroWasteApplication() {
                                                         bairro = addressInfo.bairro,
                                                         cidade = addressInfo.localidade,
                                                         estado = addressInfo.uf,
-                                                        complemento = complementState,
+                                                        complemento = addressInfo.complemento,
                                                         numero = resNumberState,
                                                         latitude = resultLatLong.lat.toString(),
                                                         longitude = resultLatLong.lng.toString()
 
                                                     )
 
-                                                    if (fisicoClick) {
-                                                        val newGeradorFisicoInfo = NewGeradorFisico(
-                                                            nome = nameState,
-                                                            endereco = userAddress,
-                                                            telefone = phoneState,
-                                                            email = emailState,
-                                                            senha = passwordState,
-                                                            cpf = cpfState,
-                                                            data_nascimento = birthdayState
-                                                        )
-                                                    } else {
-                                                        val newGeradorFisicoInfo = NewGeradorFisico(
-                                                            nome = nameState,
-                                                            endereco = userAddress,
-                                                            telefone = phoneState,
-                                                            email = emailState,
-                                                            senha = passwordState,
-//                                                            cnpj = cpfState,
-                                                            data_nascimento = birthdayState
+                                                    Log.i("what", userAddress.toString())
 
+
+
+                                                    if (fisicoClick) {
+
+                                                        infoGeradorFisico =
+                                                            NewGeradorFisico(
+                                                                nome = nameState,
+                                                                cpf = cpfState,
+                                                                email = emailState,
+                                                                telefone = phoneState,
+                                                                endereco = userAddress,
+                                                                data_nascimento = birthdayState + "T12:01:30.543Z",
+                                                                senha = passwordState
+                                                            )
+
+                                                        userCalls.saveGeradorFisico(
+                                                            infoGeradorFisico
                                                         )
+                                                            .enqueue(object :
+                                                                Callback<SignResponseGerador> {
+                                                                override fun onResponse(
+                                                                    call: Call<SignResponseGerador>,
+                                                                    response: Response<SignResponseGerador>
+                                                                ) {
+
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Cadastro Realizado",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+
+                                                                    val intent = Intent(
+                                                                        context,
+                                                                        LogInActivity::class.java
+                                                                    )
+                                                                    context.startActivity(intent)
+
+                                                                }
+
+                                                                override fun onFailure(
+                                                                    call: Call<SignResponseGerador>,
+                                                                    t: Throwable
+                                                                ) {
+                                                                    Log.i(
+                                                                        "fail",
+                                                                        t.message.toString()
+                                                                    )
+                                                                }
+
+                                                            })
+
+                                                    } else {
+
+                                                        infoGeradorJuridico =
+                                                            NewGeradorJuridico(
+                                                                nome = nameState,
+                                                                cnpj = cpfState,
+                                                                email = emailState,
+                                                                telefone = phoneState,
+                                                                endereco = userAddress,
+                                                                senha = passwordState
+                                                            )
+
+                                                        userCalls.saveGeradorJuridico(
+                                                            infoGeradorJuridico
+                                                        )
+                                                            .enqueue(object :
+                                                                Callback<SignResponseGerador> {
+                                                                override fun onResponse(
+                                                                    call: Call<SignResponseGerador>,
+                                                                    response: Response<SignResponseGerador>
+                                                                ) {
+
+                                                                    Toast.makeText(
+                                                                        context,
+                                                                        "Cadastro Realizado",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+
+                                                                    val intent = Intent(
+                                                                        context,
+                                                                        LogInActivity::class.java
+                                                                    )
+                                                                    context.startActivity(intent)
+
+                                                                }
+
+                                                                override fun onFailure(
+                                                                    call: Call<SignResponseGerador>,
+                                                                    t: Throwable
+                                                                ) {
+                                                                    Log.i(
+                                                                        "fail",
+                                                                        t.message.toString()
+                                                                    )
+                                                                }
+
+                                                            })
+
                                                     }
+                                                    Log.i(
+                                                        "Testing",
+                                                        infoGeradorFisico.toString()
+                                                    )
+                                                    Log.i(
+                                                        "Testing",
+                                                        infoGeradorJuridico.toString()
+                                                    )
 
                                                 }
 
@@ -991,11 +1137,9 @@ fun ZeroWasteApplication() {
                                                     call: Call<Results>,
                                                     t: Throwable
                                                 ) {
-                                                    TODO("Not yet implemented")
+                                                    Log.i("fail", t.message.toString())
                                                 }
-
                                             })
-
                                         }
 
                                         override fun onFailure(
@@ -1076,6 +1220,9 @@ fun ZeroWasteApplication() {
                                                     resultLatLong =
                                                         response.body()!!.results!![0].geometry!!
 
+                                                    if (addressInfo.complemento == null || addressInfo.complemento == "")
+                                                        addressInfo.complemento = " "
+
                                                     userAddress = Address(
 
                                                         cep = cepState,
@@ -1083,7 +1230,7 @@ fun ZeroWasteApplication() {
                                                         bairro = addressInfo.bairro,
                                                         cidade = addressInfo.localidade,
                                                         estado = addressInfo.uf,
-                                                        complemento = complementState,
+                                                        complemento = addressInfo.complemento,
                                                         numero = resNumberState,
                                                         latitude = resultLatLong.lat.toString(),
                                                         longitude = resultLatLong.lng.toString()
@@ -1104,7 +1251,8 @@ fun ZeroWasteApplication() {
                                                                 }
 
                                                                 if (fisicoClick) {
-                                                                    var newCatadorData =
+
+                                                                    infoCatadorFisico =
                                                                         NewCatadorFisico(
                                                                             nome = nameState,
                                                                             cpf = cpfState,
@@ -1115,53 +1263,111 @@ fun ZeroWasteApplication() {
                                                                             senha = passwordState,
                                                                             materiais = materialsList
                                                                         )
+
+                                                                    userCalls.saveCatadorFisico(
+                                                                        infoCatadorFisico
+                                                                    )
+                                                                        .enqueue(object :
+                                                                            Callback<SignResponseCatador> {
+                                                                            override fun onResponse(
+                                                                                call: Call<SignResponseCatador>,
+                                                                                response: Response<SignResponseCatador>
+                                                                            ) {
+
+                                                                                Log.i(
+                                                                                    "return_id",
+                                                                                    response.body()!!.id.toString()
+                                                                                )
+
+                                                                                Toast.makeText(
+                                                                                    context,
+                                                                                    "Cadastro Realizado",
+                                                                                    Toast.LENGTH_SHORT
+                                                                                ).show()
+
+                                                                                sessionManager.saveUserLogin(emailState)
+
+                                                                                val intent = Intent(
+                                                                                    context,
+                                                                                    LogInActivity::class.java
+                                                                                )
+                                                                                context.startActivity(intent)
+
+                                                                            }
+
+                                                                            override fun onFailure(
+                                                                                call: Call<SignResponseCatador>,
+                                                                                t: Throwable
+                                                                            ) {
+                                                                                Log.i(
+                                                                                    "fail",
+                                                                                    t.message.toString()
+                                                                                )
+                                                                            }
+
+                                                                        })
+
                                                                 } else {
-                                                                    var newCatadorData =
+
+                                                                    infoCatadorJuridico =
                                                                         NewCatadorJuridico(
                                                                             nome = nameState,
                                                                             cnpj = cpfState,
                                                                             email = emailState,
                                                                             telefone = phoneState,
                                                                             endereco = userAddress,
-                                                                            data_nascimento = birthdayState + "T12:01:30.543Z",
                                                                             senha = passwordState,
                                                                             materiais = materialsList
                                                                         )
+
+                                                                    userCalls.saveCatadorJuridico(
+                                                                        infoCatadorJuridico
+                                                                    )
+                                                                        .enqueue(object :
+                                                                            Callback<SignResponseCatador> {
+                                                                            override fun onResponse(
+                                                                                call: Call<SignResponseCatador>,
+                                                                                response: Response<SignResponseCatador>
+                                                                            ) {
+
+                                                                                Toast.makeText(
+                                                                                    context,
+                                                                                    "Cadastro Realizado",
+                                                                                    Toast.LENGTH_SHORT
+                                                                                ).show()
+
+                                                                                val intent = Intent(
+                                                                                    context,
+                                                                                    LogInActivity::class.java
+                                                                                )
+                                                                                context.startActivity(
+                                                                                    intent
+                                                                                )
+
+                                                                            }
+
+                                                                            override fun onFailure(
+                                                                                call: Call<SignResponseCatador>,
+                                                                                t: Throwable
+                                                                            ) {
+                                                                                Log.i(
+                                                                                    "fail",
+                                                                                    t.message.toString()
+                                                                                )
+                                                                            }
+
+                                                                        })
+
                                                                 }
                                                                 Log.i(
                                                                     "Testing",
-                                                                    newCatadorData.materiais.toString()
+                                                                    infoCatadorFisico.toString()
                                                                 )
                                                                 Log.i(
                                                                     "Testing",
-                                                                    newCatadorData.toString()
+                                                                    infoCatadorJuridico.toString()
                                                                 )
 
-                                                                userCalls.saveCatador(newCatadorData)
-                                                                    .enqueue(object :
-                                                                        Callback<SignResponseCatador> {
-                                                                        override fun onResponse(
-                                                                            call: Call<SignResponseCatador>,
-                                                                            response: Response<SignResponseCatador>
-                                                                        ) {
-                                                                            Log.i(
-                                                                                "success?",
-                                                                                response.body()
-                                                                                    .toString()
-                                                                            )
-                                                                        }
-
-                                                                        override fun onFailure(
-                                                                            call: Call<SignResponseCatador>,
-                                                                            t: Throwable
-                                                                        ) {
-                                                                            Log.i(
-                                                                                "fail",
-                                                                                t.message.toString()
-                                                                            )
-                                                                        }
-
-                                                                    })
 
                                                             }
 

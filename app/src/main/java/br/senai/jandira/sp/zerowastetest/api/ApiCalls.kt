@@ -9,13 +9,17 @@ import retrofit2.http.POST
 
 interface ApiCalls {
 
-    @GET("")
+    @POST("gerador")
+    fun saveGeradorFisico(@Body newGeradorFisico: NewGeradorFisico): Call<SignResponseGerador>
 
     @POST("gerador")
-    fun saveReciclador(@Body newCatadorFisico: NewCatadorFisico): Call<UserData>
+    fun saveGeradorJuridico(@Body newGeradorJuridico: NewGeradorJuridico): Call<SignResponseGerador>
 
     @POST("catador")
-    fun saveCatador(@Body newCatadorFisico: NewCatadorFisico): Call<SignResponseCatador>
+    fun saveCatadorFisico(@Body newCatadorFisico: NewCatadorFisico): Call<SignResponseCatador>
+
+    @POST("catador")
+    fun saveCatadorJuridico(@Body newCatadorFisico: NewCatadorJuridico): Call<SignResponseCatador>
 
     @POST("user/auth")
     fun verifyLogin(@Body userLoginRequest: UserLoginRequest): Call<LoginResponse>

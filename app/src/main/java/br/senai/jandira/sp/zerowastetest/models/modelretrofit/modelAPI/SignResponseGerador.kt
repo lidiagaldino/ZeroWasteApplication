@@ -2,7 +2,7 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
 
 data class SignResponseGerador(
 
-    var id: String = "",
+    var id: Long? = null,
     var nome: String = "",
     var endereco: Address? = null,
     var telefone: String = "",
@@ -17,7 +17,7 @@ data class SignResponseGerador(
 )
 
 //{
-//    "id": 18,
+//    "id": 24,
 //    "nome": "Miguel B",
 //    "endereco": {
 //        "cep": "4444444",
@@ -32,7 +32,7 @@ data class SignResponseGerador(
 //    },
 //    "telefone": "99999999999999",
 //    "email": "lilian@gmail.com",
-//    "senha": "$2a$10$ea9QbQNKbUBIuLL6p2E7BuWZjeA64ZJjv0vN6lZrPt.4NQTGbdk8G",
+//    "senha": "$2a$10$Sbqhl4/suCNqA.o4yh/qJObcdfyEZYf8Ria7FfzaOX68B7ZzGVNvy",
 //    "cpf": "1234-5678",
 //    "data_nascimento": "2000-02-05T12:01:30.543Z"
 //}
