@@ -62,8 +62,13 @@
     <string name="confirm_password_to_update">Confirme a senha para salvar as alterações:</string>
     <string name="failed_auth_message">Email ou senha Incorretos</string>
     <string name="phone_format_error">O formato deve seguir o exemplo. Ex: (11) 91234-5678</string>
-    <string name="primeiro">Cadastre um novo endereço</string>
-    <string name="segundo">Cadastre um ponto de coleta</string>
+    <string name="cadastre_novo_endereco">Cadastre um novo endereço</string>
+    <string name="cadastre_nova_coleta">Cadastre um ponto de coleta</string>
+    <string name="solicite_coleta">Solicite uma coleta</string>
+    <string name="formulario">Formulário para solicitar uma coleta</string>
+    <string name="primeiro">Selecione o local da coleta</string>
+    <string name="segundo">Selecione os materiais que serão recolhidos</string>
+    <string name="foto_tela"></string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

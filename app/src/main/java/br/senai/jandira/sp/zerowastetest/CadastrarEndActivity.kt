@@ -20,7 +20,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,7 +38,6 @@ import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserAddress
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import java.net.URLEncoder
@@ -146,7 +144,7 @@ fun CadastrarEndContent() {
             Column(horizontalAlignment = Alignment.Start) {
 
                 Text(
-                    text = stringResource(id = R.string.primeiro),
+                    text = stringResource(id = R.string.cadastre_novo_endereco),
                     modifier = Modifier
                         .fillMaxWidth(),
                     fontSize = 18.sp,
@@ -156,7 +154,7 @@ fun CadastrarEndContent() {
                 )
 
                 Text(
-                    text = stringResource(id = R.string.segundo),
+                    text = stringResource(id = R.string.cadastre_nova_coleta),
                     modifier = Modifier
                         .fillMaxWidth(),
                     fontSize = 14.sp,
@@ -542,7 +540,7 @@ fun CadastrarEndContent() {
 
 
         Image(
-            painter = painterResource(id = R.drawable.foto),
+            painter = painterResource(id = R.drawable.cadastrar_end_image),
             contentDescription = "Imagem Ilustrativa",
             modifier = Modifier.align(CenterHorizontally)
         )
