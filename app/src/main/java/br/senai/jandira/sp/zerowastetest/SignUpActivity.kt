@@ -631,7 +631,7 @@ fun ZeroWasteApplication() {
                 )
                 if (phoneError) {
                     Text(
-                        text = stringResource(id = R.string.empty_error),
+                        text = stringResource(id = R.string.phone_format_error),
                         color = Color.Red,
                         fontSize = 12.sp,
                         modifier = Modifier
@@ -970,7 +970,7 @@ fun ZeroWasteApplication() {
                             nameError = nameState.isEmpty()
                             cpfError = cpfState.isEmpty()
                             emailError = emailState.isEmpty()
-                            phoneError = phoneState.isEmpty()
+                            phoneError = phoneState.isEmpty() || phoneState.length < 14 || phoneState.length > 15
                             cepError = cepState.isEmpty()
                             resNumError = resNumberState.isEmpty()
                             birthDayError = birthdayState == "Ano-Mes-Dia"
@@ -1015,8 +1015,8 @@ fun ZeroWasteApplication() {
                                                         estado = addressInfo.uf,
                                                         complemento = addressInfo.complemento,
                                                         numero = resNumberState,
-                                                        latitude = resultLatLong.lat.toString(),
-                                                        longitude = resultLatLong.lng.toString()
+                                                        latitude = resultLatLong.lat,
+                                                        longitude = resultLatLong.lng
 
                                                     )
 
@@ -1232,8 +1232,8 @@ fun ZeroWasteApplication() {
                                                         estado = addressInfo.uf,
                                                         complemento = addressInfo.complemento,
                                                         numero = resNumberState,
-                                                        latitude = resultLatLong.lat.toString(),
-                                                        longitude = resultLatLong.lng.toString()
+                                                        latitude = resultLatLong.lat,
+                                                        longitude = resultLatLong.lng
 
                                                     )
 
