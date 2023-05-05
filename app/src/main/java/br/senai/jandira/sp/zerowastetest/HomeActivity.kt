@@ -74,7 +74,7 @@ fun HomeContent() {
     var authToken = "Bearer " + sessionManager.fetchAuthToken()
 
     var dadosUsuario by remember {
-        mutableStateOf(UserData("", "", "", null, null, null, null, null, "", "", ""))
+        mutableStateOf(UserData())
     }
     var username by remember {
         mutableStateOf("...")
@@ -88,7 +88,7 @@ fun HomeContent() {
 
             if(response.body() == null){
 
-                val backToMain = Intent(context, MainActivity::class.java)
+                val backToMain = Intent(context, CadastrarEnd::class.java)
                 context.startActivity(backToMain)
 
             } else {
@@ -105,6 +105,8 @@ fun HomeContent() {
                     "Gerador"
                 else
                     "Catador"
+
+                sessionManager.saveUserId(dadosUsuario.id)
             }
 
         }
@@ -377,7 +379,12 @@ fun HomeContent() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 10.dp, bottom = 10.dp)
-                                .clickable { registerLocationClick = !registerLocationClick }) {
+                                .clickable {
+                                    registerLocationClick = !registerLocationClick
+                                    Toast.makeText(context, sessionManager.getUserId().toString(), Toast.LENGTH_SHORT).show()
+                                    val toCadastrarEnd = Intent(context, CadastrarEnd::class.java)
+                                    context.startActivity(toCadastrarEnd)
+                                }) {
                             Text(
                                 text = stringResource(id = R.string.register_pickup_location),
                                 color = verifyClick(

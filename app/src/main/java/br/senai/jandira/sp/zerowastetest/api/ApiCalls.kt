@@ -30,6 +30,9 @@ interface ApiCalls {
     @GET("materiais")
     fun getMateriaisList(): Call<MaterialsList>
 
+    @POST("endereco")
+    fun newEnderecoUser(@Header("Authorization") authToken: String, @Body address: Address): Call<UserAddress>
+
 //    @PUT("user")
 //    fun updateUserData(@Header("Authorization") token: String):
 

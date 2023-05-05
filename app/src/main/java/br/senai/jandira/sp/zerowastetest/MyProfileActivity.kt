@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
-import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserAddress
@@ -75,7 +74,7 @@ fun ProfileActivityBody() {
     val authToken = "Bearer " + sessionManager.fetchAuthToken()
 
     var dadosUsuario by remember {
-        mutableStateOf(UserData("", "", "", null, null, null, null, null, "", "", ""))
+        mutableStateOf(UserData())
     }
     var username by remember {
         mutableStateOf("...")
@@ -332,7 +331,9 @@ fun ProfileActivityBody() {
                         )
                         Text(
                             text = "Visualizar",
-                            modifier = Modifier.padding(end = 15.dp, bottom = 40.dp).clickable { enderecoVisibility = !enderecoVisibility },
+                            modifier = Modifier
+                                .padding(end = 15.dp, bottom = 40.dp)
+                                .clickable { enderecoVisibility = !enderecoVisibility },
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = colorResource(id = R.color.dark_green)
@@ -682,7 +683,11 @@ fun ProfileActivityBody() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 10.dp, bottom = 10.dp)
-                                .clickable { registerLocationClick = !registerLocationClick }) {
+                                .clickable {
+                                    registerLocationClick = !registerLocationClick
+                                    val toCadastrarEnd = Intent(context, CadastrarEnd::class.java)
+                                    context.startActivity(toCadastrarEnd)
+                                }) {
                             Text(
                                 text = stringResource(id = R.string.register_pickup_location),
                                 color = verifyClick(
@@ -785,7 +790,7 @@ fun ProfileActivityBody() {
                         .padding(start = 10.dp, end = 20.dp)
                         .clickable {
                             sessionManager.eraseAuthToken()
-                            val intent = Intent(context, MainActivity::class.java)
+                            val intent = Intent(context, CadastrarEnd::class.java)
                             context.startActivity(intent)
                         },
                     verticalAlignment = Alignment.CenterVertically

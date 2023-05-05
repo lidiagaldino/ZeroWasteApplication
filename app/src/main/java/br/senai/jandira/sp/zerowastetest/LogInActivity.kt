@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
-import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.LoginResponse
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserLoginRequest

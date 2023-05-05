@@ -12,7 +12,8 @@ data class Address (
     var latitude: Float? = 0.0f,
     var longitude: Float? = 0.0f,
     var numero : String = "",
-    var apelido: String? = null
+    var apelido: String? = null,
+    var id_usuario: Long? = null
 
 )
 

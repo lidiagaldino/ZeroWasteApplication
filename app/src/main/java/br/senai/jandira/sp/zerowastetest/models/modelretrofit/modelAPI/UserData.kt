@@ -2,7 +2,7 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
 
 data class UserData(
 
-    var id: String = "",
+    var id: Long = 0,
     var email: String = "",
     var telefone: String = "",
     var catador: List<Catador>? = null,

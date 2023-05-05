@@ -77,7 +77,7 @@ fun ProfileContent() {
 
 
     var dadosUsuario by remember {
-        mutableStateOf(UserData("", "", "", null, null, null, null, null, "", "", ""))
+        mutableStateOf(UserData())
     }
     var username by remember {
         mutableStateOf("...")

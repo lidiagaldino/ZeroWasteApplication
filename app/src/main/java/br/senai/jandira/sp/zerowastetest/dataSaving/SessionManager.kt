@@ -10,6 +10,7 @@ class SessionManager (context: Context) {
     companion object {
         const val USER_TOKEN = "user_token"
         const val USER_EMAIL = "Email"
+        const val USER_ID: Long = 0
     }
 
     // Function to save user Login Information
@@ -22,6 +23,16 @@ class SessionManager (context: Context) {
 
     fun getUserEmail(): String {
         return prefs.getString(USER_EMAIL, "Email").toString()
+    }
+
+    fun saveUserId(id: Long){
+        val editor = prefs.edit()
+        editor.putLong(USER_ID.toString(), id)
+        editor.apply()
+    }
+
+    fun getUserId(): Long{
+        return prefs.getLong(USER_ID.toString(), 0)
     }
 
 

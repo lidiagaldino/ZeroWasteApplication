@@ -34,7 +34,7 @@
     <string name="prize_text_menu">Pontuação</string>
     <string name="request_pickup">Solicitar uma coleta</string>
     <string name="register_pickup_location">Cadastre um ponto de coleta</string>
-    <string name="map_close_catadores">Mapa de catadores próximos</string>
+    <string name="map_close_catadores">Catadores próximos</string>
     <string name="hints_menu">Dicas</string>
     <string name="favorites_menu">Favoritos</string>
     <string name="logout_menu">Sair</string>
@@ -62,6 +62,8 @@
     <string name="confirm_password_to_update">Confirme a senha para salvar as alterações:</string>
     <string name="failed_auth_message">Email ou senha Incorretos</string>
     <string name="phone_format_error">O formato deve seguir o exemplo. Ex: (11) 91234-5678</string>
+    <string name="primeiro">Cadastre um novo endereço</string>
+    <string name="segundo">Cadastre um ponto de coleta</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
