@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -15,12 +16,12 @@
         android:theme="@style/Theme.ZeroWasteTest"
         tools:targetApi="31">
         <activity
-            android:name=".CadastrarEnd"
+            android:name=".SolicitarColetaActivity"
             android:exported="false"
             android:label="@string/title_activity_my_profile"
             android:theme="@style/Theme.ZeroWasteTest" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".CadastrarEnd"
             android:exported="false"
             android:label="@string/title_activity_my_profile"
             android:theme="@style/Theme.ZeroWasteTest" />
@@ -30,7 +31,7 @@
             android:label="@string/title_activity_page_slider"
             android:theme="@style/Theme.ZeroWasteTest" />
         <activity
-            android:name=".MyProfileActivity"
+            android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_profile_gerador"
             android:theme="@style/Theme.ZeroWasteTest" />
@@ -51,12 +52,12 @@
             android:label="@string/title_activity_log_in"
             android:theme="@style/Theme.ZeroWasteTest" />
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.ZeroWasteTest" />
         <activity
-            android:name=".SolicitarColetaActivity"
+            android:name=".MyProfileActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ZeroWasteTest">

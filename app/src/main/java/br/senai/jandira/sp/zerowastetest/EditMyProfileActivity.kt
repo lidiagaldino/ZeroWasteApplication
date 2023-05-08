@@ -1,10 +1,15 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.content.Context
 import android.content.Intent
+import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -35,6 +40,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.constants.Constants
@@ -75,6 +81,14 @@ fun ProfileContent() {
     val sessionManager = SessionManager(context)
     val authToken = "Bearer " + sessionManager.fetchAuthToken()
 
+    var profilePicture: Uri?
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            Log.i("toputo", uri.toString())
+        }
+    )
 
     var dadosUsuario by remember {
         mutableStateOf(UserData())
@@ -227,7 +241,11 @@ fun ProfileContent() {
                         )
                 )
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+
+                        launcher.launch("image/*")
+
+                    },
                     modifier = Modifier.padding(bottom = 12.dp),
                     shape = (RoundedCornerShape(0.dp)),
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.light_green))
@@ -354,7 +372,7 @@ fun ProfileContent() {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(bottom = 16.dp)
-                                    .clickable {  },
+                                    .clickable { },
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 materiaisCatador[i].material!!.nome?.let {
@@ -588,6 +606,7 @@ fun ProfileContent() {
         }
     }
 }
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

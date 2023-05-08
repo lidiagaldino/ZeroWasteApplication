@@ -430,7 +430,9 @@ fun CadastrarEndContent() {
                                 val cepBody = response.body()!!
 
                                 val encodedURL =
-                                    URLEncoder.encode("${cepBody.logradouro}, ${cepBody.localidade}, ${cepBody.uf}")
+                                    URLEncoder.encode("${numeroState}, ${cepBody.logradouro}, ${cepBody.localidade}, ${cepBody.uf}")
+                                Log.i("testando", encodedURL)
+
 
                                 geoCalls.getLatiLong(encodedURL, "8c86308380ad443fac12280fd96b4ac5")
                                     .enqueue(

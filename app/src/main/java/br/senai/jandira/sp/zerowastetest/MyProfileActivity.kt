@@ -96,21 +96,31 @@ fun ProfileActivityBody() {
 
             Log.i("response", "token: $authToken")
 
-            dadosUsuario = response.body()!!
-            username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
-                dadosUsuario.pessoa_juridica!![0].nome_fantasia
-            else
-                dadosUsuario.pessoa_fisica!![0].nome
+            if(response.body() != null) {
 
-            userType = if (dadosUsuario.catador!!.isEmpty())
-                "Gerador"
-            else
-                "Catador"
+                dadosUsuario = response.body()!!
+                username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
+                    dadosUsuario.pessoa_juridica!![0].nome_fantasia
+                else
+                    dadosUsuario.pessoa_fisica!![0].nome
 
-            if (userType == "Catador")
-                materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
+                userType = if (dadosUsuario.catador!!.isEmpty())
+                    "Gerador"
+                else
+                    "Catador"
 
-            enderecosCadastrados = dadosUsuario.endereco_usuario!!
+                if (userType == "Catador")
+                    materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
+
+                enderecosCadastrados = dadosUsuario.endereco_usuario!!
+
+            }
+            else {
+
+                val backToMain = Intent(context, MainActivity::class.java)
+                context.startActivity(backToMain)
+
+            }
 
         }
 
@@ -222,7 +232,7 @@ fun ProfileActivityBody() {
                     )
                 }
                 Image(
-                    painter = getPicture(authToken),
+                    painter = painterResource(id = R.drawable.avatar_standard_icon),
                     contentDescription = "Foto do usuário",
                     modifier = Modifier
                         .size(130.dp)
@@ -790,7 +800,7 @@ fun ProfileActivityBody() {
                         .padding(start = 10.dp, end = 20.dp)
                         .clickable {
                             sessionManager.eraseAuthToken()
-                            val intent = Intent(context, CadastrarEnd::class.java)
+                            val intent = Intent(context, MainActivity::class.java)
                             context.startActivity(intent)
                         },
                     verticalAlignment = Alignment.CenterVertically
@@ -823,16 +833,6 @@ fun getBiography(dadosUsuario: UserData): String {
         return biography
 }
 
-@Composable
-fun getPicture(token: String): Painter {
-
-    var info = "."
-
-    if (info == "")
-        return painterResource(id = R.drawable.back_arrow)
-    else
-        return painterResource(id = R.drawable.avatar_standard_icon)
-}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

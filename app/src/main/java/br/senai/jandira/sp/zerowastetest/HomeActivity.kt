@@ -88,7 +88,7 @@ fun HomeContent() {
 
             if(response.body() == null){
 
-                val backToMain = Intent(context, CadastrarEnd::class.java)
+                val backToMain = Intent(context, MainActivity::class.java)
                 context.startActivity(backToMain)
 
             } else {
@@ -381,7 +381,6 @@ fun HomeContent() {
                                 .padding(top = 10.dp, bottom = 10.dp)
                                 .clickable {
                                     registerLocationClick = !registerLocationClick
-                                    Toast.makeText(context, sessionManager.getUserId().toString(), Toast.LENGTH_SHORT).show()
                                     val toCadastrarEnd = Intent(context, CadastrarEnd::class.java)
                                     context.startActivity(toCadastrarEnd)
                                 }) {

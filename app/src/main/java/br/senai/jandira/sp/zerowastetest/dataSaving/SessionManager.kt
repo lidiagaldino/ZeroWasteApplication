@@ -2,6 +2,7 @@ package br.senai.jandira.sp.zerowastetest.dataSaving
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import br.senai.jandira.sp.zerowastetest.R
 
 class SessionManager (context: Context) {
@@ -11,6 +12,7 @@ class SessionManager (context: Context) {
         const val USER_TOKEN = "user_token"
         const val USER_EMAIL = "Email"
         const val USER_ID: Long = 0
+//        const val USER_PICTURE = "content://com.android.providers.media.documents/document/image%3A61"
     }
 
     // Function to save user Login Information
@@ -34,6 +36,16 @@ class SessionManager (context: Context) {
     fun getUserId(): Long{
         return prefs.getLong(USER_ID.toString(), 0)
     }
+
+//    fun saveUserPicture(picture: String){
+//        val editor = prefs.edit()
+//        editor.putString(USER_PICTURE, picture)
+//        editor.apply()
+//    }
+//
+//    fun getUserPicture(): String{
+//        return prefs.getString(USER_PICTURE, "")
+//    }
 
 
 //  Function to save auth token
