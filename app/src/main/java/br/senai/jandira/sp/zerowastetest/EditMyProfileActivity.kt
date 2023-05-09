@@ -48,6 +48,10 @@ import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -74,6 +78,12 @@ fun ProfileContent() {
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    val storage = Firebase.storage
+
+    val storageRef = storage.reference
+
+    var imagesRef: StorageReference? = storageRef.child("image/")
 
     val retrofit = RetrofitApi.getMainApi()
     val apiCalls = retrofit.create(ApiCalls::class.java)

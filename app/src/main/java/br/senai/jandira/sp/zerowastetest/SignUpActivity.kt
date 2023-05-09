@@ -48,7 +48,6 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepRespon
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
-import br.senai.jandira.sp.zerowastetest.view.PhoneTransformation
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -180,10 +179,6 @@ fun ZeroWasteApplication() {
 
     var userAddress by remember {
         mutableStateOf(Address())
-    }
-
-    var materials by remember {
-        mutableStateOf(Materials())
     }
 
     var infoCatadorFisico by remember {
@@ -505,8 +500,11 @@ fun ZeroWasteApplication() {
 
 
                 OutlinedTextField(
-                    value = cpfState, onValueChange = { newValue ->
-                        cpfState = newValue
+                    value = cpfState, onValueChange = {
+
+                        val cleanInput = it.replace("[^\\d]".toRegex(), "")
+                        cpfState = cleanInput
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -544,7 +542,12 @@ fun ZeroWasteApplication() {
                         }
                     ),
                     singleLine = true,
-                    shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = 10.dp, bottomEnd = 10.dp)
+                    shape = RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 0.dp,
+                        bottomStart = 10.dp,
+                        bottomEnd = 10.dp
+                    )
                 )
                 if (cpfError) {
                     Text(
@@ -604,7 +607,12 @@ fun ZeroWasteApplication() {
                 }
                 OutlinedTextField(
                     value = phoneState, onValueChange = {
-                                                        if
+
+                        // Remove all non-numeric characters from the input
+                        val cleanInput = it.replace("[^\\d]".toRegex(), "")
+                        // Format the input as a phone number
+                        phoneState = formatPhone(cleanInput)
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -618,7 +626,6 @@ fun ZeroWasteApplication() {
                         )
                     },
                     isError = phoneError,
-                    visualTransformation = PhoneTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
@@ -786,8 +793,19 @@ fun ZeroWasteApplication() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 30.dp, end = 30.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Color(128, 204, 40)),
-                            shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(
+                                    128,
+                                    204,
+                                    40
+                                )
+                            ),
+                            shape = RoundedCornerShape(
+                                topStart = 10.dp,
+                                topEnd = 10.dp,
+                                bottomStart = 0.dp,
+                                bottomEnd = 0.dp
+                            )
                         ) {
                             Text(
                                 text = stringResource(id = R.string.select_bithday),
@@ -972,7 +990,8 @@ fun ZeroWasteApplication() {
                             nameError = nameState.isEmpty()
                             cpfError = cpfState.isEmpty()
                             emailError = emailState.isEmpty()
-                            phoneError = phoneState.isEmpty() || phoneState.length < 14 || phoneState.length > 15
+                            phoneError =
+                                phoneState.isEmpty() || phoneState.length < 14 || phoneState.length > 15
                             cepError = cepState.isEmpty()
                             resNumError = resNumberState.isEmpty()
                             birthDayError = birthdayState == "Ano-Mes-Dia"
@@ -1287,13 +1306,17 @@ fun ZeroWasteApplication() {
                                                                                     Toast.LENGTH_SHORT
                                                                                 ).show()
 
-                                                                                sessionManager.saveUserLogin(emailState)
+                                                                                sessionManager.saveUserLogin(
+                                                                                    emailState
+                                                                                )
 
                                                                                 val intent = Intent(
                                                                                     context,
                                                                                     LogInActivity::class.java
                                                                                 )
-                                                                                context.startActivity(intent)
+                                                                                context.startActivity(
+                                                                                    intent
+                                                                                )
 
                                                                             }
 
@@ -1428,6 +1451,11 @@ fun formatPhone(phoneNumber: String): String {
     val phoneRegex = "(\\d{2})(\\d{5})(\\d{4})".toRegex()
     return phoneRegex.replace(phoneNumber, "($1) $2-$3")
 }
+
+//fun formatCNPJ(cnpjNumber: String): String {
+//    val phoneRegex = "(\\d{2})(\\d{3})(\\d{3})(\\d{4})(\\d{2})".toRegex()
+//    return phoneRegex.replace(cnpjNumber, "$1.$2.$3/$4-$5")
+//}
 
 
 @Preview(showBackground = true, showSystemUi = true)
