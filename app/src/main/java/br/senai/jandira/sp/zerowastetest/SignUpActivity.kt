@@ -48,6 +48,7 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepRespon
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import br.senai.jandira.sp.zerowastetest.view.PhoneTransformation
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -602,8 +603,8 @@ fun ZeroWasteApplication() {
                     Spacer(modifier = Modifier.height(15.dp))
                 }
                 OutlinedTextField(
-                    value = phoneState, onValueChange = { newValue ->
-                        phoneState = newValue
+                    value = phoneState, onValueChange = {
+                                                        if
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -617,6 +618,7 @@ fun ZeroWasteApplication() {
                         )
                     },
                     isError = phoneError,
+                    visualTransformation = PhoneTransformation(),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
@@ -1420,6 +1422,11 @@ fun ZeroWasteApplication() {
             Spacer(modifier = Modifier.height(50.dp))
         }
     }
+}
+
+fun formatPhone(phoneNumber: String): String {
+    val phoneRegex = "(\\d{2})(\\d{5})(\\d{4})".toRegex()
+    return phoneRegex.replace(phoneNumber, "($1) $2-$3")
 }
 
 
