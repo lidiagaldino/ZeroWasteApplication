@@ -1,8 +1,6 @@
 package br.senai.jandira.sp.zerowastetest
 
-import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -40,17 +38,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
-import br.senai.jandira.sp.zerowastetest.constants.Constants
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import retrofit2.Call
 import retrofit2.Callback
@@ -79,11 +73,8 @@ fun ProfileContent() {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    val storage = Firebase.storage
-
-    val storageRef = storage.reference
-
-    var imagesRef: StorageReference? = storageRef.child("image/")
+    val storage = Firebase.storage("gs://teste---zerowaste.appspot.com")
+    val storageRef = storage.reference.child("images/") // Adicionar UID (que vem da autenticação) do ususário
 
     val retrofit = RetrofitApi.getMainApi()
     val apiCalls = retrofit.create(ApiCalls::class.java)
@@ -96,7 +87,7 @@ fun ProfileContent() {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
-            Log.i("toputo", uri.toString())
+            profilePicture = uri
         }
     )
 
@@ -254,6 +245,8 @@ fun ProfileContent() {
                     onClick = {
 
                         launcher.launch("image/*")
+
+
 
                     },
                     modifier = Modifier.padding(bottom = 12.dp),
