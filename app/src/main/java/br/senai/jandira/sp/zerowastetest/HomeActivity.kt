@@ -10,13 +10,16 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -36,6 +39,7 @@ import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import coil.compose.rememberImagePainter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -82,6 +86,10 @@ fun HomeContent() {
     var userType by remember {
         mutableStateOf("...")
     }
+    
+    var profilePicture by remember {
+        mutableStateOf("")
+    }
 
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
@@ -107,6 +115,8 @@ fun HomeContent() {
                     "Catador"
 
                 sessionManager.saveUserId(dadosUsuario.id)
+                
+                profilePicture = dadosUsuario.foto
             }
 
         }
@@ -266,13 +276,17 @@ fun HomeContent() {
                     backgroundColor = colorResource(id = R.color.dark_green)
                 ) {
                     Row {
-                        Image(
-                            painter = painterResource(id = R.drawable.avatar_standard_icon),
-                            contentDescription = "Foto do Perfil",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(4.dp)
-                        )
+
+                        DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 60.dp, padding = 4.dp)
+
+//                        Image(
+//                            painter = DisplayImageFromUrl(imageUrl = profilePicture),
+//                            contentDescription = "Foto do Perfil",
+//                            modifier = Modifier
+//                                .size(60.dp)
+//                                .padding(4.dp)
+//                        )
+
                         Column(
                             modifier = Modifier.padding(start = 4.dp),
                             verticalArrangement = Arrangement.Center
@@ -505,4 +519,19 @@ fun verifyClick(getClick: Boolean): Color {
 @Composable
 fun HomePagePreview() {
     HomeContent()
+}
+
+@Composable
+fun DisplayImageFromUrl(imageUrl: String, description: String, size: Dp, padding:Dp) {
+    val painter = rememberImagePainter(imageUrl)
+    Column{
+        Image(
+            painter = painter,
+            contentDescription = null,
+            modifier = Modifier
+                .size(size)
+                .padding(padding)
+                .clip(CircleShape)
+        )
+    }
 }

@@ -10,7 +10,7 @@ class SessionManager (context: Context) {
 
     companion object {
         const val USER_TOKEN = "user_token"
-        const val USER_EMAIL = "Email"
+        const val USER_EMAIL = ""
         const val USER_ID: Long = 0
 //        const val USER_PICTURE = "content://com.android.providers.media.documents/document/image%3A61"
     }
@@ -24,7 +24,7 @@ class SessionManager (context: Context) {
     }
 
     fun getUserEmail(): String {
-        return prefs.getString(USER_EMAIL, "Email").toString()
+        return prefs.getString(USER_EMAIL, "").toString()
     }
 
     fun saveUserId(id: Long){

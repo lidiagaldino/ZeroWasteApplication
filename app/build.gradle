@@ -99,4 +99,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
     implementation 'com.google.firebase:firebase-storage-ktx'
 
+    //ImageView com URL
+    implementation "com.google.accompanist:accompanist-coil:0.15.0"
+
+
 }
