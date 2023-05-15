@@ -91,6 +91,10 @@ fun ProfileActivityBody() {
         mutableStateOf(listOf<UserAddress>())
     }
 
+    var profilePicture by remember {
+        mutableStateOf("")
+    }
+
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
 
@@ -113,6 +117,8 @@ fun ProfileActivityBody() {
                     materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
 
                 enderecosCadastrados = dadosUsuario.endereco_usuario!!
+
+                profilePicture = dadosUsuario.foto
 
             }
             else {
@@ -231,14 +237,26 @@ fun ProfileActivityBody() {
                         color = colorResource(id = R.color.dark_green)
                     )
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.avatar_standard_icon),
-                    contentDescription = "Foto do usuário",
-                    modifier = Modifier
-                        .size(130.dp)
-                        .clip(CircleShape)
-                        .background(colorResource(id = R.color.almost_white))
-                )
+                
+                Card(shape = CircleShape, backgroundColor = colorResource(id = R.color.almost_white), modifier = Modifier.size(130.dp)) {
+
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
+
+                        DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 120.dp, padding = 0.dp)
+
+                    }
+
+                }
+
+
+//                Image(
+//                    painter = painterResource(id = R.drawable.avatar_standard_icon),
+//                    contentDescription = "Foto do usuário",
+//                    modifier = Modifier
+//                        .size(130.dp)
+//                        .clip(CircleShape)
+//                        .background(colorResource(id = R.color.almost_white))
+//                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -301,11 +319,23 @@ fun ProfileActivityBody() {
                         )
                         Text(
                             text = stringResource(id = R.string.enderecos_text) + ":",
-                            modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
+                            modifier = Modifier.padding(start = 15.dp),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.Black
                         )
+
+                        if (!enderecoVisibility)
+                            Spacer(modifier = Modifier.height(40.dp))
+                        else
+                            if (enderecosCadastrados!!.size == 1)
+                                Spacer(modifier = Modifier.height(45.dp))
+                            else if(enderecosCadastrados!!.size == 2)
+                                Spacer(modifier = Modifier.height(35.dp))
+                            else
+                                Spacer(modifier = Modifier.height(90.dp))
+
+
                         Text(
                             text = stringResource(id = R.string.user_telephone_text) + ":",
                             modifier = Modifier.padding(start = 15.dp, bottom = 40.dp),
@@ -339,15 +369,30 @@ fun ProfileActivityBody() {
                             fontWeight = FontWeight.SemiBold,
                             color = colorResource(id = R.color.dark_green)
                         )
-                        Text(
-                            text = "Visualizar",
+                        Row(
                             modifier = Modifier
-                                .padding(end = 15.dp, bottom = 40.dp)
+                                .padding(end = 15.dp)
                                 .clickable { enderecoVisibility = !enderecoVisibility },
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = colorResource(id = R.color.dark_green)
-                        )
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.visualizar_enderecos),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = colorResource(id = R.color.dark_green)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.drop_down_icon),
+                                contentDescription = "Visualizar Materiais",
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .padding(start = 6.dp)
+                            )
+                        }
+                        if (!enderecoVisibility)
+                            Spacer(modifier = Modifier.height(40.dp))
+                        else
+                            Spacer(modifier = Modifier.height(10.dp))
                         AnimatedVisibility(
                             visible = enderecoVisibility,
                             enter = slideInVertically(
@@ -374,7 +419,7 @@ fun ProfileActivityBody() {
                                     ) {
                                         enderecosCadastrados[i].endereco!!.cidade?.let {
                                             Text(
-                                                text = "- $it",
+                                                text = "- $it, ${enderecosCadastrados[i].endereco!!.estado}",
                                             )
                                         }
                                     }
@@ -579,13 +624,16 @@ fun ProfileActivityBody() {
                     backgroundColor = colorResource(id = R.color.dark_green)
                 ) {
                     Row {
-                        Image(
-                            painter = painterResource(id = R.drawable.avatar_standard_icon),
-                            contentDescription = "Foto do Perfil",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(4.dp)
-                        )
+
+                        DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 60.dp, padding = 4.dp)
+
+//                        Image(
+//                            painter = painterResource(id = R.drawable.avatar_standard_icon),
+//                            contentDescription = "Foto do Perfil",
+//                            modifier = Modifier
+//                                .size(60.dp)
+//                                .padding(4.dp)
+//                        )
                         Column(
                             modifier = Modifier.padding(start = 4.dp),
                             verticalArrangement = Arrangement.Center

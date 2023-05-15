@@ -82,12 +82,12 @@ fun ProfileContent() {
     val sessionManager = SessionManager(context)
     val authToken = "Bearer " + sessionManager.fetchAuthToken()
 
-    var profilePicture: Uri?
+    var newProfilePicture: Uri?
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? ->
-            profilePicture = uri
+            newProfilePicture = uri
         }
     )
 
@@ -108,6 +108,10 @@ fun ProfileContent() {
         mutableStateOf(listOf<MateriaisCatador>())
     }
 
+    var profilePicture by remember{
+        mutableStateOf("")
+    }
+
 
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
 
@@ -124,6 +128,8 @@ fun ProfileContent() {
 
             if (userType == "Catador")
                 materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
+
+            profilePicture = dadosUsuario.foto
 
         }
 
@@ -232,21 +238,22 @@ fun ProfileContent() {
                     .padding(start = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.avatar_standard_icon),
-                    contentDescription = "Foto de perfil",
-                    modifier = Modifier
-                        .size(130.dp)
-                        .clip(
-                            CircleShape
-                        )
-                )
+
+                DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 170.dp, padding = 10.dp)
+
+//                Image(
+//                    painter = painterResource(id = R.drawable.avatar_standard_icon),
+//                    contentDescription = "Foto de perfil",
+//                    modifier = Modifier
+//                        .size(130.dp)
+//                        .clip(
+//                            CircleShape
+//                        )
+//                )
                 Button(
                     onClick = {
 
                         launcher.launch("image/*")
-
-
 
                     },
                     modifier = Modifier.padding(bottom = 12.dp),

@@ -6,6 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiCalls {
 
@@ -35,5 +36,8 @@ interface ApiCalls {
 
 //    @PUT("user")
 //    fun updateUserData(@Header("Authorization") token: String):
+
+    @POST("endereco/{id_endereco}")
+    fun catadoresProximos(@Header("Authorization") authToken: String, @Path("id_endereco") id_endereco: Int): Call<CatadoresProximos>
 
 }

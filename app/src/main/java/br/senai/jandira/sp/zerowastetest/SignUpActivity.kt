@@ -990,8 +990,7 @@ fun ZeroWasteApplication() {
                             nameError = nameState.isEmpty()
                             cpfError = cpfState.isEmpty()
                             emailError = emailState.isEmpty()
-                            phoneError =
-                                phoneState.isEmpty() || phoneState.length < 14 || phoneState.length > 15
+                            phoneError = phoneState.isEmpty() || phoneState.length < 14 || phoneState.length > 15
                             cepError = cepState.isEmpty()
                             resNumError = resNumberState.isEmpty()
                             birthDayError = birthdayState == "Ano-Mes-Dia"

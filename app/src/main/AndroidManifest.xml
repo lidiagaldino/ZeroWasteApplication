@@ -16,7 +16,7 @@
         android:theme="@style/Theme.ZeroWasteTest"
         tools:targetApi="31">
         <activity
-            android:name=".SolicitarColetaActivity"
+            android:name=".CatadoresProximosActivity"
             android:exported="false"
             android:label="@string/title_activity_my_profile"
             android:theme="@style/Theme.ZeroWasteTest" />
@@ -31,7 +31,7 @@
             android:label="@string/title_activity_page_slider"
             android:theme="@style/Theme.ZeroWasteTest" />
         <activity
-            android:name=".MyProfileActivity"
+            android:name=".MainActivity"
             android:exported="false"
             android:label="@string/title_activity_profile_gerador"
             android:theme="@style/Theme.ZeroWasteTest" />
@@ -57,7 +57,7 @@
             android:label="@string/title_activity_home"
             android:theme="@style/Theme.ZeroWasteTest" />
         <activity
-            android:name=".MainActivity"
+            android:name=".MyProfileActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ZeroWasteTest">

@@ -126,8 +126,6 @@ fun HomeContent() {
         }
     })
 
-
-
     var menuVisibility by remember {
         mutableStateOf(false)
     }

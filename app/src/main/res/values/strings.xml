@@ -40,7 +40,7 @@
     <string name="logout_menu">Sair</string>
     <string name="profile_text">Perfil</string>
     <string name="my_account">Minha Conta</string>
-    <string name="edit_profile_picture">Editar foto</string>
+    <string name="edit_profile_picture">Alterar foto</string>
     <string name="edit_text">Editar</string>
     <string name="username_text">Nome</string>
     <string name="user_email_text">Email</string>
@@ -68,6 +68,7 @@
     <string name="formulario">Formulário para solicitar uma coleta</string>
     <string name="primeiro">Selecione o local da coleta</string>
     <string name="segundo">Selecione os materiais que serão recolhidos</string>
+    <string name="visualizar_enderecos">Visualizar</string>
     <string name="foto_tela"></string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
