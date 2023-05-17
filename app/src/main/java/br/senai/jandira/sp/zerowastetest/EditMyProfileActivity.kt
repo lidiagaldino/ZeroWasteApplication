@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -41,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.AttRequest
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.AttResponse
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
@@ -74,7 +77,8 @@ fun ProfileContent() {
     val scrollState = rememberScrollState()
 
     val storage = Firebase.storage("gs://teste---zerowaste.appspot.com")
-    val storageRef = storage.reference.child("images/") // Adicionar UID (que vem da autenticação) do ususário
+    val storageRef =
+        storage.reference.child("images/") // Adicionar UID (que vem da autenticação) do ususário
 
     val retrofit = RetrofitApi.getMainApi()
     val apiCalls = retrofit.create(ApiCalls::class.java)
@@ -82,7 +86,9 @@ fun ProfileContent() {
     val sessionManager = SessionManager(context)
     val authToken = "Bearer " + sessionManager.fetchAuthToken()
 
-    var newProfilePicture: Uri?
+    var newProfilePicture by remember {
+        mutableStateOf<Uri?>(null)
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -108,10 +114,13 @@ fun ProfileContent() {
         mutableStateOf(listOf<MateriaisCatador>())
     }
 
-    var profilePicture by remember{
+    var profilePicture by remember {
         mutableStateOf("")
     }
 
+    var cpfState by remember {
+        mutableStateOf("")
+    }
 
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
 
@@ -128,6 +137,12 @@ fun ProfileContent() {
 
             if (userType == "Catador")
                 materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
+
+            cpfState = if (dadosUsuario.pessoa_fisica!!.isEmpty()) {
+                dadosUsuario.pessoa_juridica!![0].cnpj
+            } else {
+                dadosUsuario.pessoa_fisica!![0].cpf
+            }
 
             profilePicture = dadosUsuario.foto
 
@@ -147,6 +162,9 @@ fun ProfileContent() {
     var materialsState by remember {
         mutableStateOf("...")
     }
+
+
+
 
     var telephoneState by remember {
         mutableStateOf("")
@@ -239,7 +257,12 @@ fun ProfileContent() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 170.dp, padding = 10.dp)
+                DisplayImageFromUrl(
+                    imageUrl = profilePicture,
+                    "Foto de perfil",
+                    size = 170.dp,
+                    padding = 10.dp
+                )
 
 //                Image(
 //                    painter = painterResource(id = R.drawable.avatar_standard_icon),
@@ -250,6 +273,7 @@ fun ProfileContent() {
 //                            CircleShape
 //                        )
 //                )
+
                 Button(
                     onClick = {
 
@@ -381,8 +405,7 @@ fun ProfileContent() {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 16.dp)
-                                    .clickable { },
+                                    .padding(bottom = 16.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 materiaisCatador[i].material!!.nome?.let {
@@ -394,6 +417,9 @@ fun ProfileContent() {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Excluir Material",
+                                    modifier = Modifier.clickable {
+                                      materiaisCatador[i].material!!.id
+                                    },
                                     tint = Color.White
                                 )
                             }
@@ -417,7 +443,14 @@ fun ProfileContent() {
                 )
                 TextField(
                     value = telephoneState,
-                    onValueChange = { telephoneState = it },
+                    onValueChange = {
+
+                        // Remove all non-numeric characters from the input
+                        val cleanInput = it.replace("[^\\d]".toRegex(), "")
+                        // Format the input as a phone number
+                        telephoneState = formatPhone(cleanInput)
+
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 32.dp)
@@ -601,10 +634,69 @@ fun ProfileContent() {
                     Button(
                         onClick = {
 
-                            //Código para cerificar senha e atualizar, para DEPOIS voltar para a activity do perfil
+                            val storageRef = Firebase.storage.reference
+                            val imageRef =
+                                storageRef.child("profPicture/${sessionManager.getUserId()}.jpeg")
 
-                            val toMyProfile = Intent(context, MyProfileActivity::class.java)
-                            context.startActivity(toMyProfile)
+                            val uploadTask = imageRef.putFile(newProfilePicture!!)
+
+                            uploadTask.addOnSuccessListener { taskSnapshot ->
+                                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                                    profilePicture = uri.toString()
+
+                                    Log.i("YESSIR!", profilePicture)
+
+                                    val newData = AttRequest(
+                                        nome = username,
+                                        email = emailState,
+                                        telefone = telephoneState,
+                                        senha = passwordState,
+                                        cpf = cpfState,
+                                        biografia = biographyState,
+                                        foto = profilePicture
+                                    )
+
+                                    apiCalls.updateUserData(authToken, newData)
+                                        .enqueue(object : Callback<AttResponse> {
+                                            override fun onResponse(
+                                                call: Call<AttResponse>,
+                                                response: Response<AttResponse>
+                                            ) {
+
+                                                Log.i("teste", response.toString())
+
+                                                Log.i("teste", newData.toString())
+
+                                                if (response.body() == null) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Algo deu Errado!",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                } else {
+
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Usuário Atualizado",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+
+                                                }
+
+                                            }
+
+                                            override fun onFailure(call: Call<AttResponse>, t: Throwable) {
+                                                Log.i("fail_atualizarUser", t.message.toString())
+                                            }
+
+                                        })
+
+                                }?.addOnFailureListener { exception ->
+                                    Log.i("error", "$exception")
+                                }
+                            }.addOnFailureListener { exception ->
+                                Log.i("error", "$exception")
+                            }
 
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.light_green))

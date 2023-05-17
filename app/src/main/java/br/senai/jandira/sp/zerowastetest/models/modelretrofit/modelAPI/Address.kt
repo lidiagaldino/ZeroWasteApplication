@@ -2,7 +2,7 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
 
 data class Address (
 
-    var id: String = "",
+    var id: Int = 0,
     var cep: String = "",
     var logradouro: String = "",
     var bairro: String = "",

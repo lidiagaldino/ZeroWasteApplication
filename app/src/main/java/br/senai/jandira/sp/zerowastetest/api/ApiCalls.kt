@@ -2,11 +2,7 @@ package br.senai.jandira.sp.zerowastetest.api
 
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiCalls {
 
@@ -34,10 +30,12 @@ interface ApiCalls {
     @POST("endereco")
     fun newEnderecoUser(@Header("Authorization") authToken: String, @Body address: Address): Call<UserAddress>
 
-//    @PUT("user")
-//    fun updateUserData(@Header("Authorization") token: String):
+    @PUT("user")
+    fun updateUserData(@Header("Authorization") token: String, @Body attRequest: AttRequest): Call<AttResponse>
 
     @POST("endereco/{id_endereco}")
     fun catadoresProximos(@Header("Authorization") authToken: String, @Path("id_endereco") id_endereco: Int): Call<CatadoresProximos>
+
+//    @DELETE("")
 
 }

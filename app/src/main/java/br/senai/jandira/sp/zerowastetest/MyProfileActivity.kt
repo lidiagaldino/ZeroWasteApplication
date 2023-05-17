@@ -98,8 +98,6 @@ fun ProfileActivityBody() {
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
 
-            Log.i("response", "token: $authToken")
-
             if(response.body() != null) {
 
                 dadosUsuario = response.body()!!
