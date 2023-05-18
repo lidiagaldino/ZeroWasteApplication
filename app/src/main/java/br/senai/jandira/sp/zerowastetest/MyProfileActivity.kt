@@ -504,7 +504,7 @@ fun ProfileActivityBody() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, start = 15.dp, end = 15.dp, bottom = 20.dp),
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -516,7 +516,7 @@ fun ProfileActivityBody() {
                 Text(
                     text = getBiography(dadosUsuario),
                     fontSize = 14.sp,
-                    textAlign = TextAlign.Justify
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -868,10 +868,14 @@ fun ProfileActivityBody() {
         }
     }
 }
-
+@Composable
 fun getBiography(dadosUsuario: UserData): String {
 
-    var biography = dadosUsuario.biografia
+    var biography by remember{
+        mutableStateOf("")
+    }
+
+    biography = dadosUsuario.biografia
 
     if (biography == "" || biography == null)
         return "Sem biografia ainda."

@@ -49,6 +49,7 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import okhttp3.internal.wait
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -122,7 +123,7 @@ fun ProfileContent() {
         mutableStateOf("")
     }
 
-    val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
+    apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
 
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
             dadosUsuario = response.body()!!
@@ -163,7 +164,9 @@ fun ProfileContent() {
         mutableStateOf("...")
     }
 
-
+    var attRequest by remember {
+        mutableStateOf(AttRequest())
+    }
 
 
     var telephoneState by remember {
@@ -333,7 +336,8 @@ fun ProfileContent() {
                             id = R.color.light_green
                         ),
                         trailingIconColor = Color.White
-                    )
+                    ),
+                    singleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -368,7 +372,8 @@ fun ProfileContent() {
                             id = R.color.light_green
                         ),
                         trailingIconColor = Color.White
-                    )
+                    ),
+                    singleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -418,7 +423,8 @@ fun ProfileContent() {
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Excluir Material",
                                     modifier = Modifier.clickable {
-                                      materiaisCatador[i].material!!.id
+                                        Log.i("testando", "${materiaisCatador[i].id_catador} / ${materiaisCatador[i].material!!.id}")
+//                                        materiaisCatador[i].material!!.id
                                     },
                                     tint = Color.White
                                 )
@@ -507,7 +513,8 @@ fun ProfileContent() {
                             id = R.color.light_green
                         ),
                         trailingIconColor = Color.White
-                    )
+                    ),
+                    singleLine = true
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -548,7 +555,21 @@ fun ProfileContent() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { confirmationVisibility = !confirmationVisibility },
+                    onClick = {
+
+                        attRequest = AttRequest(
+                            nome = username,
+                            email = emailState,
+                            telefone = telephoneState,
+                            cpf = cpfState,
+                            biografia = biographyState,
+                            foto = profilePicture
+                        )
+
+
+
+                        confirmationVisibility = !confirmationVisibility
+                              },
                     colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.light_green)),
                     shape = RoundedCornerShape(0.dp),
                 ) {
@@ -634,68 +655,139 @@ fun ProfileContent() {
                     Button(
                         onClick = {
 
+                            attRequest.senha = passwordState
+
+                            Log.i("teste", attRequest.toString())
+
+                            Log.i("teste", username)
+
+
                             val storageRef = Firebase.storage.reference
                             val imageRef =
                                 storageRef.child("profPicture/${sessionManager.getUserId()}.jpeg")
 
-                            val uploadTask = imageRef.putFile(newProfilePicture!!)
+                            if (newProfilePicture != null) {
+                                val uploadTask = imageRef.putFile(newProfilePicture!!)
 
-                            uploadTask.addOnSuccessListener { taskSnapshot ->
-                                taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
-                                    profilePicture = uri.toString()
+                                uploadTask.addOnSuccessListener { taskSnapshot ->
+                                    taskSnapshot.metadata?.reference?.downloadUrl?.addOnSuccessListener { uri ->
+                                        profilePicture = uri.toString()
 
-                                    Log.i("YESSIR!", profilePicture)
+                                        Log.i("YESSIR!", profilePicture)
 
-                                    val newData = AttRequest(
-                                        nome = username,
-                                        email = emailState,
-                                        telefone = telephoneState,
-                                        senha = passwordState,
-                                        cpf = cpfState,
-                                        biografia = biographyState,
-                                        foto = profilePicture
-                                    )
+//                                        val newData = AttRequest(
+//                                            nome = username,
+//                                            email = emailState,
+//                                            telefone = telephoneState,
+//                                            senha = passwordState,
+//                                            cpf = cpfState,
+//                                            biografia = biographyState,
+//                                            foto = profilePicture
+//                                        )
 
-                                    apiCalls.updateUserData(authToken, newData)
-                                        .enqueue(object : Callback<AttResponse> {
-                                            override fun onResponse(
-                                                call: Call<AttResponse>,
-                                                response: Response<AttResponse>
-                                            ) {
+                                        apiCalls.updateUserData(authToken, attRequest)
+                                            .enqueue(object : Callback<AttResponse> {
+                                                override fun onResponse(
+                                                    call: Call<AttResponse>,
+                                                    response: Response<AttResponse>
+                                                ) {
 
-                                                Log.i("teste", response.toString())
+                                                    Log.i("teste", response.toString())
 
-                                                Log.i("teste", newData.toString())
+//                                                    Log.i("teste", attRequest.toString())
 
-                                                if (response.body() == null) {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Algo deu Errado!",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                } else {
+                                                    if (response.body() == null) {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Algo deu Errado!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    } else {
 
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Usuário Atualizado",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Usuário Atualizado",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+
+                                                        val toMyProfile = Intent(context, MyProfileActivity::class.java)
+                                                        context.startActivity(toMyProfile)
+
+                                                    }
 
                                                 }
 
-                                            }
+                                                override fun onFailure(
+                                                    call: Call<AttResponse>,
+                                                    t: Throwable
+                                                ) {
+                                                    Log.i(
+                                                        "fail_atualizarUser",
+                                                        t.message.toString()
+                                                    )
+                                                }
 
-                                            override fun onFailure(call: Call<AttResponse>, t: Throwable) {
-                                                Log.i("fail_atualizarUser", t.message.toString())
-                                            }
+                                            })
 
-                                        })
-
-                                }?.addOnFailureListener { exception ->
+                                    }?.addOnFailureListener { exception ->
+                                        Log.i("error", "$exception")
+                                    }
+                                }.addOnFailureListener { exception ->
                                     Log.i("error", "$exception")
                                 }
-                            }.addOnFailureListener { exception ->
-                                Log.i("error", "$exception")
+
+                            } else {
+
+//                                val newData = AttRequest(
+//                                    nome = username,
+//                                    email = emailState,
+//                                    telefone = telephoneState,
+//                                    senha = passwordState,
+//                                    cpf = cpfState,
+//                                    biografia = biographyState,
+//                                    foto = profilePicture
+//                                )
+
+                                apiCalls.updateUserData(authToken, attRequest)
+                                    .enqueue(object : Callback<AttResponse> {
+                                        override fun onResponse(
+                                            call: Call<AttResponse>,
+                                            response: Response<AttResponse>
+                                        ) {
+
+                                            Log.i("teste", response.toString())
+
+//                                            Log.i("teste", attRequest.toString())
+
+                                            if (response.body() == null) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Algo deu Errado!",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            } else {
+
+                                                Toast.makeText(
+                                                    context,
+                                                    "Usuário Atualizado",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+
+                                                Log.i("teste", authToken)
+
+                                            }
+
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<AttResponse>,
+                                            t: Throwable
+                                        ) {
+                                            Log.i("fail_atualizarUser", t.message.toString())
+                                        }
+
+                                    })
+
                             }
 
                         },
@@ -708,6 +800,7 @@ fun ProfileContent() {
         }
     }
 }
+
 
 
 @Preview(showBackground = true, showSystemUi = true)
