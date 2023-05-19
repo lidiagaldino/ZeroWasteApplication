@@ -10,6 +10,8 @@ class RetrofitApi {
         private lateinit var instanceMain: Retrofit
         private lateinit var instanceCep: Retrofit
         private lateinit var instanceGeoCode: Retrofit
+        private lateinit var instanceLogistic: Retrofit
+
 
         fun getMainApi(): Retrofit{
             if (!Companion::instanceMain.isInitialized) {
@@ -42,6 +44,17 @@ class RetrofitApi {
                     .build()
             }
             return instanceGeoCode
+        }
+
+        fun getLogisticApi(): Retrofit{
+            if (!Companion::instanceLogistic.isInitialized) {
+                instanceLogistic = Retrofit
+                    .Builder()
+                    .baseUrl(Constants.LOGITSIC_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+            }
+            return instanceLogistic
         }
 
     }

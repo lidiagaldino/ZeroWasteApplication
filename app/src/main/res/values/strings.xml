@@ -69,7 +69,16 @@
     <string name="primeiro">Selecione o local da coleta</string>
     <string name="segundo">Selecione os materiais que serão recolhidos</string>
     <string name="visualizar_enderecos">Visualizar</string>
-    <string name="foto_tela"></string>
+    <string name="solicitacoes_coletas">Solicitações de Coletas</string>
+    <string name="text_homeactivity">Seja bem vindo ao nosso website, caso não saiba por onde começar, clique no botão "Saiba mais" para ter uma representação em slides.</string>
+    <string name="empty_pickuprequests">Você não possui nenhum chamado</string>
+    <string name="accept_request">Aceitar chamado</string>
+    <string name="distance">Distância</string>
+    <string name="localization">Localização</string>
+    <string name="pickup_materials">Materiais para coleta</string>
+    <string name="deny">Recusar</string>
+    <string name="accept">Aceitar</string>
+    <string name="finish_run">Finalizar</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
@@ -81,4 +90,5 @@
     <string name="title_activity_profile_gerador">ProfileActivityGerador</string>
     <string name="title_activity_edit_profile_catador">EditProfileCatadorActivity</string>
     <string name="title_activity_page_slider">PageSliderActivity</string>
+    <string name="title_activity_aceitar_coleta">AceitarColetaActivity</string>
 </resources>

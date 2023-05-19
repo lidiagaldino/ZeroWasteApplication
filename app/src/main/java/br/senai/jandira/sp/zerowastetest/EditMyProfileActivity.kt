@@ -260,12 +260,24 @@ fun ProfileContent() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                DisplayImageFromUrl(
-                    imageUrl = profilePicture,
-                    "Foto de perfil",
-                    size = 170.dp,
-                    padding = 10.dp
-                )
+                if (newProfilePicture != null){
+
+                    DisplayImageFromUrl(
+                        imageUrl = newProfilePicture.toString(),
+                        "Foto de perfil",
+                        size = 170.dp,
+                        padding = 10.dp
+                    )
+
+                } else {
+
+                    DisplayImageFromUrl(
+                        imageUrl = profilePicture,
+                        "Foto de perfil",
+                        size = 170.dp,
+                        padding = 10.dp
+                    )
+                }
 
 //                Image(
 //                    painter = painterResource(id = R.drawable.avatar_standard_icon),
@@ -569,7 +581,7 @@ fun ProfileContent() {
 
 
                         confirmationVisibility = !confirmationVisibility
-                              },
+                    },
                     colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.light_green)),
                     shape = RoundedCornerShape(0.dp),
                 ) {
@@ -612,8 +624,6 @@ fun ProfileContent() {
                         text = stringResource(id = R.string.confirm_password_to_update),
                         fontSize = 20.sp
                     )
-
-//                    Spacer(modifier = Modifier.height(24.dp))
 
                     OutlinedTextField(
                         value = passwordState,
@@ -674,16 +684,6 @@ fun ProfileContent() {
                                         profilePicture = uri.toString()
 
                                         Log.i("YESSIR!", profilePicture)
-
-//                                        val newData = AttRequest(
-//                                            nome = username,
-//                                            email = emailState,
-//                                            telefone = telephoneState,
-//                                            senha = passwordState,
-//                                            cpf = cpfState,
-//                                            biografia = biographyState,
-//                                            foto = profilePicture
-//                                        )
 
                                         attRequest.foto = profilePicture
 

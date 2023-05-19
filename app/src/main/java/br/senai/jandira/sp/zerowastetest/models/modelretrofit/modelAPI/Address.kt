@@ -9,8 +9,8 @@ data class Address (
     var cidade: String = "",
     var estado: String = "",
     var complemento: String? = null,
-    var latitude: Float? = 0.0f,
-    var longitude: Float? = 0.0f,
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0,
     var numero : String = "",
     var apelido: String? = null,
     var id_usuario: Long? = null

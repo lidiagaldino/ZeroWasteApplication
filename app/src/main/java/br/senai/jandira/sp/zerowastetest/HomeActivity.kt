@@ -3,7 +3,6 @@ package br.senai.jandira.sp.zerowastetest
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -19,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -39,6 +37,7 @@ import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import retrofit2.Call
 import retrofit2.Callback
@@ -75,7 +74,7 @@ fun HomeContent() {
     val apiCalls = retrofit.create(ApiCalls::class.java)
     val sessionManager = SessionManager(context)
 
-    var authToken = "Bearer " + sessionManager.fetchAuthToken()
+    val authToken = "Bearer " + sessionManager.fetchAuthToken()
 
     var dadosUsuario by remember {
         mutableStateOf(UserData())
@@ -86,15 +85,15 @@ fun HomeContent() {
     var userType by remember {
         mutableStateOf("...")
     }
-    
+
     var profilePicture by remember {
         mutableStateOf("")
     }
 
-    val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
+    apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
 
-            if(response.body() == null){
+            if (response.body() == null) {
 
                 val backToMain = Intent(context, MainActivity::class.java)
                 context.startActivity(backToMain)
@@ -115,7 +114,7 @@ fun HomeContent() {
                     "Catador"
 
                 sessionManager.saveUserId(dadosUsuario.id)
-                
+
                 profilePicture = dadosUsuario.foto
             }
 
@@ -126,21 +125,7 @@ fun HomeContent() {
         }
     })
 
-    var menuVisibility by remember {
-        mutableStateOf(false)
-    }
-
-    var actionOptionsVisibility by remember {
-        mutableStateOf(false)
-    }
-
-    var requestPickupClick by remember {
-        mutableStateOf(false)
-    }
-    var registerLocationClick by remember {
-        mutableStateOf(false)
-    }
-    var mapCatadoresClick by remember {
+    var menuState by remember {
         mutableStateOf(false)
     }
 
@@ -149,7 +134,7 @@ fun HomeContent() {
         contentDescription = "",
         modifier = Modifier
             .padding(start = 215.dp)
-            .blur(radius = blurEffect(menuVisibility)),
+            .blur(radius = blurEffect(menuState)),
         alignment = Alignment.TopEnd
     )
     Image(
@@ -157,13 +142,13 @@ fun HomeContent() {
         contentDescription = "",
         modifier = Modifier
             .padding(end = 260.dp)
-            .blur(radius = blurEffect(menuVisibility)),
+            .blur(radius = blurEffect(menuState)),
         alignment = Alignment.BottomStart
     )
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .blur(blurEffect(menuVisibility))
+            .blur(blurEffect(menuState))
             .verticalScroll(scrollable)
     ) {
         Image(
@@ -173,7 +158,7 @@ fun HomeContent() {
                 .size(40.dp)
                 .padding(start = 15.dp, top = 15.dp)
                 .clickable {
-                    menuVisibility = !menuVisibility
+                    menuState = !menuState
                 }
         )
         Row(
@@ -207,16 +192,19 @@ fun HomeContent() {
             modifier = Modifier.size(380.dp),
             alignment = Alignment.Center
         )
-        Text(
-            text = stringResource(id = R.string.lorem_ipsum),
-            textAlign = TextAlign.Center,
-            fontSize = 16.sp,
-            modifier = Modifier.padding(start = 12.dp, end = 12.dp)
-        )
+
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
+
         ) {
+            Text(
+                text = stringResource(id = R.string.text_homeactivity),
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            )
             Button(
                 onClick = {
                     val toPagerSlider = Intent(context, PageSliderActivity::class.java)
@@ -236,7 +224,22 @@ fun HomeContent() {
             }
         }
     }
-    AnimatedVisibility(visible = menuVisibility,
+
+    var actionOptionsVisibility by remember {
+        mutableStateOf(false)
+    }
+
+    var requestPickupClick by remember {
+        mutableStateOf(false)
+    }
+    var registerLocationClick by remember {
+        mutableStateOf(false)
+    }
+    var mapCatadoresClick by remember {
+        mutableStateOf(false)
+    }
+
+    AnimatedVisibility(visible = menuState,
         enter = slideInHorizontally(animationSpec = tween(400)) { fullWidth -> -fullWidth } + fadeIn(
             animationSpec = tween(durationMillis = 200)
         ),
@@ -258,7 +261,7 @@ fun HomeContent() {
                         .size(40.dp)
                         .padding(start = 15.dp, top = 15.dp)
                         .clickable {
-                            menuVisibility = !menuVisibility
+                            menuState = !menuState
                         }
                 )
                 Spacer(modifier = Modifier.height(20.dp))
@@ -275,15 +278,12 @@ fun HomeContent() {
                 ) {
                     Row {
 
-                        DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 60.dp, padding = 4.dp)
-
-//                        Image(
-//                            painter = DisplayImageFromUrl(imageUrl = profilePicture),
-//                            contentDescription = "Foto do Perfil",
-//                            modifier = Modifier
-//                                .size(60.dp)
-//                                .padding(4.dp)
-//                        )
+                        DisplayImageFromUrl(
+                            imageUrl = profilePicture,
+                            "Foto de perfil",
+                            size = 60.dp,
+                            padding = 4.dp
+                        )
 
                         Column(
                             modifier = Modifier.padding(start = 4.dp),
@@ -306,7 +306,7 @@ fun HomeContent() {
                         .height(55.dp)
                         .padding(start = 8.dp, end = 20.dp)
                         .clickable {
-                            menuVisibility = !menuVisibility
+                            menuState = !menuState
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -376,17 +376,41 @@ fun HomeContent() {
                             end = 20.dp
                         )
                     ) {
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable { requestPickupClick = !requestPickupClick }) {
-                            Text(
-                                text = stringResource(id = R.string.request_pickup),
-                                color = verifyClick(
-                                    getClick = requestPickupClick
+                        if (userType == "Gerador") {
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 10.dp)
+                                .clickable {
+                                    requestPickupClick = !requestPickupClick
+                                }) {
+                                Text(
+                                    text = stringResource(id = R.string.request_pickup),
+                                    color = verifyClick(
+                                        getClick = requestPickupClick
+                                    )
                                 )
-                            )
+                            }
+                        } else {
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 10.dp)
+                                .clickable {
+
+                                    requestPickupClick = !requestPickupClick
+
+                                    val toAceitarColetaActivity = Intent(context, AceitarColetaActivity::class.java)
+                                    context.startActivity(toAceitarColetaActivity)
+
+                                }) {
+                                Text(
+                                    text = stringResource(id = R.string.solicitacoes_coletas),
+                                    color = verifyClick(
+                                        getClick = requestPickupClick
+                                    )
+                                )
+                            }
                         }
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -404,18 +428,21 @@ fun HomeContent() {
                             )
 
                         }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp, bottom = 10.dp)
-                                .clickable { mapCatadoresClick = !mapCatadoresClick }) {
-                            Text(
-                                text = stringResource(id = R.string.map_close_catadores),
-                                color = verifyClick(
-                                    getClick = mapCatadoresClick
+                        if (userType == "Gerador") {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp, bottom = 10.dp)
+                                    .clickable { mapCatadoresClick = !mapCatadoresClick }) {
+                                Text(
+                                    text = stringResource(id = R.string.map_close_catadores),
+                                    color = verifyClick(
+                                        getClick = mapCatadoresClick
+                                    )
                                 )
-                            )
+                            }
                         }
+
                     }
                 }
                 Spacer(modifier = Modifier.height(15.dp))
@@ -519,13 +546,14 @@ fun HomePagePreview() {
     HomeContent()
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
-fun DisplayImageFromUrl(imageUrl: String, description: String, size: Dp, padding:Dp) {
+fun DisplayImageFromUrl(imageUrl: String, description: String, size: Dp, padding: Dp) {
     val painter = rememberImagePainter(imageUrl)
-    Column{
+    Column {
         Image(
             painter = painter,
-            contentDescription = null,
+            contentDescription = description,
             modifier = Modifier
                 .size(size)
                 .padding(padding)
@@ -533,3 +561,4 @@ fun DisplayImageFromUrl(imageUrl: String, description: String, size: Dp, padding
         )
     }
 }
+

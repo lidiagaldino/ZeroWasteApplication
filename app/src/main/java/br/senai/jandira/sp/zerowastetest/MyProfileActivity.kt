@@ -724,17 +724,39 @@ fun ProfileActivityBody() {
                             end = 20.dp
                         )
                     ) {
-                        Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable { requestPickupClick = !requestPickupClick }) {
-                            Text(
-                                text = stringResource(id = R.string.request_pickup),
-                                color = verifyClick(
-                                    getClick = requestPickupClick
+                        if (userType == "Gerador"){
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 10.dp)
+                                .clickable { requestPickupClick = !requestPickupClick }) {
+                                Text(
+                                    text = stringResource(id = R.string.request_pickup),
+                                    color = verifyClick(
+                                        getClick = requestPickupClick
+                                    )
                                 )
-                            )
+                            }
+                        } else {
+                            Row(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp, bottom = 10.dp)
+                                .clickable {
+
+                                    requestPickupClick = !requestPickupClick
+
+                                    val toAceitarColetaActivity = Intent(context, AceitarColetaActivity::class.java)
+                                    context.startActivity(toAceitarColetaActivity)
+
+                                }) {
+                                Text(
+                                    text = stringResource(id = R.string.solicitacoes_coletas),
+                                    color = verifyClick(
+                                        getClick = requestPickupClick
+                                    )
+                                )
+                            }
                         }
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -752,17 +774,19 @@ fun ProfileActivityBody() {
                             )
 
                         }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 10.dp, bottom = 10.dp)
-                                .clickable { mapCatadoresClick = !mapCatadoresClick }) {
-                            Text(
-                                text = stringResource(id = R.string.map_close_catadores),
-                                color = verifyClick(
-                                    getClick = mapCatadoresClick
+                        if (userType == "Gerador"){
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp, bottom = 10.dp)
+                                    .clickable { mapCatadoresClick = !mapCatadoresClick }) {
+                                Text(
+                                    text = stringResource(id = R.string.map_close_catadores),
+                                    color = verifyClick(
+                                        getClick = mapCatadoresClick
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }

@@ -102,5 +102,15 @@ dependencies {
     //ImageView com URL
     implementation "com.google.accompanist:accompanist-coil:0.15.0"
 
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+
+    //Location
+
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
 
 }

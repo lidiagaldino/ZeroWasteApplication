@@ -174,7 +174,7 @@ fun ZeroWasteApplication() {
     }
 
     var resultLatLong by remember {
-        mutableStateOf(Geometry(null, null))
+        mutableStateOf(Geometry())
     }
 
     var userAddress by remember {

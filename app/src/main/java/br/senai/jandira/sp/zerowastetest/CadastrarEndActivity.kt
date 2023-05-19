@@ -62,8 +62,6 @@ class CadastrarEnd : ComponentActivity() {
 @Composable
 fun CadastrarEndContent() {
 
-    val scrollable = rememberScrollState()
-
     val context = LocalContext.current
 
     val retrofitApi = RetrofitApi.getMainApi()
