@@ -685,6 +685,10 @@ fun ProfileContent() {
 //                                            foto = profilePicture
 //                                        )
 
+                                        attRequest.foto = profilePicture
+
+                                        Log.i("teste", attRequest.toString())
+
                                         apiCalls.updateUserData(authToken, attRequest)
                                             .enqueue(object : Callback<AttResponse> {
                                                 override fun onResponse(
