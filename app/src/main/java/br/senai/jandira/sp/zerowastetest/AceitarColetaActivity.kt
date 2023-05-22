@@ -1,6 +1,7 @@
 package br.senai.jandira.sp.zerowastetest
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -20,6 +22,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -137,7 +141,7 @@ class AceitarColetaActivity : ComponentActivity() {
                                 // A surface container using the 'background' color from the theme
                                 Surface(
                                     modifier = Modifier.fillMaxSize(),
-                                    color = Color(31, 192, 5)
+                                    color = colorResource(id = R.color.light_green)
                                 ) {
 
                                     currentLocation?.let { location ->
@@ -214,6 +218,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
 
     val retrofitApi = RetrofitApi.getLogisticApi()
     val orderApi = retrofitApi.create(LogisticCalls::class.java)
+    val context = LocalContext.current
 
     var order by remember {
         mutableStateOf(pedido)
@@ -279,6 +284,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
             .background(color = Color(255, 255, 255))
     )
     {
+
         if (!locked) {
             Box(Modifier.fillMaxSize()) {
                 Image(
@@ -294,6 +300,16 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                 )
                 {
 
+                    Image(painter = painterResource(id = R.drawable.back_arrow),
+                        contentDescription = "Voltar",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .padding(start = 10.dp, top = 10.dp)
+                            .clickable {
+                                val backToHome = Intent(context, HomeActivity::class.java)
+                                context.startActivity(backToHome)
+                            }
+                    )
 
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center)
                     {
@@ -379,7 +395,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                                 )?.nome else if(order.pedido?.tbl_gerador?.user?.pessoa_juridica?.isNotEmpty() == true) order.pedido?.tbl_gerador?.user?.pessoa_juridica?.get(0)?.nome_fantasia else nothing
                             }",
                             fontSize = 23.sp,
-                            color = Color(31, 192, 5)
+                            color = colorResource(id = R.color.light_green)
                         )
 
                         Image(
@@ -403,7 +419,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                             textAlign = TextAlign.Center,
                             text = "${order.pedido?.FilaPedidoCatador?.get(0)?.distancia} de distância do endereço principal",
                             fontSize = 20.sp,
-                            color = Color(31, 192, 5)
+                            color = colorResource(id = R.color.light_green)
                         )
 
                         Text(
@@ -419,7 +435,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                             textAlign = TextAlign.Center,
                             text = "${order.pedido?.endereco?.cidade}, ${order.pedido?.endereco?.logradouro} - ${order.pedido?.endereco?.numero}, ${order.pedido?.endereco?.estado}",
                             fontSize = 20.sp,
-                            color = Color(31, 192, 5)
+                            color = colorResource(id = R.color.light_green)
                         )
 
                         Text(
@@ -439,7 +455,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                                 }
                             }",
                             fontSize = 20.sp,
-                            color = Color(31, 192, 5)
+                            color = colorResource(id = R.color.light_green)
                         )
 
 
@@ -536,11 +552,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                                         .width(200.dp)
                                         .height(45.dp), shape = RoundedCornerShape(20.dp),
                                     colors = ButtonDefaults.buttonColors(
-                                        backgroundColor = Color(
-                                            52,
-                                            171,
-                                            10
-                                        )
+                                        backgroundColor = colorResource(id = R.color.light_green)
                                     )
                                 )
                                 {
@@ -586,11 +598,7 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                                         .width(200.dp)
                                         .height(45.dp), shape = RoundedCornerShape(20.dp),
                                     colors = ButtonDefaults.buttonColors(
-                                        backgroundColor = Color(
-                                            52,
-                                            171,
-                                            10
-                                        )
+                                        backgroundColor = colorResource(id = R.color.light_green)
                                     )
                                 )
                                 {

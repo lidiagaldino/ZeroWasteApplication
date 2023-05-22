@@ -13,6 +13,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -42,10 +43,7 @@ import androidx.compose.ui.unit.sp
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.AttRequest
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.AttResponse
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.MateriaisCatador
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -75,7 +73,6 @@ class EditMyProfileActivity : ComponentActivity() {
 fun ProfileContent() {
 
     val context = LocalContext.current
-    val scrollState = rememberScrollState()
 
     val storage = Firebase.storage("gs://teste---zerowaste.appspot.com")
     val storageRef =
@@ -155,14 +152,29 @@ fun ProfileContent() {
 
     })
 
+    var materialsList = mutableListOf<Materials>()
+
+    apiCalls.getMateriaisList().enqueue(object : Callback<MaterialsList> {
+        override fun onResponse(call: Call<MaterialsList>, response: Response<MaterialsList>) {
+
+            for (i in response.body()!!.materials!!) {
+
+//                materialsList.add()
+
+            }
+
+        }
+
+        override fun onFailure(call: Call<MaterialsList>, t: Throwable) {
+            TODO("Not yet implemented")
+        }
+
+    })
+
     var emailState by remember {
         mutableStateOf("...")
     }
     emailState = dadosUsuario.email
-
-    var materialsState by remember {
-        mutableStateOf("...")
-    }
 
     var attRequest by remember {
         mutableStateOf(AttRequest())
@@ -199,10 +211,14 @@ fun ProfileContent() {
         else
             painterResource(id = R.drawable.visibility_icon_off)
 
+    var showList by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
+            .verticalScroll(rememberScrollState())
             .blur(blurEffect(confirmationVisibility))
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
@@ -277,17 +293,8 @@ fun ProfileContent() {
                         size = 170.dp,
                         padding = 10.dp
                     )
-                }
 
-//                Image(
-//                    painter = painterResource(id = R.drawable.avatar_standard_icon),
-//                    contentDescription = "Foto de perfil",
-//                    modifier = Modifier
-//                        .size(130.dp)
-//                        .clip(
-//                            CircleShape
-//                        )
-//                )
+                }
 
                 Button(
                     onClick = {
@@ -407,7 +414,11 @@ fun ProfileContent() {
                             imageVector = Icons.Default.Add,
                             contentDescription = "Adicionar Material",
                             modifier = Modifier
-                                .clickable { /*TODO*/ }
+                                .clickable {
+
+                                    showList = true
+
+                                }
                                 .size(30.dp),
                             tint = Color.White
                         )
@@ -419,6 +430,7 @@ fun ProfileContent() {
                     ) {
 
                         for (i in materiaisCatador.indices) {
+
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -435,8 +447,34 @@ fun ProfileContent() {
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Excluir Material",
                                     modifier = Modifier.clickable {
-                                        Log.i("testando", "${materiaisCatador[i].id_catador} / ${materiaisCatador[i].material!!.id}")
-//                                        materiaisCatador[i].material!!.id
+                                        Log.i("testando", "Catador: ${materiaisCatador[i].id_catador} / Material: ${materiaisCatador[i].material!!.id}")
+
+                                        val deleted = apiCalls.deletarMaterial(authToken, id_catador = materiaisCatador[i].id_catador, id_material = materiaisCatador[i].material!!.id).enqueue(
+                                            object : Callback<Void> {
+                                                override fun onResponse(
+                                                    call: Call<Void>,
+                                                    response: Response<Void>
+                                                ) {
+                                                    if (response.code() == 204){
+
+                                                        Toast.makeText(context, "Material Deletado", Toast.LENGTH_SHORT).show()
+
+                                                    } else {
+
+                                                        Log.i("Failed", "$response")
+
+                                                    }
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<Void>,
+                                                    t: Throwable
+                                                ) {
+                                                    Log.i("Failde to contact API", t.message.toString())
+                                                }
+
+                                            })
+
                                     },
                                     tint = Color.White
                                 )
@@ -596,6 +634,19 @@ fun ProfileContent() {
             }
         }
     }
+    
+    AnimatedVisibility(
+        visible = showList,
+        enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
+        exit = scaleOut(animationSpec = tween(1)) + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+    ) {
+        
+        LazyColumn {
+            item { materialsList }
+        }
+        
+    }
+    
     AnimatedVisibility(
         visible = confirmationVisibility,
         enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
@@ -741,16 +792,6 @@ fun ProfileContent() {
                                 }
 
                             } else {
-
-//                                val newData = AttRequest(
-//                                    nome = username,
-//                                    email = emailState,
-//                                    telefone = telephoneState,
-//                                    senha = passwordState,
-//                                    cpf = cpfState,
-//                                    biografia = biographyState,
-//                                    foto = profilePicture
-//                                )
 
                                 apiCalls.updateUserData(authToken, attRequest)
                                     .enqueue(object : Callback<AttResponse> {

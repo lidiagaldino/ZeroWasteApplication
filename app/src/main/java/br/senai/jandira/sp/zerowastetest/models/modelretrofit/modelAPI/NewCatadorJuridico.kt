@@ -7,7 +7,7 @@ data class NewCatadorJuridico(
     var telefone: String = "",
     var email: String = "",
     var senha: String = "",
-    var materiais: List<Long?>? = null,
+    var materiais: List<Int?>? = null,
 
     var cnpj: String? = null,
 

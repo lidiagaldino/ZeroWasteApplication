@@ -36,6 +36,7 @@ interface ApiCalls {
     @POST("endereco/{id_endereco}")
     fun catadoresProximos(@Header("Authorization") authToken: String, @Path("id_endereco") id_endereco: Int): Call<CatadoresProximos>
 
-//    @DELETE("")
+    @DELETE("materiais/{id_catador}/{id_material}")
+    fun deletarMaterial(@Header("Authorization") authToken: String, @Path("id_catador") id_catador: Int, @Path("id_material") id_material: Int): Call<Void>
 
 }

@@ -194,7 +194,7 @@ fun ZeroWasteApplication() {
         mutableStateOf(NewGeradorJuridico())
     }
 
-    var materialsList = mutableListOf<Long?>()
+    var materialsList = mutableListOf<Int?>()
 
     val calendarState = rememberSheetState()
 
@@ -1267,7 +1267,7 @@ fun ZeroWasteApplication() {
                                                             ) {
 
                                                                 for (i in response.body()!!.materials!!) {
-                                                                    materialsList.add(i.id!!)
+                                                                    materialsList.add(i.id)
                                                                 }
 
                                                                 if (fisicoClick) {
