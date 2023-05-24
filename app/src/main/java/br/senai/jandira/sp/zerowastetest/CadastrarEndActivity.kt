@@ -422,7 +422,8 @@ fun CadastrarEndContent() {
                             response: Response<CepResponse>
                         ) {
 
-                            Log.i("cep_success", response.body().toString())
+                            Log.i("test", cepState)
+                            Log.i("cep_success", response.toString())
 
                             if (response.body() != null) {
                                 val cepBody = response.body()!!

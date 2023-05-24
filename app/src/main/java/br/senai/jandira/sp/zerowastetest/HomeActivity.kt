@@ -46,6 +46,18 @@ import retrofit2.Response
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sessionManager = SessionManager(this)
+        val cleanToken = sessionManager.fetchAuthToken()
+
+        val socketHandler = SocketHandler()
+        socketHandler.setSocket(cleanToken)
+        socketHandler.establishConnection()
+
+
+
+        val mSocket = socketHandler.getSocket()
+
         setContent {
             ZeroWasteTestTheme {
 

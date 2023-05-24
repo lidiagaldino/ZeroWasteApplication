@@ -59,12 +59,15 @@ class AceitarColetaActivity : ComponentActivity() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        val socketHandler = SocketHandler()
-        socketHandler.setSocket()
-        socketHandler.establishConnection()
-
         val sessionManager = SessionManager(this)
         val authToken = "Bearer " + sessionManager.fetchAuthToken()
+        val cleanToken = sessionManager.fetchAuthToken()
+
+        val socketHandler = SocketHandler()
+        socketHandler.setSocket(cleanToken)
+        socketHandler.establishConnection()
+
+
 
         val mSocket = socketHandler.getSocket()
 

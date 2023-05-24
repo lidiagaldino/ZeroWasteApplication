@@ -47,7 +47,6 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import okhttp3.internal.wait
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -112,6 +111,10 @@ fun ProfileContent() {
         mutableStateOf(listOf<MateriaisCatador>())
     }
 
+    var enderecosUsuario by remember {
+        mutableStateOf(listOf<UserAddress>())
+    }
+
     var profilePicture by remember {
         mutableStateOf("")
     }
@@ -123,6 +126,8 @@ fun ProfileContent() {
     apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
 
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+
+
             dadosUsuario = response.body()!!
             username =
                 if (dadosUsuario.pessoa_fisica!!.isEmpty()) dadosUsuario.pessoa_juridica!![0].nome_fantasia
@@ -143,6 +148,8 @@ fun ProfileContent() {
             }
 
             profilePicture = dadosUsuario.foto
+
+            enderecosUsuario = dadosUsuario.endereco_usuario!!
 
         }
 
@@ -211,7 +218,15 @@ fun ProfileContent() {
         else
             painterResource(id = R.drawable.visibility_icon_off)
 
-    var showList by remember {
+    var showListMateriais by remember {
+        mutableStateOf(false)
+    }
+
+    var showListAdresses by remember {
+        mutableStateOf(false)
+    }
+
+    var adressesErr by remember {
         mutableStateOf(false)
     }
 
@@ -416,7 +431,7 @@ fun ProfileContent() {
                             modifier = Modifier
                                 .clickable {
 
-                                    showList = true
+                                    showListMateriais = true
 
                                 }
                                 .size(30.dp),
@@ -434,7 +449,7 @@ fun ProfileContent() {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(bottom = 16.dp),
+                                    .padding(bottom = 16.dp, top = 8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 materiaisCatador[i].material!!.nome?.let {
@@ -482,7 +497,7 @@ fun ProfileContent() {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Divider(
                         modifier = Modifier.padding(start = 16.dp, end = 26.dp, bottom = 8.dp),
@@ -533,41 +548,124 @@ fun ProfileContent() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = stringResource(id = R.string.user_cep_text),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-
-                TextField(
-                    value = enderecoUsuario,
-                    onValueChange = { enderecoUsuario = it },
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 32.dp)
-                        .background(
-                            color = colorResource(id = R.color.dark_green),
-                            shape = RoundedCornerShape(0.dp)
-                        ),
-                    trailingIcon = {
-                        Icon(imageVector = Icons.Default.Edit, contentDescription = "")
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        Color.White,
-                        backgroundColor = Color.Transparent,
-                        focusedIndicatorColor = colorResource(
-                            id = R.color.light_green
-                        ),
-                        cursorColor = colorResource(
-                            id = R.color.light_green
-                        ),
-                        trailingIconColor = Color.White
-                    ),
-                    singleLine = true
-                )
+                        .padding(start = 20.dp, end = 40.dp, top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.user_cep_text),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Cadastrar Endereço",
+                        modifier = Modifier
+                            .clickable {
+
+                                context.startActivity(Intent(context, CadastrarEnd::class.java))
+
+                            }
+                            .size(30.dp),
+                        tint = Color.White
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 40.dp, top = 8.dp)
+                ) {
+
+                    for (i in enderecosUsuario.indices) {
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp, top = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            enderecosUsuario[i].endereco!!.apelido?.let {
+                                Text(
+                                    text = "- $it",
+                                    color = Color.White
+                                )
+                            }
+
+                            Row{
+
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Editar Endereço",
+                                    modifier = Modifier.clickable {
+
+                                        Log.i("testando_editar", "Id_address: ${enderecosUsuario[i].id_endereco!!} / Id_User: ${enderecosUsuario[i].id_usuario}")
+
+                                    },
+                                    tint = Color.White
+                                )
+                                
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Excluir Endereço",
+                                    modifier = Modifier.clickable {
+                                        Log.i("testando", "Id_address: ${enderecosUsuario[i].id_endereco!!} / Id_User: ${enderecosUsuario[i].id_usuario}")
+
+                                         apiCalls.deletarEndereco(authToken, id_usuario = enderecosUsuario[i].id_usuario, id_endereco = enderecosUsuario[i].id_endereco).enqueue(
+                                            object : Callback<Boolean> {
+                                                override fun onResponse(
+                                                    call: Call<Boolean>,
+                                                    response: Response<Boolean>
+                                                ) {
+                                                    if (response.code() == 200){
+
+                                                        Toast.makeText(context, "Endereço Deletado", Toast.LENGTH_SHORT).show()
+
+                                                    } else {
+
+                                                        Log.i("Failed", "$response")
+
+//                                                    Toast.makeText(context, "O Usuário deve ter ao menos 1 endereço.", Toast.LENGTH_SHORT)
+//                                                        .show()
+                                                        adressesErr = true
+
+
+                                                    }
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<Boolean>,
+                                                    t: Throwable
+                                                ) {
+                                                    Log.i("Failde to contact API", t.message.toString())
+                                                    Toast.makeText(context, "Não foi possível conectar-se à internet. Verifique sua conexão", Toast.LENGTH_LONG)
+                                                        .show()
+                                                }
+
+                                            })
+
+                                    },
+                                    tint = Color.White
+                                )
+
+                            }
+
+
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
+
+                Divider(
+                    modifier = Modifier.padding(start = 16.dp, end = 26.dp, bottom = 8.dp),
+                    color = Color.Black,
+                    thickness = 0.7f.dp
+                )
 
                 Text(
                     text = stringResource(id = R.string.user_biography),
@@ -636,7 +734,7 @@ fun ProfileContent() {
     }
     
     AnimatedVisibility(
-        visible = showList,
+        visible = showListMateriais,
         enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
         exit = scaleOut(animationSpec = tween(1)) + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
     ) {

@@ -1,8 +1,20 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.content.Context
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.ClipboardManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -17,14 +29,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,6 +85,8 @@ fun ProfileActivityBody() {
     val sessionManager = SessionManager(context)
     val authToken = "Bearer " + sessionManager.fetchAuthToken()
 
+    Log.i("authToken", authToken)
+
     var dadosUsuario by remember {
         mutableStateOf(UserData())
     }
@@ -95,10 +109,14 @@ fun ProfileActivityBody() {
         mutableStateOf("")
     }
 
+    var contactInfo by remember {
+        mutableStateOf("")
+    }
+
     val userInfo = apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
         override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
 
-            if(response.body() != null) {
+            if (response.body() != null) {
 
                 dadosUsuario = response.body()!!
                 username = if (dadosUsuario.pessoa_fisica!!.isEmpty())
@@ -118,8 +136,9 @@ fun ProfileActivityBody() {
 
                 profilePicture = dadosUsuario.foto
 
-            }
-            else {
+                contactInfo = dadosUsuario.telefone
+
+            } else {
 
                 val backToMain = Intent(context, MainActivity::class.java)
                 context.startActivity(backToMain)
@@ -235,12 +254,25 @@ fun ProfileActivityBody() {
                         color = colorResource(id = R.color.dark_green)
                     )
                 }
-                
-                Card(shape = CircleShape, backgroundColor = colorResource(id = R.color.almost_white), modifier = Modifier.size(130.dp)) {
 
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()) {
+                Card(
+                    shape = CircleShape,
+                    backgroundColor = colorResource(id = R.color.almost_white),
+                    modifier = Modifier.size(130.dp)
+                ) {
 
-                        DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 120.dp, padding = 0.dp)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+
+                        DisplayImageFromUrl(
+                            imageUrl = profilePicture,
+                            "Foto de perfil",
+                            size = 120.dp,
+                            padding = 0.dp
+                        )
 
                     }
 
@@ -273,26 +305,8 @@ fun ProfileActivityBody() {
 //                    Text(text = "Favoritar", color = Color.White)
 //                }
 
-                OutlinedButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(end = 10.dp, start = 5.dp),
-                    border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
-                ) {
-                    Row(horizontalArrangement = Arrangement.SpaceAround) {
-                        Image(
-                            painter = painterResource(id = R.drawable.whatsapp_icon),
-                            contentDescription = "Contato",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(
-                            text = "Contato",
-                            color = Color.Black,
-                            modifier = Modifier.padding(start = 10.dp)
-                        )
-                    }
-                }
+                CopyLinkButton(contact = contactInfo)
+
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -328,7 +342,7 @@ fun ProfileActivityBody() {
                         else
                             if (enderecosCadastrados!!.size == 1)
                                 Spacer(modifier = Modifier.height(45.dp))
-                            else if(enderecosCadastrados!!.size == 2)
+                            else if (enderecosCadastrados!!.size == 2)
                                 Spacer(modifier = Modifier.height(35.dp))
                             else
                                 Spacer(modifier = Modifier.height(90.dp))
@@ -623,7 +637,12 @@ fun ProfileActivityBody() {
                 ) {
                     Row {
 
-                        DisplayImageFromUrl(imageUrl = profilePicture, "Foto de perfil", size = 60.dp, padding = 4.dp)
+                        DisplayImageFromUrl(
+                            imageUrl = profilePicture,
+                            "Foto de perfil",
+                            size = 60.dp,
+                            padding = 4.dp
+                        )
 
 //                        Image(
 //                            painter = painterResource(id = R.drawable.avatar_standard_icon),
@@ -724,7 +743,7 @@ fun ProfileActivityBody() {
                             end = 20.dp
                         )
                     ) {
-                        if (userType == "Gerador"){
+                        if (userType == "Gerador") {
                             Row(modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 10.dp, bottom = 10.dp)
@@ -744,7 +763,8 @@ fun ProfileActivityBody() {
 
                                     requestPickupClick = !requestPickupClick
 
-                                    val toAceitarColetaActivity = Intent(context, AceitarColetaActivity::class.java)
+                                    val toAceitarColetaActivity =
+                                        Intent(context, AceitarColetaActivity::class.java)
                                     context.startActivity(toAceitarColetaActivity)
 
                                 }) {
@@ -774,7 +794,7 @@ fun ProfileActivityBody() {
                             )
 
                         }
-                        if (userType == "Gerador"){
+                        if (userType == "Gerador") {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -892,10 +912,11 @@ fun ProfileActivityBody() {
         }
     }
 }
+
 @Composable
 fun getBiography(dadosUsuario: UserData): String {
 
-    var biography by remember{
+    var biography by remember {
         mutableStateOf("")
     }
 
@@ -913,5 +934,56 @@ fun getBiography(dadosUsuario: UserData): String {
 fun DefaultPreview4() {
     ZeroWasteTestTheme {
         ProfileActivityBody()
+    }
+}
+
+@Composable
+fun CopyLinkButton(contact: String) {
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+
+    OutlinedButton(
+        onClick = {
+            clipboardManager.setText(AnnotatedString(contact))
+            Toast.makeText(context, "Telefone Copiado", Toast.LENGTH_SHORT)
+                .show()
+        },
+        modifier = Modifier
+            .fillMaxWidth(0.5f)
+            .padding(end = 10.dp, start = 5.dp),
+        border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
+    ) {
+        Row(horizontalArrangement = Arrangement.SpaceAround) {
+            Image(
+                painter = painterResource(id = R.drawable.whatsapp_icon),
+                contentDescription = "Contato",
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = "Contato",
+                color = Color.Black,
+                modifier = Modifier.padding(start = 10.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomToast(message: String, imageResId: Int) {
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = null,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = message,
+                style = MaterialTheme.typography.body1,
+                textAlign = TextAlign.Start
+            )
+        }
     }
 }

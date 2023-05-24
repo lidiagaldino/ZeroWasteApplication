@@ -1,6 +1,9 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -10,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,37 +43,46 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.LoginResponse
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserLoginRequest
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.CompletableFuture
 
 class LogInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             ZeroWasteTestTheme() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    LogInActivityBody()
+                    LogInActivityBody(this)
                 }
             }
         }
     }
 }
 
-@Preview
 @Composable
-fun LogInActivityBody() {
+fun LogInActivityBody(activity: Activity) {
 
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
+    var fusedLocationProviderClient: FusedLocationProviderClient
 
     val retrofit = RetrofitApi.getMainApi()
     val apiCalls = retrofit.create(ApiCalls::class.java)
@@ -326,10 +340,23 @@ fun LogInActivityBody() {
                         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                            }
                         ),
                         singleLine = true,
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(10.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = colorResource(
+                                id = R.color.light_green
+                            ),
+                            cursorColor = colorResource(
+                                id = R.color.dark_green
+                            )
+                        )
                     )
                     if (authError) {
                         Text(
@@ -382,6 +409,48 @@ fun LogInActivityBody() {
                                     email = emailState,
                                     senha = passwordState
                                 )
+
+                                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity)
+
+                                fun fetchLocation(): CompletableFuture<Geometry> {
+                                    val completableFuture = CompletableFuture<Geometry>()
+
+                                    if (ContextCompat.checkSelfPermission(
+                                            context,
+                                            Manifest.permission.ACCESS_FINE_LOCATION
+                                        ) != PackageManager.PERMISSION_GRANTED &&
+                                        ContextCompat.checkSelfPermission(
+                                            context,
+                                            Manifest.permission.ACCESS_COARSE_LOCATION
+                                        ) != PackageManager.PERMISSION_GRANTED
+                                    ) {
+                                        ActivityCompat.requestPermissions(
+                                            activity,
+                                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                                            101
+                                        )
+                                    }
+
+                                    fusedLocationProviderClient.lastLocation
+                                        .addOnSuccessListener { location ->
+                                            if (location != null) {
+                                                val latLong = Geometry(
+                                                    lat = location.latitude,
+                                                    lng = location.longitude
+                                                )
+                                                completableFuture.complete(latLong)
+                                            } else {
+                                                // Caso não seja possível obter a localização
+                                                completableFuture.complete(null)
+                                            }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            // Em caso de erro ao obter a localização
+                                            completableFuture.completeExceptionally(e)
+                                        }
+
+                                    return completableFuture
+                                }
 
                                 val userLogin = apiCalls.verifyLogin(login)
 
@@ -439,13 +508,5 @@ fun LogInActivityBody() {
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun DefaultPreview3() {
-    ZeroWasteTestTheme() {
-        LogInActivityBody()
     }
 }

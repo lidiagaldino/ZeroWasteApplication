@@ -46,7 +46,7 @@
     <string name="user_email_text">Email</string>
     <string name="materials_recycle_text">Materiais que recolhe</string>
     <string name="user_telephone_text">Telefone</string>
-    <string name="user_cep_text">Cep</string>
+    <string name="user_cep_text">Endereços</string>
     <string name="user_biography">Biografia</string>
     <string name="pessoa_juridica">Pessoa jurídica</string>
     <string name="pessoa_fisica">Pessoa física</string>

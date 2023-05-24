@@ -8,10 +8,10 @@ class SocketHandler {
     lateinit var mSocket: Socket
 
     @Synchronized
-    fun setSocket() {
+    fun setSocket(authToken: String) {
         try {
             val options = IO.Options()
-            options.auth = mapOf("token" to "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcl90eXBlIjoiQ0FUQURPUiIsImlkX3VzdWFyaW8iOjUsImlkX21vZG8iOjMsImlhdCI6MTY4NDQzMzQwOSwiZXhwIjoxNjg0NTE5ODA5fQ.j0zkQ1FgyrxfRNl9cSmMOJRWOeM8STVfytmlIzK4UXw")
+            options.auth = mapOf("token" to authToken)
             mSocket = IO.socket("https://zero-waste-logistic.azurewebsites.net", options)
         } catch (e: URISyntaxException) {
 

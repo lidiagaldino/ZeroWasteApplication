@@ -39,4 +39,7 @@ interface ApiCalls {
     @DELETE("materiais/{id_catador}/{id_material}")
     fun deletarMaterial(@Header("Authorization") authToken: String, @Path("id_catador") id_catador: Int, @Path("id_material") id_material: Int): Call<Void>
 
+    @DELETE("endereco/{id_usuario}/{id_endereco}")
+    fun deletarEndereco(@Header("Authorization") authToken: String, @Path("id_usuario") id_usuario: Int, @Path("id_endereco") id_endereco: Int): Call<Boolean>
+
 }
