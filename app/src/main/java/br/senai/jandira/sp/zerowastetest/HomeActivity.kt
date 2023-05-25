@@ -1,6 +1,8 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -32,22 +34,36 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.LogisticCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.CompletableFuture
 
 class HomeActivity : ComponentActivity() {
+
+    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private var currentLocation: Geometry? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
         val sessionManager = SessionManager(this)
+        val authToken = "Bearer " + sessionManager.fetchAuthToken()
         val cleanToken = sessionManager.fetchAuthToken()
 
         val socketHandler = SocketHandler()
@@ -58,19 +74,74 @@ class HomeActivity : ComponentActivity() {
 
         val mSocket = socketHandler.getSocket()
 
-        setContent {
-            ZeroWasteTestTheme {
+        val retrofitApi = RetrofitApi.getLogisticApi()
+        val orderApi = retrofitApi.create(LogisticCalls::class.java)
 
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    HomeContent()
+        fun fetchLocation(): CompletableFuture<Geometry> {
+            val completableFuture = CompletableFuture<Geometry>()
+
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    101
+                )
+            }
+
+            fusedLocationProviderClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        val latLong = Geometry(
+                            lat = location.latitude,
+                            lng = location.longitude
+                        )
+                        completableFuture.complete(latLong)
+                    } else {
+                        // Caso não seja possível obter a localização
+                        completableFuture.complete(null)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    // Em caso de erro ao obter a localização
+                    completableFuture.completeExceptionally(e)
+                }
+
+            return completableFuture
+        }
+
+
+        fetchLocation().thenAccept{location ->
+            currentLocation = location
+
+            setContent {
+
+
+
+                ZeroWasteTestTheme {
+                    // A surface container using the 'background' color from the theme
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+//                        color = colorResource(id = R.color.light_green)
+                    ) {
+
+                        currentLocation?.let { location ->
+                            Log.i("location", currentLocation.toString())
+                            HomeContent()
+                        }
+                    }
                 }
             }
         }
+
+
     }
 }
 
@@ -410,7 +481,8 @@ fun HomeContent() {
 
                                     requestPickupClick = !requestPickupClick
 
-                                    val toAceitarColetaActivity = Intent(context, AceitarColetaActivity::class.java)
+                                    val toAceitarColetaActivity =
+                                        Intent(context, AceitarColetaActivity::class.java)
                                     context.startActivity(toAceitarColetaActivity)
 
                                 }) {

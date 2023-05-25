@@ -151,27 +151,16 @@ class AceitarColetaActivity : ComponentActivity() {
                                         Log.i("location", currentLocation.toString())
                                         AceitarColetaContent(mSocket, order, location, authToken)
                                     }
-
-
                                 }
                             }
-
                         }
-
-
                     }
-
-
-
-
                 }
 
                 override fun onFailure(call: Call<PedidoReturn>, t: Throwable) {
                     Log.i("fail", t.message.toString())
                 }
             })
-
-
     }
 
     fun fetchLocation(): CompletableFuture<Geometry>{

@@ -73,10 +73,6 @@ fun ProfileContent() {
 
     val context = LocalContext.current
 
-    val storage = Firebase.storage("gs://teste---zerowaste.appspot.com")
-    val storageRef =
-        storage.reference.child("images/") // Adicionar UID (que vem da autenticação) do ususário
-
     val retrofit = RetrofitApi.getMainApi()
     val apiCalls = retrofit.create(ApiCalls::class.java)
 
@@ -139,7 +135,7 @@ fun ProfileContent() {
             enderecoUsuario = dadosUsuario.endereco_usuario!![0].endereco!!.cep
 
             if (userType == "Catador")
-                materiaisCatador = dadosUsuario.catador!!.get(0).materiais_catador!!
+                materiaisCatador = dadosUsuario.catador!![0].materiais_catador!!
 
             cpfState = if (dadosUsuario.pessoa_fisica!!.isEmpty()) {
                 dadosUsuario.pessoa_juridica!![0].cnpj
@@ -159,7 +155,7 @@ fun ProfileContent() {
 
     })
 
-    var materialsList = mutableListOf<Materials>()
+    val materialsList = mutableListOf<Materials>()
 
     apiCalls.getMateriaisList().enqueue(object : Callback<MaterialsList> {
         override fun onResponse(call: Call<MaterialsList>, response: Response<MaterialsList>) {
@@ -196,8 +192,7 @@ fun ProfileContent() {
     var biographyState by remember {
         mutableStateOf("...")
     }
-    biographyState = if (dadosUsuario.biografia != null) dadosUsuario.biografia
-    else "Inserir Biografia"
+    biographyState = dadosUsuario.biografia
 
 
     var confirmationVisibility by remember {
@@ -464,7 +459,7 @@ fun ProfileContent() {
                                     modifier = Modifier.clickable {
                                         Log.i("testando", "Catador: ${materiaisCatador[i].id_catador} / Material: ${materiaisCatador[i].material!!.id}")
 
-                                        val deleted = apiCalls.deletarMaterial(authToken, id_catador = materiaisCatador[i].id_catador, id_material = materiaisCatador[i].material!!.id).enqueue(
+                                        apiCalls.deletarMaterial(authToken, id_catador = materiaisCatador[i].id_catador, id_material = materiaisCatador[i].material!!.id).enqueue(
                                             object : Callback<Void> {
                                                 override fun onResponse(
                                                     call: Call<Void>,
@@ -517,7 +512,7 @@ fun ProfileContent() {
                     onValueChange = {
 
                         // Remove all non-numeric characters from the input
-                        val cleanInput = it.replace("[^\\d]".toRegex(), "")
+                        val cleanInput = it.replace("\\D".toRegex(), "")
                         // Format the input as a phone number
                         telephoneState = formatPhone(cleanInput)
 
@@ -601,21 +596,21 @@ fun ProfileContent() {
                                     contentDescription = "Editar Endereço",
                                     modifier = Modifier.clickable {
 
-                                        Log.i("testando_editar", "Id_address: ${enderecosUsuario[i].id_endereco!!} / Id_User: ${enderecosUsuario[i].id_usuario}")
+                                        Log.i("testando_editar", "Id_address: ${enderecosUsuario[i].id_endereco} / Id_User: ${enderecosUsuario[i].id_usuario}")
 
                                     },
                                     tint = Color.White
                                 )
-                                
+
                                 Spacer(modifier = Modifier.width(8.dp))
 
                                 Icon(
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Excluir Endereço",
                                     modifier = Modifier.clickable {
-                                        Log.i("testando", "Id_address: ${enderecosUsuario[i].id_endereco!!} / Id_User: ${enderecosUsuario[i].id_usuario}")
+                                        Log.i("testando", "Id_address: ${enderecosUsuario[i].id_endereco} / Id_User: ${enderecosUsuario[i].id_usuario}")
 
-                                         apiCalls.deletarEndereco(authToken, id_usuario = enderecosUsuario[i].id_usuario, id_endereco = enderecosUsuario[i].id_endereco).enqueue(
+                                        apiCalls.deletarEndereco(authToken, id_usuario = enderecosUsuario[i].id_usuario, id_endereco = enderecosUsuario[i].id_endereco).enqueue(
                                             object : Callback<Boolean> {
                                                 override fun onResponse(
                                                     call: Call<Boolean>,
@@ -732,19 +727,19 @@ fun ProfileContent() {
             }
         }
     }
-    
+
     AnimatedVisibility(
         visible = showListMateriais,
         enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
         exit = scaleOut(animationSpec = tween(1)) + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
     ) {
-        
+
         LazyColumn {
             item { materialsList }
         }
-        
+
     }
-    
+
     AnimatedVisibility(
         visible = confirmationVisibility,
         enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
