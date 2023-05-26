@@ -109,8 +109,9 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 
     //Location
-
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
+    //Rating Dependency
+    implementation 'com.github.a914-gowtham:compose-ratingbar:1.2.5'
 
 }

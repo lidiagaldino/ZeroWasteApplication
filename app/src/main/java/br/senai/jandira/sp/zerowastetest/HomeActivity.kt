@@ -40,7 +40,8 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.LogisticCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.CatadoresProximos
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import coil.annotation.ExperimentalCoilApi
@@ -63,16 +64,11 @@ class HomeActivity : ComponentActivity() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         val sessionManager = SessionManager(this)
-        val authToken = "Bearer " + sessionManager.fetchAuthToken()
         val cleanToken = sessionManager.fetchAuthToken()
 
         val socketHandler = SocketHandler()
         socketHandler.setSocket(cleanToken)
         socketHandler.establishConnection()
-
-
-
-        val mSocket = socketHandler.getSocket()
 
         val retrofitApi = RetrofitApi.getLogisticApi()
         val orderApi = retrofitApi.create(LogisticCalls::class.java)
@@ -465,6 +461,8 @@ fun HomeContent() {
                                 .padding(top = 10.dp, bottom = 10.dp)
                                 .clickable {
                                     requestPickupClick = !requestPickupClick
+                                    val toSolicitarColetaActivity = Intent(context, SolicitarColetaActivity::class.java)
+                                    context.startActivity(toSolicitarColetaActivity)
                                 }) {
                                 Text(
                                     text = stringResource(id = R.string.request_pickup),
@@ -517,7 +515,11 @@ fun HomeContent() {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 10.dp, bottom = 10.dp)
-                                    .clickable { mapCatadoresClick = !mapCatadoresClick }) {
+                                    .clickable {
+                                        mapCatadoresClick = !mapCatadoresClick
+                                        val toCatadoresProximosActivity = Intent(context, CatadoresProximosActivity::class.java)
+                                        context.startActivity(toCatadoresProximosActivity)
+                                    }) {
                                 Text(
                                     text = stringResource(id = R.string.map_close_catadores),
                                     color = verifyClick(

@@ -11,7 +11,7 @@ class SessionManager (context: Context) {
     companion object {
         const val USER_TOKEN = "user_token"
         const val USER_EMAIL = ""
-        const val USER_ID: Long = 0
+        const val USER_ID: Int = 0
 //        const val USER_PICTURE = "content://com.android.providers.media.documents/document/image%3A61"
     }
 
@@ -27,14 +27,14 @@ class SessionManager (context: Context) {
         return prefs.getString(USER_EMAIL, "").toString()
     }
 
-    fun saveUserId(id: Long){
+    fun saveUserId(id: Int){
         val editor = prefs.edit()
-        editor.putLong(USER_ID.toString(), id)
+        editor.putInt(USER_ID.toString(), id)
         editor.apply()
     }
 
-    fun getUserId(): Long{
-        return prefs.getLong(USER_ID.toString(), 0)
+    fun getUserId(): Int{
+        return prefs.getInt(USER_ID.toString(), 0)
     }
 
 //    fun saveUserPicture(picture: String){

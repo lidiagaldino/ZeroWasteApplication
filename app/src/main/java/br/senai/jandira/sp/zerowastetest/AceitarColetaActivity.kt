@@ -33,9 +33,9 @@ import androidx.core.content.ContextCompat
 import br.senai.jandira.sp.zerowastetest.api.LogisticCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Materials
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserData
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.Materials
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.UserData
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.*
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme

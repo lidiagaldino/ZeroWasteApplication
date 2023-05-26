@@ -44,6 +44,14 @@ import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.ime.rememberImeState
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.MaterialMessage
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.NewCatadorFisico
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.NewCatadorJuridico
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.SignResponseCatador
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.NewGeradorFisico
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.NewGeradorJuridico
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.SignResponseGerador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelCEP.CepResponse
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
@@ -194,7 +202,7 @@ fun ZeroWasteApplication() {
         mutableStateOf(NewGeradorJuridico())
     }
 
-    var materialsList = mutableListOf<Int?>()
+    val materialsList = mutableListOf<Int?>()
 
     val calendarState = rememberSheetState()
 
@@ -502,7 +510,7 @@ fun ZeroWasteApplication() {
                 OutlinedTextField(
                     value = cpfState, onValueChange = {
 
-                        val cleanInput = it.replace("[^\\d]".toRegex(), "")
+                        val cleanInput = it.replace("\\D".toRegex(), "")
                         cpfState = cleanInput
 
                     },
@@ -609,7 +617,7 @@ fun ZeroWasteApplication() {
                     value = phoneState, onValueChange = {
 
                         // Remove all non-numeric characters from the input
-                        val cleanInput = it.replace("[^\\d]".toRegex(), "")
+                        val cleanInput = it.replace("\\D".toRegex(), "")
                         // Format the input as a phone number
                         phoneState = formatPhone(cleanInput)
 
@@ -775,7 +783,7 @@ fun ZeroWasteApplication() {
                     enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
                     exit = scaleOut() + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
                 ) {
-                    Column() {
+                    Column {
                         CalendarDialog(
                             state = calendarState,
                             config = CalendarConfig(
@@ -1240,7 +1248,7 @@ fun ZeroWasteApplication() {
                                                     resultLatLong =
                                                         response.body()!!.results!![0].geometry!!
 
-                                                    if (addressInfo.complemento == null || addressInfo.complemento == "")
+                                                    if (addressInfo.complemento == "")
                                                         addressInfo.complemento = " "
 
                                                     userAddress = Address(
@@ -1260,13 +1268,13 @@ fun ZeroWasteApplication() {
                                                     Log.i("what", userAddress.toString())
 
                                                     userCalls.getMateriaisList()
-                                                        .enqueue(object : Callback<MaterialsList> {
+                                                        .enqueue(object : Callback<MaterialMessage> {
                                                             override fun onResponse(
-                                                                call: Call<MaterialsList>,
-                                                                response: Response<MaterialsList>
+                                                                call: Call<MaterialMessage>,
+                                                                response: Response<MaterialMessage>
                                                             ) {
 
-                                                                for (i in response.body()!!.materials!!) {
+                                                                for (i in response.body()!!.message) {
                                                                     materialsList.add(i.id)
                                                                 }
 
@@ -1396,7 +1404,7 @@ fun ZeroWasteApplication() {
                                                             }
 
                                                             override fun onFailure(
-                                                                call: Call<MaterialsList>,
+                                                                call: Call<MaterialMessage>,
                                                                 t: Throwable
                                                             ) {
                                                                 TODO("Not yet implemented")

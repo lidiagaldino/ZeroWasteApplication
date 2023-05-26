@@ -2,6 +2,8 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPed
 
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.Materials
 
-data class MateriaisPedido(
-    val material: Materials
+data class MaterialMessage (
+
+    val message: List<Materials>
+
 )

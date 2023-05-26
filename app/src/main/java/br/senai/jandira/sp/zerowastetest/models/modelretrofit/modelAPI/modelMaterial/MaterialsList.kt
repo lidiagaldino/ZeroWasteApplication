@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial
 
 import com.google.gson.annotations.SerializedName
 

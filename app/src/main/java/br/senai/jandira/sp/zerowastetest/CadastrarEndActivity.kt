@@ -14,7 +14,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -36,8 +35,8 @@ import br.senai.jandira.sp.zerowastetest.api.CepCalls
 import br.senai.jandira.sp.zerowastetest.api.GeoCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.UserAddress
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.UserAddress
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Results
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import java.net.URLEncoder

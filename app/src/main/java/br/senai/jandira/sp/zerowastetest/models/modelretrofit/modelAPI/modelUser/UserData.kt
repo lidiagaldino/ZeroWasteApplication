@@ -1,8 +1,11 @@
-package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser
+
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.Catador
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.Gerador
 
 data class UserData(
 
-    var id: Long = 0,
+    var id: Int = 0,
     var email: String = "",
     var telefone: String = "",
     var catador: List<Catador>? = null,

@@ -44,6 +44,10 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.Materials
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.MaterialMessage
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -157,10 +161,10 @@ fun ProfileContent() {
 
     val materialsList = mutableListOf<Materials>()
 
-    apiCalls.getMateriaisList().enqueue(object : Callback<MaterialsList> {
-        override fun onResponse(call: Call<MaterialsList>, response: Response<MaterialsList>) {
+    apiCalls.getMateriaisList().enqueue(object : Callback<MaterialMessage> {
+        override fun onResponse(call: Call<MaterialMessage>, response: Response<MaterialMessage>) {
 
-            for (i in response.body()!!.materials!!) {
+            for (i in response.body()!!.message) {
 
 //                materialsList.add()
 
@@ -168,7 +172,7 @@ fun ProfileContent() {
 
         }
 
-        override fun onFailure(call: Call<MaterialsList>, t: Throwable) {
+        override fun onFailure(call: Call<MaterialMessage>, t: Throwable) {
             TODO("Not yet implemented")
         }
 

@@ -1,4 +1,6 @@
-package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador
+
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
 
 data class SignResponseGerador(
 

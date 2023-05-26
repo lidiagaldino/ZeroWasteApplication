@@ -2,15 +2,18 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPed
 
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
 
+data class OrderGerador(
 
-data class PedidoResponse(
+    val FilaPedidoCatador: List<FilaPedidoCatador>,
+    val MateriaisPedido: List<MateriaisPedido>,
     val created_at: String,
     val endereco: Address,
-    val finished_at: String? = null,
+    val finished_at: Any,
     val id: Int,
     val id_catador: Int,
+    val id_endereco: Int,
     val id_gerador: Int,
-    val id_material: List<MateriaisPedido>,
     val id_status: Int,
-    val distancia: Int?
+    val message: String? = null
+
 )

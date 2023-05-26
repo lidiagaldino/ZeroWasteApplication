@@ -1,6 +1,8 @@
-package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador
 
-data class NewCatadorJuridico(
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
+
+data class NewCatadorFisico(
 
     var nome: String = "",
     val endereco: Address? = null,
@@ -9,7 +11,9 @@ data class NewCatadorJuridico(
     var senha: String = "",
     var materiais: List<Int?>? = null,
 
-    var cnpj: String? = null,
+    var cpf: String? = null,
+
+    var data_nascimento: String = "",
 
     )
 

@@ -1,6 +1,6 @@
 package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido
 
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.Address
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
 
 data class Pedido(
     val FilaPedidoCatador: List<FilaPedidoCatador>,
@@ -13,5 +13,6 @@ data class Pedido(
     val id_endereco: Int,
     val id_gerador: Int,
     var id_status: Int,
-    val tbl_gerador: TblGerador?
+    val tbl_gerador: TblGerador?,
+    val message: String? = null
 )

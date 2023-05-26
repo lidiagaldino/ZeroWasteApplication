@@ -1,4 +1,6 @@
-package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador
+
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.Materials
 
 data class MateriaisCatador(
 

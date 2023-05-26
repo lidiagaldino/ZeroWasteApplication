@@ -1,6 +1,8 @@
-package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador
 
-data class NewGeradorJuridico(
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
+
+data class NewGeradorFisico(
 
     var nome: String = "",
     val endereco: Address? = null,
@@ -8,7 +10,9 @@ data class NewGeradorJuridico(
     var email: String = "",
     var senha: String = "",
 
-    var cnpj: String? = null,
+    var cpf: String? = null,
+
+    var data_nascimento: String = ""
 
 )
 

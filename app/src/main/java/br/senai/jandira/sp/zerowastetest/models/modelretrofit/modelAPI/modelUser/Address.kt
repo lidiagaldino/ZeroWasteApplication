@@ -1,4 +1,4 @@
-package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI
+package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser
 
 data class Address (
 
@@ -13,7 +13,7 @@ data class Address (
     var longitude: Double = 0.0,
     var numero : String = "",
     var apelido: String? = null,
-    var id_usuario: Long? = null
+    var id_usuario: Int? = null
 
 )
 
