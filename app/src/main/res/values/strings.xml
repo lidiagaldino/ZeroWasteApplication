@@ -79,7 +79,8 @@
     <string name="deny">Recusar</string>
     <string name="accept">Aceitar</string>
     <string name="finish_run">Finalizar</string>
-    <string name="foto_tela"></string>
+    <string name="atleast1_address">O usuário deve ter no mínimo 1 endereço.</string>
+    <string name="atleast1_material">O usuário deve ter no mínimo 1 material.</string>
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

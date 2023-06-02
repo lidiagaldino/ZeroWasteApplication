@@ -544,7 +544,7 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
 
             Image(
                 painter = painterResource(id = R.drawable.foto),
-                contentDescription = stringResource(id = R.string.foto_tela),
+                contentDescription = "",
                 modifier = Modifier
                     .width(320.dp)
                     .height(310.dp),

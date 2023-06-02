@@ -1,8 +1,10 @@
 package br.senai.jandira.sp.zerowastetest.api
 
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelCupons.Cupom
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.*
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelRating.Media
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelRating.Rating
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Pontos
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import retrofit2.Call
 import retrofit2.http.*
@@ -40,5 +42,20 @@ interface LogisticCalls {
 
     @GET("/rating/my/{id}")
     fun checkRate(@Header("Authorization") token: String, @Path("id") id: Int): Call<Rating>
+
+    @GET("/coupon/pontos")
+    fun getPontos(@Header("Authorization") token: String): Call<Pontos>
+
+    @GET("/coupon/unreedem")
+    fun getUnreedemCoupons(@Header("Authorization") token: String): Call<List<Cupom>>
+
+    @GET("/coupon/reedem")
+    fun getReedemCoupons(@Header("Authorization") token: String): Call<List<Cupom>>
+
+    @POST("/coupon/{id}")
+    fun reedemCoupon(@Header("Authorization") token: String, @Path("id") id: Int): Call<Cupom>
+
+    @GET("/coupon/unique/{id}")
+    fun getCouponById(@Path("id") id: Int): Call<Cupom>
 
 }

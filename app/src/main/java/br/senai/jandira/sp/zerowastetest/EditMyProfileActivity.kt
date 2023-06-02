@@ -173,7 +173,7 @@ fun ProfileContent() {
         }
 
         override fun onFailure(call: Call<MaterialMessage>, t: Throwable) {
-            TODO("Not yet implemented")
+            Log.e("fail_getMaterials", t.message.toString())
         }
 
     })
@@ -226,6 +226,10 @@ fun ProfileContent() {
     }
 
     var adressesErr by remember {
+        mutableStateOf(false)
+    }
+
+    var materialsErr by remember {
         mutableStateOf(false)
     }
 
@@ -290,7 +294,7 @@ fun ProfileContent() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                if (newProfilePicture != null){
+                if (newProfilePicture != null) {
 
                     DisplayImageFromUrl(
                         imageUrl = newProfilePicture.toString(),
@@ -461,21 +465,34 @@ fun ProfileContent() {
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Excluir Material",
                                     modifier = Modifier.clickable {
-                                        Log.i("testando", "Catador: ${materiaisCatador[i].id_catador} / Material: ${materiaisCatador[i].material!!.id}")
+                                        Log.i(
+                                            "testando",
+                                            "Catador: ${materiaisCatador[i].id_catador} / Material: ${materiaisCatador[i].material!!.id}"
+                                        )
 
-                                        apiCalls.deletarMaterial(authToken, id_catador = materiaisCatador[i].id_catador, id_material = materiaisCatador[i].material!!.id).enqueue(
+                                        apiCalls.deletarMaterial(
+                                            authToken,
+                                            id_catador = materiaisCatador[i].id_catador,
+                                            id_material = materiaisCatador[i].material!!.id
+                                        ).enqueue(
                                             object : Callback<Void> {
                                                 override fun onResponse(
                                                     call: Call<Void>,
                                                     response: Response<Void>
                                                 ) {
-                                                    if (response.code() == 204){
+                                                    if (response.code() == 204) {
 
-                                                        Toast.makeText(context, "Material Deletado", Toast.LENGTH_SHORT).show()
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Material Deletado",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
 
                                                     } else {
 
                                                         Log.i("Failed", "$response")
+
+                                                        materialsErr = true
 
                                                     }
                                                 }
@@ -484,7 +501,10 @@ fun ProfileContent() {
                                                     call: Call<Void>,
                                                     t: Throwable
                                                 ) {
-                                                    Log.i("Failde to contact API", t.message.toString())
+                                                    Log.i(
+                                                        "Failde to contact API",
+                                                        t.message.toString()
+                                                    )
                                                 }
 
                                             })
@@ -493,6 +513,21 @@ fun ProfileContent() {
                                     tint = Color.White
                                 )
                             }
+                        }
+                        if (materialsErr) {
+
+                            Text(
+                                text = stringResource(id = R.string.atleast1_material),
+                                color = colorResource(
+                                    id = R.color.brighter_red
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                        } else {
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
                         }
                     }
 
@@ -593,14 +628,17 @@ fun ProfileContent() {
                                 )
                             }
 
-                            Row{
+                            Row {
 
                                 Icon(
                                     imageVector = Icons.Default.Edit,
                                     contentDescription = "Editar Endereço",
                                     modifier = Modifier.clickable {
 
-                                        Log.i("testando_editar", "Id_address: ${enderecosUsuario[i].id_endereco} / Id_User: ${enderecosUsuario[i].id_usuario}")
+                                        Log.i(
+                                            "testando_editar",
+                                            "Id_address: ${enderecosUsuario[i].id_endereco} / Id_User: ${enderecosUsuario[i].id_usuario}"
+                                        )
 
                                     },
                                     tint = Color.White
@@ -612,23 +650,35 @@ fun ProfileContent() {
                                     imageVector = Icons.Default.Delete,
                                     contentDescription = "Excluir Endereço",
                                     modifier = Modifier.clickable {
-                                        Log.i("testando", "Id_address: ${enderecosUsuario[i].id_endereco} / Id_User: ${enderecosUsuario[i].id_usuario}")
+                                        Log.i(
+                                            "testando",
+                                            "Id_address: ${enderecosUsuario[i].id_endereco} / Id_User: ${enderecosUsuario[i].id_usuario}"
+                                        )
 
-                                        apiCalls.deletarEndereco(authToken, id_usuario = enderecosUsuario[i].id_usuario, id_endereco = enderecosUsuario[i].id_endereco).enqueue(
-                                            object : Callback<Boolean> {
+                                        apiCalls.deletarEndereco(
+                                            authToken,
+                                            id_usuario = enderecosUsuario[i].id_usuario,
+                                            id_endereco = enderecosUsuario[i].id_endereco
+                                        ).enqueue(
+                                            object : Callback<Message> {
                                                 override fun onResponse(
-                                                    call: Call<Boolean>,
-                                                    response: Response<Boolean>
+                                                    call: Call<Message>,
+                                                    response: Response<Message>
                                                 ) {
-                                                    if (response.code() == 200){
+                                                    if (response.code() == 200) {
 
-                                                        Toast.makeText(context, "Endereço Deletado", Toast.LENGTH_SHORT).show()
+                                                        Toast.makeText(
+                                                            context,
+                                                            response.body()!!.message,
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
 
                                                     } else {
 
                                                         Log.i("Failed", "$response")
+                                                        Log.i("Failed", "${response.body()}")
 
-//                                                    Toast.makeText(context, "O Usuário deve ter ao menos 1 endereço.", Toast.LENGTH_SHORT)
+//                                                    Toast.makeText(context, "Deve ter ao menos 1 endereço.", Toast.LENGTH_SHORT)
 //                                                        .show()
                                                         adressesErr = true
 
@@ -637,11 +687,18 @@ fun ProfileContent() {
                                                 }
 
                                                 override fun onFailure(
-                                                    call: Call<Boolean>,
+                                                    call: Call<Message>,
                                                     t: Throwable
                                                 ) {
-                                                    Log.i("Failde to contact API", t.message.toString())
-                                                    Toast.makeText(context, "Não foi possível conectar-se à internet. Verifique sua conexão", Toast.LENGTH_LONG)
+                                                    Log.i(
+                                                        "Failde to contact API",
+                                                        t.message.toString()
+                                                    )
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Não foi possível conectar-se à internet. Verifique sua conexão",
+                                                        Toast.LENGTH_LONG
+                                                    )
                                                         .show()
                                                 }
 
@@ -656,9 +713,22 @@ fun ProfileContent() {
 
                         }
                     }
-                }
+                    if (adressesErr) {
 
-                Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(id = R.string.atleast1_address),
+                            color = colorResource(
+                                id = R.color.brighter_red
+                            )
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                    } else {
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                    }
+                }
 
                 Divider(
                     modifier = Modifier.padding(start = 16.dp, end = 26.dp, bottom = 8.dp),
@@ -862,7 +932,10 @@ fun ProfileContent() {
                                                             Toast.LENGTH_SHORT
                                                         ).show()
 
-                                                        val toMyProfile = Intent(context, MyProfileActivity::class.java)
+                                                        val toMyProfile = Intent(
+                                                            context,
+                                                            MyProfileActivity::class.java
+                                                        )
                                                         context.startActivity(toMyProfile)
 
                                                     }
@@ -942,7 +1015,6 @@ fun ProfileContent() {
         }
     }
 }
-
 
 
 @Preview(showBackground = true, showSystemUi = true)

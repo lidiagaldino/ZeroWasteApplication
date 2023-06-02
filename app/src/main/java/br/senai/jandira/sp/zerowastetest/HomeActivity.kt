@@ -114,11 +114,10 @@ class HomeActivity : ComponentActivity() {
         }
 
 
-        fetchLocation().thenAccept{location ->
+        fetchLocation().thenAccept { location ->
             currentLocation = location
 
             setContent {
-
 
 
                 ZeroWasteTestTheme {
@@ -461,7 +460,8 @@ fun HomeContent() {
                                 .padding(top = 10.dp, bottom = 10.dp)
                                 .clickable {
                                     requestPickupClick = !requestPickupClick
-                                    val toSolicitarColetaActivity = Intent(context, SolicitarColetaActivity::class.java)
+                                    val toSolicitarColetaActivity =
+                                        Intent(context, SolicitarColetaActivity::class.java)
                                     context.startActivity(toSolicitarColetaActivity)
                                 }) {
                                 Text(
@@ -508,7 +508,6 @@ fun HomeContent() {
                                     getClick = registerLocationClick
                                 )
                             )
-
                         }
                         if (userType == "Gerador") {
                             Row(
@@ -517,7 +516,8 @@ fun HomeContent() {
                                     .padding(top = 10.dp, bottom = 10.dp)
                                     .clickable {
                                         mapCatadoresClick = !mapCatadoresClick
-                                        val toCatadoresProximosActivity = Intent(context, CatadoresProximosActivity::class.java)
+                                        val toCatadoresProximosActivity =
+                                            Intent(context, CatadoresProximosActivity::class.java)
                                         context.startActivity(toCatadoresProximosActivity)
                                     }) {
                                 Text(
