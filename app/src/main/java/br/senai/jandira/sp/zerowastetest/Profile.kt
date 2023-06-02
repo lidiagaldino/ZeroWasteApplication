@@ -1,5 +1,6 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -198,14 +199,25 @@ fun OthersProfileContent() {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollable)
-            .padding(20.dp)
+//            .padding(20.dp)
     ) {
+        Image(painter = painterResource(id = R.drawable.back_arrow),
+            contentDescription = "Voltar para catadores próximos",
+            modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    val intent = Intent(context, CatadoresProximosActivity::class.java)
+                    context.startActivity(intent)
+                }
+                .padding(10.dp)
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
 
         ) {
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(6.dp)
@@ -213,7 +225,7 @@ fun OthersProfileContent() {
                 Card(
                     shape = CircleShape,
                     backgroundColor = colorResource(id = R.color.almost_white),
-                    modifier = Modifier.size(100.dp)
+                    modifier = Modifier.size(150.dp)
                 ) {
 
                     Column(
@@ -225,7 +237,7 @@ fun OthersProfileContent() {
                         DisplayImageFromUrl(
                             imageUrl = user.foto,
                             "Foto de perfil",
-                            size = 100.dp,
+                            size = 140.dp,
                             padding = 0.dp
                         )
 
@@ -272,16 +284,23 @@ fun OthersProfileContent() {
 
                             Button(
                                 onClick = {
-                                    mainApi.favoritar(Favoritar(id_catador = user.catador?.get(0)?.id!!.toInt(), id_gerador = 1), "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcl90eXBlIjoiR0VSQURPUiIsImlkX3VzdWFyaW8iOjMsImlkX21vZG8iOjEsImlhdCI6MTY4NTAxMTA2NiwiZXhwIjoxNjg1MDk3NDY2fQ.Sn8UDD4fsaQoACdq4GI060nCnuTPhA-od8aEtrvNXIo")
+                                    mainApi.favoritar(
+                                        Favoritar(
+                                            id_catador = user.catador?.get(0)?.id!!.toInt(),
+                                            id_gerador = 1
+                                        ),
+                                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcl90eXBlIjoiR0VSQURPUiIsImlkX3VzdWFyaW8iOjMsImlkX21vZG8iOjEsImlhdCI6MTY4NTAxMTA2NiwiZXhwIjoxNjg1MDk3NDY2fQ.Sn8UDD4fsaQoACdq4GI060nCnuTPhA-od8aEtrvNXIo"
+                                    )
                                         .enqueue(object : Callback<Favoritar> {
                                             override fun onResponse(
                                                 call: Call<Favoritar>,
                                                 response: Response<Favoritar>
                                             ) {
-                                                if(response.isSuccessful){
+                                                if (response.isSuccessful) {
                                                     Log.i("teste", response.code().toString())
-                                                    isFavorited = if (response.code() == 201) "Favoritado" else "Favoritar"
-                                                } else{
+                                                    isFavorited =
+                                                        if (response.code() == 201) "Favoritado" else "Favoritar"
+                                                } else {
                                                     Log.i("teste", response.code().toString())
                                                 }
                                             }
@@ -306,41 +325,40 @@ fun OthersProfileContent() {
                                 Text(text = isFavorited, color = Color.White)
                             }
 
-                            OutlinedButton(
-                                onClick = { /*TODO*/ },
-                                modifier = Modifier
-                                    .fillMaxWidth(0.6f)
-                                    .padding(end = 10.dp, start = 5.dp),
-                                border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
-                            ) {
-                                Row(horizontalArrangement = Arrangement.SpaceAround) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.whatsapp_icon),
-                                        contentDescription = "Contato",
-                                        modifier = Modifier.size(15.dp)
-                                    )
-                                    Text(
-                                        text = "Contato",
-                                        color = Color.Black,
-                                        modifier = Modifier.padding(start = 10.dp)
-                                    )
-                                }
-                            }
+                            CopyLinkButton(contact = user.telefone)
+
+//                            OutlinedButton(
+//                                onClick = { /*TODO*/ },
+//                                modifier = Modifier
+//                                    .fillMaxWidth(0.6f)
+//                                    .padding(end = 10.dp, start = 5.dp),
+//                                border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
+//                            ) {
+//                                Row(horizontalArrangement = Arrangement.SpaceAround) {
+//                                    Image(
+//                                        painter = painterResource(id = R.drawable.whatsapp_icon),
+//                                        contentDescription = "Contato",
+//                                        modifier = Modifier.size(15.dp)
+//                                    )
+//                                    Text(
+//                                        text = "Contato",
+//                                        color = Color.Black,
+//                                        modifier = Modifier.padding(start = 10.dp)
+//                                    )
+//                        }
+
                         }
                     }
                 }
             }
-
-
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
 
         Column() {
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
                 border = BorderStroke(1.dp, colorResource(id = R.color.light_green)),
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                shape = RoundedCornerShape(0.dp)
             ) {
 
                 Row(modifier = Modifier.padding(top = 20.dp)) {
@@ -528,19 +546,22 @@ fun OthersProfileContent() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 20.dp),
+                    .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = stringResource(id = R.string.user_biography),
                     modifier = Modifier.padding(bottom = 10.dp),
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
                 Text(
                     text = getBiography(dadosUsuario = user),
                     fontSize = 14.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+
                 )
             }
 
@@ -561,13 +582,13 @@ fun OthersProfileContent() {
                     ) {
                         for (i in 0 until media.media.roundToInt()) {
                             Log.i("estrela", "${"0" !in media.media.toString()}")
-                            if (i-1 == media.media.roundToInt() && "0" !in media.media.toString()){
+                            if (i - 1 == media.media.roundToInt() && "0" !in media.media.toString()) {
                                 Image(
                                     painter = painterResource(R.drawable.half_star),
                                     contentDescription = "Estrelas de Avaliação",
                                     modifier = Modifier.size(40.dp)
                                 )
-                            } else{
+                            } else {
                                 Image(
                                     painter = painterResource(R.drawable.star_filled_icon),
                                     contentDescription = "Estrelas de Avaliação",
@@ -578,22 +599,24 @@ fun OthersProfileContent() {
                         }
 
                     }
-                    Text(text = media.media.toString(), fontSize = 80.sp)
+                    Text(text = String.format("%.1f", media.media), fontSize = 80.sp)
                     Divider(
                         modifier = Modifier.fillMaxWidth(0.7f),
                         color = colorResource(id = R.color.light_green),
                         thickness = 1.dp
                     )
-                    Button(onClick = {
-                        isDialogShown = true
-                    },
+                    Button(
+                        onClick = {
+                            isDialogShown = true
+                        },
                         modifier = Modifier
                             .fillMaxWidth(0.6f)
                             .padding(start = 10.dp, end = 5.dp),
                         colors = ButtonDefaults.buttonColors(
                             colorResource(id = R.color.dark_green)
-                        )) {
-                        Text(text = "Avaliar")
+                        )
+                    ) {
+                        Text(text = "Avaliar", color = Color.White)
                     }
                     Spacer(modifier = Modifier.height(24.dp))
                     Text(text = stringResource(id = R.string.corridas_finalizadas))
@@ -607,12 +630,9 @@ fun OthersProfileContent() {
 
                 }
             }
-
         }
     }
 }
-
-
 
 
 

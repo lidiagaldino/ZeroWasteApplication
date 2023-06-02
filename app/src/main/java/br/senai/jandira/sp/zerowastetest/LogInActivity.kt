@@ -468,6 +468,7 @@ fun LogInActivityBody(activity: Activity) {
                                                 Log.i("success", authToken)
                                                 sessionManager.saveAuthToken(authToken)
                                                 sessionManager.saveUserLogin(emailState)
+
                                                 val intent =
                                                     Intent(context, HomeActivity::class.java)
                                                 context.startActivity(intent)

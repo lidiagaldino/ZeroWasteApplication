@@ -2,7 +2,7 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUse
 
 data class Gerador(
 
-    var id: String = "",
+    var id: Int = 0,
     var id_usuario: String = ""
 
 )

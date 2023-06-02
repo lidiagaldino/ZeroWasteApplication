@@ -62,16 +62,16 @@ class CatadoresProximosActivity : ComponentActivity() {
 
         val sessionManager = SessionManager(this)
         val authToken = "Bearer " + sessionManager.fetchAuthToken()
-        var enderecos: ListEnderecoUsuario
+        var enderecos: List<UserAddress>
 
         mainApi.getEnderecoUsuario(
             authToken,
             3
         )
-            .enqueue(object : Callback<ListEnderecoUsuario> {
+            .enqueue(object : Callback<List<UserAddress>> {
                 override fun onResponse(
-                    call: Call<ListEnderecoUsuario>,
-                    response: Response<ListEnderecoUsuario>
+                    call: Call<List<UserAddress>>,
+                    response: Response<List<UserAddress>>
                 ) {
                     if (response.isSuccessful) {
                         enderecos = response.body()!!
@@ -89,7 +89,7 @@ class CatadoresProximosActivity : ComponentActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<ListEnderecoUsuario>, t: Throwable) {
+                override fun onFailure(call: Call<List<UserAddress>>, t: Throwable) {
                     Log.i("fail", t.message.toString())
                 }
 
@@ -98,7 +98,7 @@ class CatadoresProximosActivity : ComponentActivity() {
 }
 
 @Composable
-fun CatadoresProximosContent(enderecoUsuario: ListEnderecoUsuario, authToken: String) {
+fun CatadoresProximosContent(enderecoUsuario: List<UserAddress>, authToken: String) {
 
     val context = LocalContext.current
 
@@ -155,13 +155,23 @@ fun CatadoresProximosContent(enderecoUsuario: ListEnderecoUsuario, authToken: St
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Box(modifier = Modifier.padding()) {
+        Image(painter = painterResource(id = R.drawable.back_arrow),
+            contentDescription = "Voltar para catadores próximos",
+            modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    val intent = Intent(context, HomeActivity::class.java)
+                    context.startActivity(intent)
+                }
+                .padding(8.dp)
+        )
+        Box() {
             TextField(
                 value = searchText,
                 onValueChange = { searchText = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(top = 8.dp, end = 16.dp, start = 16.dp, bottom = 8.dp)
                     .background(Black)
                     .clip(RoundedCornerShape(8.dp)),
                 placeholder = {
@@ -190,7 +200,7 @@ fun CatadoresProximosContent(enderecoUsuario: ListEnderecoUsuario, authToken: St
         Column(
             modifier = Modifier
                 .padding()
-                .padding(16.dp)
+                .padding(top = 8.dp, end = 16.dp, start = 16.dp, bottom = 16.dp)
         ) {
 
             OutlinedTextField(
@@ -221,7 +231,7 @@ fun CatadoresProximosContent(enderecoUsuario: ListEnderecoUsuario, authToken: St
                     .width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
 
                 ) {
-                list1.endereco!!.map { label ->
+                list1.map { label ->
                     DropdownMenuItem(onClick = {
                         selectedLocal = label.endereco!!.apelido.toString()
                         selectLocalId = label.id_endereco

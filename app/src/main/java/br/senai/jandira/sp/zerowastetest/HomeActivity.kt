@@ -65,6 +65,8 @@ class HomeActivity : ComponentActivity() {
 
         val sessionManager = SessionManager(this)
         val cleanToken = sessionManager.fetchAuthToken()
+        val gerador = sessionManager.getUserIdType()
+        Log.i("testando_gerador", gerador.toString())
 
         val socketHandler = SocketHandler()
         socketHandler.setSocket(cleanToken)
@@ -192,6 +194,17 @@ fun HomeContent() {
                     "Catador"
 
                 sessionManager.saveUserId(dadosUsuario.id)
+
+                if (dadosUsuario.catador!!.isNotEmpty()){
+
+                    sessionManager.saveUserIdType(dadosUsuario.catador!![0].id)
+                    Log.i("teste_idcatador", sessionManager.getUserIdType().toString())
+
+                } else {
+
+                    sessionManager.saveUserIdType(dadosUsuario.gerador!![0].id)
+
+                }
 
                 profilePicture = dadosUsuario.foto
             }
@@ -460,6 +473,8 @@ fun HomeContent() {
                                 .padding(top = 10.dp, bottom = 10.dp)
                                 .clickable {
                                     requestPickupClick = !requestPickupClick
+                                    Log.i("teste_idGerador", sessionManager.getUserIdType().toString())
+
                                     val toSolicitarColetaActivity =
                                         Intent(context, SolicitarColetaActivity::class.java)
                                     context.startActivity(toSolicitarColetaActivity)

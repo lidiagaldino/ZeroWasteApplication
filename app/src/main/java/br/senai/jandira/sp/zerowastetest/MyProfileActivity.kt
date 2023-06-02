@@ -273,33 +273,11 @@ fun ProfileActivityBody() {
                     }
 
                 }
-
-
-//                Image(
-//                    painter = painterResource(id = R.drawable.avatar_standard_icon),
-//                    contentDescription = "Foto do usuário",
-//                    modifier = Modifier
-//                        .size(130.dp)
-//                        .clip(CircleShape)
-//                        .background(colorResource(id = R.color.almost_white))
-//                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-
-//                Button(
-//                    onClick = { /*TODO*/ },
-//                    modifier = Modifier
-//                        .fillMaxWidth(0.5f)
-//                        .padding(start = 10.dp, end = 5.dp),
-//                    colors = ButtonDefaults.buttonColors(
-//                        colorResource(id = R.color.dark_green)
-//                    )
-//                ) {
-//                    Text(text = "Favoritar", color = Color.White)
-//                }
 
                 CopyLinkButton(contact = contactInfo)
 
@@ -945,7 +923,7 @@ fun CopyLinkButton(contact: String) {
                 .show()
         },
         modifier = Modifier
-            .fillMaxWidth(0.5f)
+            .fillMaxWidth(0.6f)
             .padding(end = 10.dp, start = 5.dp),
         border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
     ) {

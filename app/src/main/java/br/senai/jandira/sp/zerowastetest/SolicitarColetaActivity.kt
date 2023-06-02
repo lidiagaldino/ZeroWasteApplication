@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,8 +38,10 @@ import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.Address
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.Materials
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.UserAddress
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import com.google.gson.Gson
+import io.socket.client.Socket
 import retrofit2.Call
 import retrofit2.Response
 
@@ -48,8 +51,14 @@ class SolicitarColetaActivity : ComponentActivity() {
         setContent {
 
             val sessionManager = SessionManager(this)
-            val authToken = "Bearer "+sessionManager.fetchAuthToken()
-            val idUsuario = sessionManager.getUserId().toInt()
+            val authToken = "Bearer " + sessionManager.fetchAuthToken()
+            val cleanToken = sessionManager.fetchAuthToken()
+            val idUsuario = sessionManager.getUserId()
+
+            val socketHandler = SocketHandler()
+            socketHandler.setSocket(cleanToken)
+            val mSocket = socketHandler.getSocket()
+            socketHandler.establishConnection()
 
             var order by remember {
                 mutableStateOf(OrderGerador(
@@ -123,7 +132,7 @@ class SolicitarColetaActivity : ComponentActivity() {
             val api = RetrofitApi.getMainApi()
             val mainApi = api.create(ApiCalls::class.java)
 
-            var list1: ListEnderecoUsuario
+            var list1: List<UserAddress>
             var list2: MaterialMessage
 
 
@@ -132,11 +141,12 @@ class SolicitarColetaActivity : ComponentActivity() {
                 authToken,
                 idUsuario
             )
-                .enqueue(object : Callback<ListEnderecoUsuario> {
+                .enqueue(object : Callback<List<UserAddress>> {
                     override fun onResponse(
-                        call: Call<ListEnderecoUsuario>,
-                        response: Response<ListEnderecoUsuario>
+                        call: Call<List<UserAddress>>,
+                        response: Response<List<UserAddress>>
                     ) {
+                        Log.i("testing", idUsuario.toString())
                         Log.i("endereco", response.body()!!.toString())
                         if (response.isSuccessful) {
                             list1 = response.body()!!
@@ -155,7 +165,7 @@ class SolicitarColetaActivity : ComponentActivity() {
 
                                                     ) {
 
-                                                    SolicitarColetaContent(lockOrder, order, list2, list1)
+                                                    SolicitarColetaContent(lockOrder, order, list2, list1, mSocket)
                                                 }
                                             }
                                         }
@@ -174,7 +184,7 @@ class SolicitarColetaActivity : ComponentActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<ListEnderecoUsuario>, t: Throwable) {
+                    override fun onFailure(call: Call<List<UserAddress>>, t: Throwable) {
                         Log.e("error_this", t.message.toString())
                     }
 
@@ -186,7 +196,7 @@ class SolicitarColetaActivity : ComponentActivity() {
 }
 
 @Composable
-fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais: MaterialMessage, enderecos: ListEnderecoUsuario) {
+fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais: MaterialMessage, enderecos: List<UserAddress>, mSocket: Socket) {
     Log.i("orders", orders.toString())
 
     var lockOrder by remember {
@@ -199,14 +209,14 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
 
     val retrofitApi = RetrofitApi.getLogisticApi()
     val orderApi = retrofitApi.create(LogisticCalls::class.java)
-
-    val socketHandler = SocketHandler()
+    val context = LocalContext.current
+    val authToken = "Bearer " + SessionManager(context).fetchAuthToken()
+    val userID = SessionManager(context).getUserId()
+    val idGerador = SessionManager(context).getUserIdType().toInt()
 
     var isDialogShown by remember {
         mutableStateOf(false)
     }
-
-    val mSocket = socketHandler.getSocket()
 
     mSocket.on("newOrder") { pedido ->
         Log.i("sockett", pedido[0].toString())
@@ -346,7 +356,7 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
                 OutlinedTextField(
                     value = selectedLocal,
                     onValueChange = {
-                        Log.i("teste", selectLocalId.toString().toInt().toString())
+                        Log.i("teste", selectLocalId.toString())
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -375,12 +385,12 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
                         .width(with(LocalDensity.current) { textFieldSize.width.toDp() }),
 
                     ) {
-                    list1.endereco!!.map { label ->
+                    list1.map { label ->
                         DropdownMenuItem(onClick = {
                             selectedLocal = label.endereco!!.apelido!!
                             selectLocalId = label.id_endereco
                             expanded1 = false
-                            Log.i("teste", selectLocalId.toString())
+                            Log.i("teste", selectLocalId.toString().toInt().toString())
                         }) {
                             label.endereco!!.apelido?.let { Text(text = it) }
                         }
@@ -433,7 +443,9 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
                 DropdownMenu(
                     expanded = expanded2,
                     onDismissRequest = { expanded2 = false },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(190.dp)
                 ) {
                     list2.message.map { option ->
                         val selected = selectedOptions.contains(option.nome)
@@ -449,6 +461,7 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
                             } else {
                                 selectedMaterialsId + option.id
                             }
+                            Log.i("id_material", selectedMaterialsId.toString())
                         }) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -472,17 +485,18 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
                 onClick = {
                     val pedidos = PedidoCriado(
                         id_endereco = selectLocalId,
-                        id_gerador = 3,
+                        id_gerador = idGerador,
                         id_materiais = selectedMaterialsId.toString()
                             .substring(1, selectedMaterialsId.toString().length - 1).split(", ")
                             .map { it.toInt() },
                         status = 1
                     )
 
-                    Log.i("order", order.toString())
+                    Log.i("pedidos", pedidos.toString())
+                    Log.i("pedidos", idGerador.toString())
 
                     orderApi.storeOrder(
-                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwidXNlcl90eXBlIjoiR0VSQURPUiIsImlkX3VzdWFyaW8iOjYsImlkX21vZG8iOjMsImlhdCI6MTY4NDQ5NTU5NCwiZXhwIjoxNjg0NTgxOTk0fQ.BfKmOmBLZbfzOS0570hmmuMSZv5McUGTO3QgaYLr8d0",
+                        authToken,
                         pedidos
                     ).enqueue(object : Callback<PedidoResponse> {
                         override fun onResponse(
@@ -490,6 +504,7 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
                             response: Response<PedidoResponse>
                         ) {
                             lockOrder = true
+                            Log.i("teste", response.toString())
                             if (!response.isSuccessful) {
                                 message = "Não foi possível criar a fila"
                                 isDialogShown = true
@@ -642,7 +657,7 @@ fun SolicitarColetaContent(lockedOrder: Boolean, orders: OrderGerador, materiais
                             onClick = {
 
                                 orderApi.cancelOrder(
-                                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwidXNlcl90eXBlIjoiR0VSQURPUiIsImlkX3VzdWFyaW8iOjYsImlkX21vZG8iOjMsImlhdCI6MTY4NDQ5NTU5NCwiZXhwIjoxNjg0NTgxOTk0fQ.BfKmOmBLZbfzOS0570hmmuMSZv5McUGTO3QgaYLr8d0",
+                                    authToken,
                                     order.id
                                 ).enqueue(object : Callback<Void> {
                                     override fun onResponse(

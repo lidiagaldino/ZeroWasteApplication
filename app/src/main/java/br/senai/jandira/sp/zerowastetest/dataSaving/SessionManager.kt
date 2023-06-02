@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import br.senai.jandira.sp.zerowastetest.R
 
+
+
 class SessionManager (context: Context) {
     private var prefs: SharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
 
@@ -12,10 +14,9 @@ class SessionManager (context: Context) {
         const val USER_TOKEN = "user_token"
         const val USER_EMAIL = ""
         const val USER_ID: Int = 0
-//        const val USER_PICTURE = "content://com.android.providers.media.documents/document/image%3A61"
+        const val ID_TYPE: Long = 0
     }
 
-    // Function to save user Login Information
 
     fun saveUserLogin(email: String){
         val editor = prefs.edit()
@@ -37,18 +38,16 @@ class SessionManager (context: Context) {
         return prefs.getInt(USER_ID.toString(), 0)
     }
 
-//    fun saveUserPicture(picture: String){
-//        val editor = prefs.edit()
-//        editor.putString(USER_PICTURE, picture)
-//        editor.apply()
-//    }
-//
-//    fun getUserPicture(): String{
-//        return prefs.getString(USER_PICTURE, "")
-//    }
+    fun saveUserIdType(id_gerador: Int){
+        val editor = prefs.edit()
+        editor.putInt(ID_TYPE.toString(), id_gerador)
+        editor.apply()
+    }
 
+    fun getUserIdType(): Int{
+        return prefs.getInt(ID_TYPE.toString(), 0)
+    }
 
-//  Function to save auth token
 
     fun saveAuthToken(token: String) {
         val editor = prefs.edit()

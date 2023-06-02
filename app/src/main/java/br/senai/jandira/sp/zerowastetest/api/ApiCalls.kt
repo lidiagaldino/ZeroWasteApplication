@@ -50,7 +50,7 @@ interface ApiCalls {
     fun deletarEndereco(@Header("Authorization") authToken: String, @Path("id_usuario") id_usuario: Int, @Path("id_endereco") id_endereco: Int): Call<Message>
 
     @GET("endereco/{id_usuario}")
-    fun getEnderecoUsuario(@Header("Authorization") authToken: String, @Path("id_usuario") id: Int): Call<ListEnderecoUsuario>
+    fun getEnderecoUsuario(@Header("Authorization") authToken: String, @Path("id_usuario") id: Int): Call<List<UserAddress>>
 
     @GET("/gerador/{id_endereco}")
     fun getNearCollectors(@Header("Authorization") token: String, @Path("id_endereco") id_endereco: Int): Call<List<CatadoresProximos>>

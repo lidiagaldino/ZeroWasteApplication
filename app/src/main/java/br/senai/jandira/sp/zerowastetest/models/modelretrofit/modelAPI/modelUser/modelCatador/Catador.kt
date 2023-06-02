@@ -2,7 +2,7 @@ package br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUse
 
 data class Catador(
 
-    var id: String = "",
+    var id: Int = 0,
     var id_usuario:String = "",
     var materiais_catador: List<MateriaisCatador>? = null
 
