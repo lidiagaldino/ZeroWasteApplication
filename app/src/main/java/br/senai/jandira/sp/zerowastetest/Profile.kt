@@ -138,17 +138,26 @@ fun OthersProfileContent() {
         CustomDialogOthersProfile(onDismiss = { isDialogShown = false }, onConfirm = {
             user.catador?.get(0)?.id?.let { it1 ->
                 logisticApi.checkRate(authToken, it1.toInt())
-                    .enqueue(object  : Callback<Rating> {
+                    .enqueue(object : Callback<Rating> {
                         override fun onResponse(call: Call<Rating>, response: Response<Rating>) {
                             if (response.code() != 200) {
-                                logisticApi.rate(Rating(
-                                    id_gerador = 1,
-                                    id_catador = user.catador!![0].id.toInt(),
-                                    nota = it.toInt()
-                                ), authToken)
+                                logisticApi.rate(
+                                    Rating(
+                                        id_gerador = 1,
+                                        id_catador = user.catador!![0].id.toInt(),
+                                        nota = it.toInt()
+                                    ), authToken
+                                )
                                     .enqueue(object : Callback<Rating> {
-                                        override fun onResponse(call: Call<Rating>, response: Response<Rating>) {
-                                            Toast.makeText(context, "Nota cadastrada com sucesso", Toast.LENGTH_LONG)
+                                        override fun onResponse(
+                                            call: Call<Rating>,
+                                            response: Response<Rating>
+                                        ) {
+                                            Toast.makeText(
+                                                context,
+                                                "Nota cadastrada com sucesso",
+                                                Toast.LENGTH_LONG
+                                            )
                                         }
 
                                         override fun onFailure(call: Call<Rating>, t: Throwable) {
@@ -157,18 +166,24 @@ fun OthersProfileContent() {
 
                                     })
                             } else {
-                                logisticApi.updateRate(Rating(
-                                    id_gerador = 1,
-                                    id_catador = user.catador!![0].id.toInt(),
-                                    nota = it.roundToInt()
-                                ), authToken)
+                                logisticApi.updateRate(
+                                    Rating(
+                                        id_gerador = 1,
+                                        id_catador = user.catador!![0].id.toInt(),
+                                        nota = it.roundToInt()
+                                    ), authToken
+                                )
                                     .enqueue(object : Callback<Rating> {
                                         override fun onResponse(
                                             call: Call<Rating>,
                                             response: Response<Rating>
                                         ) {
-                                            if (response.isSuccessful){
-                                                Toast.makeText(context, "Nota cadastrada com sucesso", Toast.LENGTH_LONG)
+                                            if (response.isSuccessful) {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Nota cadastrada com sucesso",
+                                                    Toast.LENGTH_LONG
+                                                )
                                                 isDialogShown = false
 
                                             }
@@ -201,131 +216,132 @@ fun OthersProfileContent() {
             .verticalScroll(scrollable)
 //            .padding(20.dp)
     ) {
-        Image(painter = painterResource(id = R.drawable.back_arrow),
-            contentDescription = "Voltar para catadores próximos",
-            modifier = Modifier
-                .size(50.dp)
-                .clickable {
-                    val intent = Intent(context, CatadoresProximosActivity::class.java)
-                    context.startActivity(intent)
-                }
-                .padding(10.dp)
-        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
 
         ) {
-
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(6.dp)
-            ) {
-                Card(
-                    shape = CircleShape,
-                    backgroundColor = colorResource(id = R.color.almost_white),
-                    modifier = Modifier.size(150.dp)
-                ) {
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-
-                        DisplayImageFromUrl(
-                            imageUrl = user.foto,
-                            "Foto de perfil",
-                            size = 140.dp,
-                            padding = 0.dp
-                        )
-
-                    }
-
-                }
-                Column(
+            Column(modifier = Modifier.padding(6.dp)) {
+                Image(painter = painterResource(id = R.drawable.back_arrow),
+                    contentDescription = "Voltar para catadores próximos",
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = colorResource(id = R.color.white),
-                            shape = RoundedCornerShape(25.dp)
-                        ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "${
-                            if (user.pessoa_fisica?.size!! > 0) user.pessoa_fisica?.get(0)?.nome else user.pessoa_juridica?.get(
-                                0
-                            )?.nome_fantasia
-                        }",
-                        modifier = Modifier.padding(start = 20.dp, bottom = 5.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                    Text(
-                        text = "Catador",
-                        modifier = Modifier.padding(start = 20.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        color = colorResource(id = R.color.dark_green)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
+                        .size(40.dp)
+                        .clickable {
+                            val intent = Intent(context, CatadoresProximosActivity::class.java)
+                            context.startActivity(intent)
+                        }
+                )
 
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(6.dp)
+                ) {
+                    Card(
+                        shape = CircleShape,
+                        backgroundColor = colorResource(id = R.color.almost_white),
+                        modifier = Modifier.size(150.dp)
+                    ) {
 
                         Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxSize()
                         ) {
 
-                            Button(
-                                onClick = {
-                                    mainApi.favoritar(
-                                        Favoritar(
-                                            id_catador = user.catador?.get(0)?.id!!.toInt(),
-                                            id_gerador = 1
-                                        ),
-                                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywidXNlcl90eXBlIjoiR0VSQURPUiIsImlkX3VzdWFyaW8iOjMsImlkX21vZG8iOjEsImlhdCI6MTY4NTAxMTA2NiwiZXhwIjoxNjg1MDk3NDY2fQ.Sn8UDD4fsaQoACdq4GI060nCnuTPhA-od8aEtrvNXIo"
-                                    )
-                                        .enqueue(object : Callback<Favoritar> {
-                                            override fun onResponse(
-                                                call: Call<Favoritar>,
-                                                response: Response<Favoritar>
-                                            ) {
-                                                if (response.isSuccessful) {
-                                                    Log.i("teste", response.code().toString())
-                                                    isFavorited =
-                                                        if (response.code() == 201) "Favoritado" else "Favoritar"
-                                                } else {
-                                                    Log.i("teste", response.code().toString())
-                                                }
-                                            }
+                            DisplayImageFromUrl(
+                                imageUrl = user.foto,
+                                "Foto de perfil",
+                                size = 140.dp,
+                                padding = 0.dp
+                            )
 
-                                            override fun onFailure(
-                                                call: Call<Favoritar>,
-                                                t: Throwable
-                                            ) {
-                                                Log.i("fail", t.message.toString())
-                                            }
+                        }
 
-                                        })
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = colorResource(id = R.color.white),
+                                shape = RoundedCornerShape(25.dp)
+                            ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "${
+                                if (user.pessoa_fisica?.size!! > 0) user.pessoa_fisica?.get(0)?.nome else user.pessoa_juridica?.get(
+                                    0
+                                )?.nome_fantasia
+                            }",
+                            modifier = Modifier.padding(start = 20.dp, bottom = 5.dp),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = "Catador",
+                            modifier = Modifier.padding(start = 20.dp),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            color = colorResource(id = R.color.dark_green)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
 
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth(0.6f)
-                                    .padding(start = 10.dp, end = 5.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    colorResource(id = R.color.dark_green)
-                                )
+
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(text = isFavorited, color = Color.White)
-                            }
 
-                            CopyLinkButton(contact = user.telefone)
+                                Button(
+                                    onClick = {
+                                        mainApi.favoritar(
+                                            Favoritar(
+                                                id_catador = user.catador?.get(0)?.id!!.toInt(),
+                                                id_gerador = 1
+                                            ),
+                                            authToken
+                                        )
+                                            .enqueue(object : Callback<Favoritar> {
+                                                override fun onResponse(
+                                                    call: Call<Favoritar>,
+                                                    response: Response<Favoritar>
+                                                ) {
+                                                    if (response.isSuccessful) {
+                                                        Log.i("teste", response.code().toString())
+                                                        isFavorited =
+                                                            if (response.code() == 201) "Favoritado" else "Favoritar"
+                                                    } else {
+                                                        Log.i("teste", response.code().toString())
+                                                    }
+                                                }
+
+                                                override fun onFailure(
+                                                    call: Call<Favoritar>,
+                                                    t: Throwable
+                                                ) {
+                                                    Log.i("fail", t.message.toString())
+                                                }
+
+                                            })
+
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.6f)
+                                        .padding(start = 10.dp, end = 5.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        colorResource(id = R.color.dark_green)
+                                    )
+                                ) {
+                                    Text(text = isFavorited, color = Color.White)
+                                }
+
+                                CopyLinkButton(contact = user.telefone)
 
 //                            OutlinedButton(
 //                                onClick = { /*TODO*/ },
@@ -347,6 +363,7 @@ fun OthersProfileContent() {
 //                                    )
 //                        }
 
+                            }
                         }
                     }
                 }
@@ -633,6 +650,8 @@ fun OthersProfileContent() {
         }
     }
 }
+
+
 
 
 

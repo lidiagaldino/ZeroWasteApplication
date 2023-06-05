@@ -923,7 +923,7 @@ fun CopyLinkButton(contact: String) {
                 .show()
         },
         modifier = Modifier
-            .fillMaxWidth(0.6f)
+            .fillMaxWidth(0.65f)
             .padding(end = 10.dp, start = 5.dp),
         border = BorderStroke(1.dp, colorResource(id = R.color.dark_green))
     ) {

@@ -434,8 +434,8 @@ fun LogInActivityBody(activity: Activity) {
                                         .addOnSuccessListener { location ->
                                             if (location != null) {
                                                 val latLong = Geometry(
-                                                    lat = location.latitude,
-                                                    lng = location.longitude
+                                                    latitude = location.latitude,
+                                                    longitude = location.longitude
                                                 )
                                                 completableFuture.complete(latLong)
                                             } else {

@@ -472,8 +472,8 @@ fun CadastrarEndContent() {
                                                     estado = cepBody.uf,
                                                     complemento = cepBody.complemento,
                                                     numero = numeroState,
-                                                    latitude = resultLatLong.lat,
-                                                    longitude = resultLatLong.lng,
+                                                    latitude = resultLatLong.latitude,
+                                                    longitude = resultLatLong.longitude,
                                                     apelido = nomeLocalState,
                                                     id_usuario = userId
 

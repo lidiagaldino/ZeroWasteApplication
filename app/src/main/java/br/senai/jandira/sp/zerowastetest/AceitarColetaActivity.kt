@@ -186,8 +186,8 @@ class AceitarColetaActivity : ComponentActivity() {
             .addOnSuccessListener { location ->
                 if (location != null) {
                     val latLong = Geometry(
-                        lat = location.latitude,
-                        lng = location.longitude
+                        latitude = location.latitude,
+                        longitude = location.longitude
                     )
                     completableFuture.complete(latLong)
                 } else {
@@ -573,7 +573,8 @@ fun AceitarColetaContent(mSocket: Socket, pedido: PedidoReturn, location: Geomet
                                                     Log.i("teste", response.body()!!.toString())
                                                     locked = false
                                                 } else{
-                                                    Log.i("teste", response.code().toString())
+                                                    Log.i("teste", response.toString())
+                                                    Log.i("teste", order.pedido?.id.toString())
                                                 }
 
                                             }

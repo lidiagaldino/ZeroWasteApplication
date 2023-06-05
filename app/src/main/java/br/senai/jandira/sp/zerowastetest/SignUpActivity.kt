@@ -1043,8 +1043,8 @@ fun ZeroWasteApplication() {
                                                         estado = addressInfo.uf,
                                                         complemento = addressInfo.complemento,
                                                         numero = resNumberState,
-                                                        latitude = resultLatLong.lat,
-                                                        longitude = resultLatLong.lng
+                                                        latitude = resultLatLong.latitude,
+                                                        longitude = resultLatLong.longitude
 
                                                     )
 
@@ -1260,8 +1260,8 @@ fun ZeroWasteApplication() {
                                                         estado = addressInfo.uf,
                                                         complemento = addressInfo.complemento,
                                                         numero = resNumberState,
-                                                        latitude = resultLatLong.lat,
-                                                        longitude = resultLatLong.lng
+                                                        latitude = resultLatLong.latitude,
+                                                        longitude = resultLatLong.longitude
 
                                                     )
 

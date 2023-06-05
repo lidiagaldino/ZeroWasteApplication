@@ -41,7 +41,6 @@ import br.senai.jandira.sp.zerowastetest.api.LogisticCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.UserData
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.CatadoresProximos
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelGeocode.Geometry
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import coil.annotation.ExperimentalCoilApi
@@ -65,8 +64,8 @@ class HomeActivity : ComponentActivity() {
 
         val sessionManager = SessionManager(this)
         val cleanToken = sessionManager.fetchAuthToken()
-        val gerador = sessionManager.getUserIdType()
-        Log.i("testando_gerador", gerador.toString())
+//        val gerador: Int = sessionManager.getUserIdType()
+//        Log.i("testando_gerador", gerador.toString())
 
         val socketHandler = SocketHandler()
         socketHandler.setSocket(cleanToken)
@@ -98,8 +97,8 @@ class HomeActivity : ComponentActivity() {
                 .addOnSuccessListener { location ->
                     if (location != null) {
                         val latLong = Geometry(
-                            lat = location.latitude,
-                            lng = location.longitude
+                            latitude = location.latitude,
+                            longitude = location.longitude
                         )
                         completableFuture.complete(latLong)
                     } else {
