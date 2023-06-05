@@ -14,22 +14,23 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
@@ -94,6 +96,17 @@ fun ProfileContent() {
         }
     )
 
+    var expanded1 by remember {
+        mutableStateOf(false)
+    }
+
+    val icon1 = if (expanded1) {
+        Icons.Filled.KeyboardArrowUp
+
+    } else {
+        Icons.Filled.KeyboardArrowDown
+    }
+
     var dadosUsuario by remember {
         mutableStateOf(UserData())
     }
@@ -122,6 +135,10 @@ fun ProfileContent() {
     var cpfState by remember {
         mutableStateOf("")
     }
+    var textFieldSize by remember {
+        mutableStateOf(Size.Zero)
+    }
+
 
     apiCalls.getUserData(authToken).enqueue(object : Callback<UserData> {
 
@@ -160,19 +177,21 @@ fun ProfileContent() {
     })
 
     val materialsList = mutableListOf<Materials>()
+    Log.i("teste", dadosUsuario.catador?.get(0)?.id.toString())
 
-    apiCalls.getMateriaisList().enqueue(object : Callback<MaterialMessage> {
-        override fun onResponse(call: Call<MaterialMessage>, response: Response<MaterialMessage>) {
+    apiCalls.getMateriaisNotCollected(id = dadosUsuario.catador?.get(0)?.id).enqueue(object : Callback<List<Materials>> {
+        override fun onResponse(call: Call<List<Materials>>, response: Response<List<Materials>>) {
+            //Log.i("log", response.body()!!.toString())
 
-            for (i in response.body()!!.message) {
+            for (i in response.body()!!) {
 
-//                materialsList.add()
+                materialsList.add(i)
 
             }
 
         }
 
-        override fun onFailure(call: Call<MaterialMessage>, t: Throwable) {
+        override fun onFailure(call: Call<List<Materials>>, t: Throwable) {
             Log.e("fail_getMaterials", t.message.toString())
         }
 
@@ -185,6 +204,12 @@ fun ProfileContent() {
 
     var attRequest by remember {
         mutableStateOf(AttRequest())
+    }
+
+
+
+    var selectedMaterial by remember {
+        mutableStateOf(Materials(id = 0, nome = ""))
     }
 
 
@@ -233,12 +258,61 @@ fun ProfileContent() {
         mutableStateOf(false)
     }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .blur(blurEffect(confirmationVisibility))
     ) {
+        if (showListMateriais){
+            Column(modifier = Modifier
+                .background(Color.Red)
+                .fillMaxWidth(0.7f)
+                .fillMaxHeight(0.5f)){
+                OutlinedTextField(
+                    value = selectedMaterial.nome.toString(),
+                    onValueChange = {
+                        Log.i("teste", selectedMaterial.id.toString())
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned { coordinates ->
+                            textFieldSize = coordinates.size.toSize()
+                        },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color(
+                            188,
+                            219,
+                            183
+                        )
+                    ),
+                    label = { Text(text = "Selecione o material") },
+
+                    trailingIcon = {
+                        Icon(icon1, "", Modifier.clickable { expanded1 = !expanded1 })
+                    }
+                )
+
+                DropdownMenu(
+                    expanded = expanded1,
+                    onDismissRequest = { expanded1 = false },
+                    modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp()})
+
+                ) {
+                    materialsList.map { label ->
+                        Log.i("opa", label.nome.toString())
+                        DropdownMenuItem(onClick = {
+                            selectedMaterial = Materials(id = label.id, nome = label.nome)
+                            expanded1 = false
+                            Log.i("testeee", selectedMaterial.toString().toInt().toString())
+                        }) {
+                            Text(text = label.nome.toString())
+                        }
+                    }
+                }
+            }
+        }
         Row(modifier = Modifier.padding(16.dp)) {
             Image(painter = painterResource(id = R.drawable.back_arrow),
                 contentDescription = "Voltar para página inicial",
@@ -487,6 +561,8 @@ fun ProfileContent() {
                                                             "Material Deletado",
                                                             Toast.LENGTH_SHORT
                                                         ).show()
+
+                                                        materiaisCatador.drop(i)
 
                                                     } else {
 
@@ -802,17 +878,6 @@ fun ProfileContent() {
         }
     }
 
-    AnimatedVisibility(
-        visible = showListMateriais,
-        enter = scaleIn() + expandVertically(expandFrom = Alignment.CenterVertically),
-        exit = scaleOut(animationSpec = tween(1)) + shrinkVertically(shrinkTowards = Alignment.CenterVertically)
-    ) {
-
-        LazyColumn {
-            item { materialsList }
-        }
-
-    }
 
     AnimatedVisibility(
         visible = confirmationVisibility,

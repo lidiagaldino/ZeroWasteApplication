@@ -1,6 +1,7 @@
 package br.senai.jandira.sp.zerowastetest.api
 
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.Materials
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.ListEnderecoUsuario
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.MaterialMessage
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.*
@@ -36,6 +37,9 @@ interface ApiCalls {
 
     @GET("materiais")
     fun getMateriaisList(): Call<MaterialMessage>
+
+    @GET("/materiais/not_collect/{id}")
+    fun getMateriaisNotCollected(@Path("id") id: Int?): Call<List<Materials>>
 
     @POST("endereco")
     fun newEnderecoUser(@Header("Authorization") authToken: String, @Body address: Address): Call<UserAddress>
