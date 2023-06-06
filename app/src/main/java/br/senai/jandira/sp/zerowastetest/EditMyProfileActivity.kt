@@ -46,6 +46,7 @@ import br.senai.jandira.sp.zerowastetest.api.ApiCalls
 import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
 import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.MaterialCatador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMaterial.Materials
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.MaterialMessage
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.*
@@ -257,6 +258,99 @@ fun ProfileContent() {
     var materialsErr by remember {
         mutableStateOf(false)
     }
+    var showModal by remember { mutableStateOf(false) }
+    var showDrop by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("Opção 1") }
+
+    if (showModal) {
+        AlertDialog(
+            onDismissRequest = { showModal = false },
+            title = { Text(text = "Cadastro de materiais") },
+            text = {
+                Column {
+                    selectedMaterial.nome?.let {
+                        OutlinedTextField(
+                            value = it,
+                            onValueChange = {
+                                Log.i("teste", selectedMaterial.toString())
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onGloballyPositioned { coordinates ->
+                                    textFieldSize = coordinates.size.toSize()
+                                },
+                            colors = TextFieldDefaults.textFieldColors(
+                                backgroundColor = Color(
+                                    188,
+                                    219,
+                                    183
+                                )
+                            ),
+                //                shape = RoundedCornerShape(16.dp),
+                            label = { Text(text = "Selecione uma opção") },
+
+                            trailingIcon = {
+                                Icon(icon1, "", Modifier.clickable { showDrop = !showDrop })
+                            }
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = showDrop,
+                        onDismissRequest = { showDrop = false }
+                    ) {
+                        materialsList.map { label ->
+                            DropdownMenuItem(onClick = { label.nome?.let {  selectedMaterial= Materials(nome = it, id = label.id) } }) {
+                                label.nome?.let { Text(text = it) }
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+
+
+                Button(onClick = {
+                    val material = MaterialCatador(id_catador = dadosUsuario.catador!![0].id, id_materiais = listOf(selectedMaterial.id))
+                    //Toast.makeText(context, material.toString(), Toast.LENGTH_LONG).show()
+                    apiCalls.storeMaterial(authToken, material)
+                        .enqueue(object : Callback<List<MaterialCatador>> {
+                            override fun onResponse(
+                                call: Call<List<MaterialCatador>>,
+                                response: Response<List<MaterialCatador>>
+
+                            ) {
+                                showModal = false
+                                if (!response.isSuccessful){
+                                    Toast.makeText(context, "${response.code()}", Toast.LENGTH_LONG).show()
+
+
+                                } else{
+                                    Toast.makeText(context, "Cadastrado com sucesso", Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<List<MaterialCatador>>,
+                                t: Throwable
+                            ) {
+                                Log.i("fail", t.message.toString())
+                            }
+
+                        })
+                }) {
+                    Text(text = "Confirmar")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showModal = false }) {
+                    Text(text = "Cancelar")
+                }
+            }
+        )
+    }
+
+
 
 
     Column(
@@ -265,54 +359,6 @@ fun ProfileContent() {
             .verticalScroll(rememberScrollState())
             .blur(blurEffect(confirmationVisibility))
     ) {
-        if (showListMateriais){
-            Column(modifier = Modifier
-                .background(Color.Red)
-                .fillMaxWidth(0.7f)
-                .fillMaxHeight(0.5f)){
-                OutlinedTextField(
-                    value = selectedMaterial.nome.toString(),
-                    onValueChange = {
-                        Log.i("teste", selectedMaterial.id.toString())
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color(
-                            188,
-                            219,
-                            183
-                        )
-                    ),
-                    label = { Text(text = "Selecione o material") },
-
-                    trailingIcon = {
-                        Icon(icon1, "", Modifier.clickable { expanded1 = !expanded1 })
-                    }
-                )
-
-                DropdownMenu(
-                    expanded = expanded1,
-                    onDismissRequest = { expanded1 = false },
-                    modifier = Modifier.width(with(LocalDensity.current) { textFieldSize.width.toDp()})
-
-                ) {
-                    materialsList.map { label ->
-                        Log.i("opa", label.nome.toString())
-                        DropdownMenuItem(onClick = {
-                            selectedMaterial = Materials(id = label.id, nome = label.nome)
-                            expanded1 = false
-                            Log.i("testeee", selectedMaterial.toString().toInt().toString())
-                        }) {
-                            Text(text = label.nome.toString())
-                        }
-                    }
-                }
-            }
-        }
         Row(modifier = Modifier.padding(16.dp)) {
             Image(painter = painterResource(id = R.drawable.back_arrow),
                 contentDescription = "Voltar para página inicial",
@@ -404,6 +450,8 @@ fun ProfileContent() {
                         color = Color.White
                     )
                 }
+
+
                 Text(
                     text = userType,
                     color = Color.White,
@@ -507,7 +555,7 @@ fun ProfileContent() {
                             contentDescription = "Adicionar Material",
                             modifier = Modifier
                                 .clickable {
-
+                                    showModal = true
                                     showListMateriais = true
 
                                 }
