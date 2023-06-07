@@ -323,10 +323,6 @@ fun ProfileContent() {
                                 showModal = false
                                 if (!response.isSuccessful){
                                     Toast.makeText(context, "${response.code()}", Toast.LENGTH_LONG).show()
-
-
-                                } else{
-                                    Toast.makeText(context, "Cadastrado com sucesso", Toast.LENGTH_LONG).show()
                                 }
                             }
 
@@ -338,6 +334,7 @@ fun ProfileContent() {
                             }
 
                         })
+                    Toast.makeText(context, "Cadastrado com sucesso", Toast.LENGTH_LONG).show()
                 }) {
                     Text(text = "Confirmar")
                 }
