@@ -1,6 +1,8 @@
 package br.senai.jandira.sp.zerowastetest
 
+import android.net.DnsResolver.Callback
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -15,17 +17,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.senai.jandira.sp.zerowastetest.api.ApiCalls
+import br.senai.jandira.sp.zerowastetest.api.ChatCalls
+import br.senai.jandira.sp.zerowastetest.api.RetrofitApi
+import br.senai.jandira.sp.zerowastetest.dataSaving.SessionManager
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.UserData
 
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
+import retrofit2.Call
+import retrofit2.Response
 
 class ChatMessages : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val api = RetrofitApi.getMainApi()
+        val mainApi = api.create(ApiCalls::class.java)
+        val apiChat = RetrofitApi.getChatApi()
+        val chatApi = apiChat.create(ChatCalls::class.java)
+        val sessionManager = SessionManager(this)
+        val authToken = "Bearer " + sessionManager.fetchAuthToken()
         val messages = listOf(
-            Messages("Olá!"),
-            Messages("Como você está?"),
-            Messages("Tudo bem por aí?")
+            Messages("Olá!", true),
+            Messages("Como você está?", false),
+            Messages("Tudo bem por aí?", false)
         )
+
+        mainApi.getUserData(authToken).enqueue(object : retrofit2.Callback<UserData> {
+            override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
+                if (response.isSuccessful){
+
+                }
+            }
+
+            override fun onFailure(call: Call<UserData>, t: Throwable) {
+                Log.i("fail", t.message.toString())
+            }
+
+        })
 
         setContent {
             ZeroWasteTestTheme {
@@ -70,17 +98,33 @@ fun MessageList(messages: List<Messages>) {
 
 @Composable
 fun MessageItem(message: Messages) {
-    Surface(
-        shape = RoundedCornerShape(4.dp),
-        color = MaterialTheme.colors.primary,
-        modifier = Modifier.padding(8.dp)
+    val backgroundColor = if (message.isSentByMe) {
+        MaterialTheme.colors.primary
+    } else {
+        Color.LightGray
+    }
+
+    val messageAlignment = if (message.isSentByMe) {
+        Alignment.CenterEnd
+    } else {
+        Alignment.CenterStart
+    }
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = messageAlignment
     ) {
-        Text(
-            text = message.text,
-            style = MaterialTheme.typography.body1,
-            color = Color.White,
+        Surface(
+            shape = RoundedCornerShape(4.dp),
+            color = backgroundColor,
             modifier = Modifier.padding(8.dp)
-        )
+        ) {
+            Text(
+                text = message.text,
+                style = MaterialTheme.typography.body1,
+                color = Color.White,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
     }
 }
 
@@ -109,4 +153,4 @@ fun MessageInput(onMessageSent: (String) -> Unit) {
     }
 }
 
-data class Messages(val text: String)
+data class Messages(val text: String, val isSentByMe: Boolean)
