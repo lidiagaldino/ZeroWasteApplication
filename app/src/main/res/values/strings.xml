@@ -95,4 +95,5 @@
     <string name="title_activity_aceitar_coleta">AceitarColetaActivity</string>
     <string name="title_activity_chat">Chat</string>
     <string name="chat">Chat</string>
+    <string name="title_activity_chat_messages">ChatMessages</string>
 </resources>
