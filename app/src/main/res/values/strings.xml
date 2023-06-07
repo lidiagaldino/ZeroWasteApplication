@@ -93,4 +93,6 @@
     <string name="title_activity_edit_profile_catador">EditProfileCatadorActivity</string>
     <string name="title_activity_page_slider">PageSliderActivity</string>
     <string name="title_activity_aceitar_coleta">AceitarColetaActivity</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="chat">Chat</string>
 </resources>

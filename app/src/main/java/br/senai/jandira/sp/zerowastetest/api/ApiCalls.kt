@@ -6,10 +6,7 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelMate
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.ListEnderecoUsuario
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.MaterialMessage
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.*
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.CatadoresProximos
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.NewCatadorFisico
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.NewCatadorJuridico
-import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.SignResponseCatador
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.*
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.NewGeradorFisico
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.NewGeradorJuridico
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.SignResponseGerador
@@ -71,5 +68,8 @@ interface ApiCalls {
 
     @GET("/favoritar/{id_gerador}/{id_catador}")
     fun checkFavorited(@Path("id_gerador") id_gerador: Int, @Path("id_catador") id_catador: Int): Call<List<Favoritar>>
+
+    @GET("favoritar/{id}")
+    fun getFavoritos(@Header("Authorization") token: String, @Path("id") id: Int): Call<List<Favoritos>>
 
 }
