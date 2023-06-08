@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -43,7 +44,9 @@ class Chat : ComponentActivity() {
         val api = RetrofitApi.getMainApi()
         val mainApi = api.create(ApiCalls::class.java)
         val sessionManager = SessionManager(this)
-        val authToken = "Bearer " + sessionManager.fetchAuthToken()
+        val cleanToken = sessionManager.fetchAuthToken()
+        val authToken = "Bearer $cleanToken"
+
 
         var contact = listOf(Favoritos(CatadorFavorito(id = 0, id_status_catador = 0, id_usuario = 0, user = UserData(id = 0, biografia = "", email = "", foto = "", telefone = "", senha = "", pessoa_juridica = listOf(PessoaJuridica(id = "0", id_usuario = "0", cnpj = "", nome_fantasia = "")), catador = listOf(
             Catador(id = 0, id_usuario = "0", materiais_catador = listOf(MateriaisCatador()))
@@ -51,6 +54,9 @@ class Chat : ComponentActivity() {
         )), id = 0, id_catador = 0, id_gerador = 0))
 
 
+        val chatHandler = ChatHandler()
+        chatHandler.setSocketChat(cleanToken)
+        chatHandler.establishConnectionChat()
 
         mainApi.getUserData(authToken).enqueue(object : Callback<UserData> {
             override fun onResponse(call: Call<UserData>, response: Response<UserData>) {
@@ -108,7 +114,7 @@ class Chat : ComponentActivity() {
 fun ContactListScreen(contacts: List<Favoritos>) {
     var contato = listOf(Contato())
     contacts.map {
-        contato += Contato(email = it.catador.user.email, foto = it.catador.user.foto)
+        contato += Contato(email = it.catador.user.email, foto = it.catador.user.foto, id = it.catador.id_usuario)
     }
 
     Scaffold(
@@ -128,8 +134,11 @@ fun ContactList(contacts: List<Contato>) {
     val context = LocalContext.current
     LazyColumn {
         items(contacts) { contact ->
-            ContactItem(contact = contact, context = context)
-            Divider() // Opcional: adicione um divisor entre os itens
+            if (contact.id > 0){
+                ContactItem(contact = contact, context = context)
+                Divider() // Opcional: adicione um divisor entre os itens
+            }
+
         }
     }
 }
@@ -139,7 +148,13 @@ fun ContactItem(contact: Contato, context: Context) {
     Row(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                val intent = Intent(context, ChatMessages::class.java)
+                Log.i("id", contact.id.toString())
+                intent.putExtra("id", contact.id.toString())
+                context.startActivity(intent)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         DisplayImageFromUrl(imageUrl = contact.foto, description = "foto", size = 50.dp, padding = 0.dp)
@@ -147,12 +162,6 @@ fun ContactItem(contact: Contato, context: Context) {
             modifier = Modifier.padding(start = 16.dp)
         ) {
             Text(text = contact.email, style = MaterialTheme.typography.h6)
-        }
-        Button(onClick = {
-            val intent = Intent(context, ChatMessages::class.java)
-            context.startActivity(intent)
-        }) {
-            Text(text = "Conversar")
         }
     }
 }
