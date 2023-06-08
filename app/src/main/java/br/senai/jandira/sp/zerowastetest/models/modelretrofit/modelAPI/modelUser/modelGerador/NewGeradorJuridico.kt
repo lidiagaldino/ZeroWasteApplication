@@ -5,7 +5,7 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser
 data class NewGeradorJuridico(
 
     var nome: String = "",
-    val endereco: Address? = null,
+    var endereco: Address? = null,
     var telefone: String = "",
     var email: String = "",
     var senha: String = "",

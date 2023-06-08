@@ -31,6 +31,9 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.CatadorFavorito
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.MateriaisCatador
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.Gerador
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.GeradorFavorito
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.GeradorX
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.User
 import br.senai.jandira.sp.zerowastetest.ui.theme.ZeroWasteTestTheme
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
@@ -72,6 +75,12 @@ class Chat : ComponentActivity() {
                                         contact = responseFavoritos.body()!!
                                     }
 
+                                    var contato = listOf(Contato())
+
+                                    contact.map {
+                                        contato += Contato(email = it.catador.user.email, foto = it.catador.user.foto, id = it.catador.id_usuario)
+                                    }
+
 
                                     setContent {
                                         ZeroWasteTestTheme {
@@ -81,7 +90,7 @@ class Chat : ComponentActivity() {
                                                 color = MaterialTheme.colors.background
                                             ) {
 
-                                                ContactListScreen(contact)
+                                                ContactListScreen(contato)
                                             }
                                         }
                                     }
@@ -93,7 +102,46 @@ class Chat : ComponentActivity() {
 
                             })
                     } else {
+                        var geradorFavorito = listOf(GeradorFavorito())
+                        mainApi.getGeradoresFavoritos(authToken, response.body()!!.catador!![0].id)
+                            .enqueue(object : Callback<List<GeradorFavorito>> {
+                                override fun onResponse(
+                                    call: Call<List<GeradorFavorito>>,
+                                    responseFav: Response<List<GeradorFavorito>>
+                                ) {
+                                    if (response.isSuccessful){
+                                        geradorFavorito = responseFav.body()!!
+                                    }
 
+                                    var contato = listOf(Contato())
+
+                                    geradorFavorito.map {
+                                        contato += Contato(email = it.gerador.user.email, foto = it.gerador.user.foto, id = it.gerador.id_usuario)
+                                    }
+
+                                    setContent {
+                                        ZeroWasteTestTheme {
+                                            // A surface container using the 'background' color from the theme
+                                            Surface(
+                                                modifier = Modifier.fillMaxSize(),
+                                                color = MaterialTheme.colors.background
+                                            ) {
+
+                                                ContactListScreen(contato)
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                override fun onFailure(
+                                    call: Call<List<GeradorFavorito>>,
+                                    t: Throwable
+                                ) {
+                                    Log.i("fail", t.message.toString())
+                                }
+
+                            })
                     }
                 }
             }
@@ -111,18 +159,14 @@ class Chat : ComponentActivity() {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ContactListScreen(contacts: List<Favoritos>) {
-    var contato = listOf(Contato())
-    contacts.map {
-        contato += Contato(email = it.catador.user.email, foto = it.catador.user.foto, id = it.catador.id_usuario)
-    }
+fun ContactListScreen(contacts: List<Contato>) {
 
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Lista de Contatos") })
         },
         content = {
-            ContactList(contacts = contato)
+            ContactList(contacts = contacts)
         }
     )
 }

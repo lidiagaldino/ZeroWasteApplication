@@ -7,6 +7,7 @@ import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedi
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelPedido.MaterialMessage
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.*
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelCatador.*
+import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.GeradorFavorito
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.NewGeradorFisico
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.NewGeradorJuridico
 import br.senai.jandira.sp.zerowastetest.models.modelretrofit.modelAPI.modelUser.modelGerador.SignResponseGerador
@@ -71,5 +72,8 @@ interface ApiCalls {
 
     @GET("favoritar/{id}")
     fun getFavoritos(@Header("Authorization") token: String, @Path("id") id: Int): Call<List<Favoritos>>
+
+    @GET("favoritar/geradores/{id}")
+    fun getGeradoresFavoritos(@Header("Authorization") token: String, @Path("id") id: Int): Call<List<GeradorFavorito>>
 
 }
